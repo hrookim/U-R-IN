@@ -1,9 +1,9 @@
-package com.dongpop.urin.domain.questionAndAnswer.dto.response;
+package com.dongpop.urin.domain.inquiry.dto.response;
 
 import lombok.Getter;
 
 @Getter
-public class QuestionAndAnswerDetailDto {
+public class InquiryDetailDto {
     private int qnaId;
     private String contents;
     private String createdAt;
