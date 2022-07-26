@@ -86,26 +86,10 @@ class FeedRepositoryTest {
         em.flush();
         em.clear();
 
-//        Feed feed = feedRepository.findAll().get(0);
-//        System.out.println("===================\n");
-//        System.out.println("id: " + feed.getId());
-//        System.out.println("contents: " + feed.getContents());
-//        System.out.println("parent : " + feed.getParent());
-//        System.out.println("===== 자식들 =====");
-//        for (int i = 0; i < 5; i++) {
-//            Feed child = feed.getChildren().get(i);
-//            System.out.println("  id: " + child.getId());
-//            System.out.println("  contents: " + child.getContents());
-//            System.out.println("  parent : " + child.getParent());
-//        }
-//        System.out.println();
+        System.out.println("\n\n=============================================================\n\n");
 
         PageRequest pageRequest = PageRequest.of(0, 2);
-        Page<Feed> feedPage = feedRepository.findAllByStudyId(study.getId(), pageRequest);
-
-        System.out.println("==============\n");
-        System.out.println("study id : " + study.getId());
-        System.out.println("page size : " + feedPage.toList().size());
+        Page<Feed> feedPage = feedRepository.findAllByStudyIdAndParentIsNull(study.getId(), pageRequest);
 
         assertThat(feedPage.getTotalElements()).isEqualTo(5);
         assertThat(feedPage.toList().size()).isEqualTo(2);
