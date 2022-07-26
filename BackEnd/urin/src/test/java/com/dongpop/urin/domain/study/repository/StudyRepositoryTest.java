@@ -72,7 +72,7 @@ class StudyRepositoryTest {
         }
 
         PageRequest pageRequest = PageRequest.of(0, 9);
-        Page<Study> studyPage = studyRepository.findByAll(pageRequest);
+        Page<Study> studyPage = studyRepository.findAll(pageRequest);
 
         assertThat(studyPage.getTotalElements()).isEqualTo(20);
         assertThat(studyPage.toList().size()).isEqualTo(9);

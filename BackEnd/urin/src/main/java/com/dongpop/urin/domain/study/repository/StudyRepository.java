@@ -11,11 +11,7 @@ import java.util.Optional;
 
 public interface StudyRepository extends JpaRepository<Study, Integer> {
 
-    @Query(
-            value = "SELECT s FROM Study s",
-            countQuery = "SELECT count(s) FROM Study s"
-    )
-    Page<Study> findByAll(Pageable pageable);
+    Page<Study> findAll(Pageable pageable);
 
     @EntityGraph(attributePaths = {"participants"})
     Optional<Study> findById(Integer studyId);
