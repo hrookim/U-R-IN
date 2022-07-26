@@ -1,8 +1,10 @@
 package com.dongpop.urin.domain.study.dto.response;
 
-import lombok.Getter;
+import lombok.AllArgsConstructor;
+import lombok.Data;
 
-@Getter
+@AllArgsConstructor
+@Data
 public class StudyStatusDto {
     private int studyId;
     private String status;

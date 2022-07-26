@@ -13,6 +13,8 @@ public interface StudyRepository extends JpaRepository<Study, Integer> {
 
     Page<Study> findAll(Pageable pageable);
 
+    Page<Study> findAllByTitleContaining(String keyword, Pageable pageable);
+
     @EntityGraph(attributePaths = {"participants"})
-    Optional<Study> findById(Integer studyId);
+    Optional<Study> findById(Integer id);
 }
