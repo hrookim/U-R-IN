@@ -3,11 +3,15 @@ package com.dongpop.urin.domain.participant.repository;
 import com.dongpop.urin.domain.common.entity.BaseTimeEntity;
 import com.dongpop.urin.domain.member.repository.Member;
 import com.dongpop.urin.domain.study.repository.Study;
+import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
 @Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 @Table(name = "participants")
 public class Participant extends BaseTimeEntity {
@@ -24,4 +28,29 @@ public class Participant extends BaseTimeEntity {
     private Study study;
 
     private boolean isLeader;
+
+    @Builder
+    private Participant(Member member, Study study, boolean isLeader) {
+        this.member = member;
+        this.study = study;
+        this.isLeader = isLeader;
+    }
+
+    public void addStudy(Study study) {
+        this.study = study;
+        study.getParticipants().add(this);
+    }
+
+    public static Participant makeParticipant(Member member, Study study, boolean isLeader) {
+        Participant ret = Participant.builder()
+                .isLeader(isLeader)
+                .member(member)
+                .build();
+        ret.addStudy(study);
+        return ret;
+    }
+
+    public void removeObjectInStudyList() {
+        study.getParticipants().remove(this);
+    }
 }

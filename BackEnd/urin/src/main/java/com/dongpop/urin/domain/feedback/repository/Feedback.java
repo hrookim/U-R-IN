@@ -14,6 +14,9 @@ public class Feedback extends BaseTimeEntity {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
+    @Column(nullable = false)
+    private String contents;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "interviewer")
     private Member interviewer;
