@@ -3,10 +3,7 @@ package com.dongpop.urin.domain.feed.repository;
 import com.dongpop.urin.domain.common.entity.BaseTimeEntity;
 import com.dongpop.urin.domain.member.repository.Member;
 import com.dongpop.urin.domain.study.repository.Study;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -37,6 +34,13 @@ public class Feed extends BaseTimeEntity {
 
     private String contents;
     private boolean isDeleted;
+
+    @Builder
+    public Feed(Member member, Study study, String contents) {
+        this.member = member;
+        this.study = study;
+        this.contents = contents;
+    }
 
     public void addParentFeed(Feed parent) {
         parent.getChildren().add(this);
