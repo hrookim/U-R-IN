@@ -1,10 +1,13 @@
 package com.dongpop.urin.domain.inquiry.dto.response;
 
+import lombok.Builder;
+import lombok.Data;
 import lombok.Getter;
 
-@Getter
+@Builder
+@Data
 public class InquiryDetailDto {
-    private int qnaId;
+    private int inquiryId;
     private String contents;
     private String createdAt;
     private boolean isDeleted;

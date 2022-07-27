@@ -68,14 +68,14 @@ class FeedRepositoryTest {
         for (int i = 0; i < 5; i++) {
             Feed parent = Feed.builder()
                     .study(study)
-                    .member(members.get(i))
+                    .writer(members.get(i))
                     .contents("부모 컨텐츠" + i)
                     .build();
             feedRepository.save(parent);
             for (int j = 0; j < 5; j++) {
                 Feed child = Feed.builder()
                         .study(study)
-                        .member(members.get(j))
+                        .writer(members.get(j))
                         .contents("자식 컨텐츠" + j)
                         .build();
                 child.addParentFeed(parent);

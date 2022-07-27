@@ -23,7 +23,7 @@ public class Inquiry extends BaseTimeEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
-    private Member member;
+    private Member writer;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "study_id")
@@ -40,14 +40,24 @@ public class Inquiry extends BaseTimeEntity {
     private boolean isDeleted;
 
     @Builder
-    public Inquiry(Member member, Study study, String contents) {
-        this.member = member;
+    public Inquiry(Member writer, Study study, String contents) {
+        this.writer = writer;
         this.study = study;
         this.contents = contents;
     }
 
-    public void addParentFeed(Inquiry parent) {
-        parent.getChildren().add(this);
+    public void addParentInquiry(Inquiry parent) {
+        if (parent != null) {
+            parent.getChildren().add(this);
+        }
         this.parent = parent;
+    }
+
+    public void updateInquiryData(String contents) {
+        this.contents = contents;
+    }
+
+    public void deleteInquiry() {
+        this.isDeleted = true;
     }
 }
