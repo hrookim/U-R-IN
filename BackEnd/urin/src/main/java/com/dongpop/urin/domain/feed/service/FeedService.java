@@ -56,7 +56,7 @@ public class FeedService {
                     .map(c ->
                         FeedDetailDto.builder()
                                 .feedId(c.getId())
-                                .contents(c.getContents())
+                                .contents(c.isDeleted() ? DELETE_MESSAGE : c.getContents())
                                 .writerId(c.getWriter().getId())
                                 .writer(c.getWriter().getNickname())
                                 .createdAt(c.getCreatedAt().format(DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm:ss")))
@@ -91,13 +91,13 @@ public class FeedService {
     @Transactional
     public void updateFeed( int memberId, int studyId, int feedId, String contents) {
         //회원 번호로 권한만 확인 후 바로 업데이트
-        Feed feed = checkWriterAuthorizaion(feedId, memberId);
+        Feed feed = checkWriterAuthorizaion(memberId, feedId);
         feed.updateFeedData(contents);
     }
 
     @Transactional
     public void deleteFeed(int memberId, int studyId, int feedId) {
-        Feed feed = checkWriterAuthorizaion(feedId, memberId);
+        Feed feed = checkWriterAuthorizaion(memberId, feedId);
         feed.deleteFeed();
     }
     private Feed checkWriterAuthorizaion(int memberId, int feedId) {

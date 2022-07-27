@@ -54,7 +54,7 @@ public class InquiryService {
                     .map(c ->
                             InquiryDetailDto.builder()
                                     .inquiryId(c.getId())
-                                    .contents(c.getContents())
+                                    .contents(c.isDeleted() ? DELETE_MESSAGE : c.getContents())
                                     .writerId(c.getWriter().getId())
                                     .writer(c.getWriter().getNickname())
                                     .createdAt(c.getCreatedAt().format(DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm:ss")))

@@ -1,7 +1,7 @@
 package com.dongpop.urin.domain.feed.controller;
 
 import com.dongpop.urin.domain.feed.dto.request.FeedDataDto;
-import com.dongpop.urin.domain.feed.dto.request.FeedModificationDataDto;
+import com.dongpop.urin.domain.feed.dto.request.FeedUpdateDto;
 import com.dongpop.urin.domain.feed.dto.response.FeedListDto;
 import com.dongpop.urin.domain.feed.service.FeedService;
 import lombok.RequiredArgsConstructor;
@@ -32,9 +32,9 @@ public class FeedController {
     }
 
     @PutMapping("/{studyId}/feeds/{feedId}")
-    public ResponseEntity<?> updateFeed(@PathVariable int studyId, @PathVariable int feedId, @RequestBody String contents) {
+    public ResponseEntity<?> updateFeed(@PathVariable int studyId, @PathVariable int feedId, @RequestBody FeedUpdateDto feedUpdateDto) {
         int memberId = 1;
-        feedService.updateFeed(memberId, studyId, feedId, contents);
+        feedService.updateFeed(memberId, studyId, feedId, feedUpdateDto.getContents());
 
         return ResponseEntity.noContent().build();
     }

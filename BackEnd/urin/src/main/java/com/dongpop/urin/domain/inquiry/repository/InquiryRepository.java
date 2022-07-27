@@ -6,6 +6,6 @@ import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface InquiryRepository extends JpaRepository<Inquiry, Integer> {
-    @EntityGraph(attributePaths = {"member", "study", "parent"})
+    @EntityGraph(attributePaths = {"writer", "study", "parent"})
     Page<Inquiry> findAllByStudyIdAndParentIsNull(Integer studyId, Pageable pageable);
 }

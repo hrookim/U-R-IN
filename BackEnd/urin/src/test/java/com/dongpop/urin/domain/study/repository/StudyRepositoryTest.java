@@ -42,7 +42,7 @@ class StudyRepositoryTest {
                     .memberCapacity(6)
                     .status(StudyStatus.RECRUITING)
                     .build();
-            if (i == 0) {
+            if (i == 0 || i == 1) {
                 curStudy.updateStatus(StudyStatus.TERMINATED);
             }
             studies.add(curStudy);
@@ -73,9 +73,9 @@ class StudyRepositoryTest {
         PageRequest pageRequest = PageRequest.of(0, 9);
         Page<Study> studyPage = studyRepository.findAllStudy(pageRequest);
 
-        assertThat(studyPage.getTotalElements()).isEqualTo(19); //종료된 스터디는 가져오지 않음
+        assertThat(studyPage.getTotalElements()).isEqualTo(18); //종료된 스터디는 가져오지 않음
         assertThat(studyPage.toList().size()).isEqualTo(9);
-        assertThat(studyPage.toList().get(0).getTitle()).isEqualTo("제목1");
+        assertThat(studyPage.toList().get(0).getTitle()).isEqualTo("제목2");
     }
 
     @Test
@@ -86,7 +86,8 @@ class StudyRepositoryTest {
                     .title(i % 2 == 0 ? "검색 가능" + i : "검색 불가" + i)
                     .notice("내용~~~" + i)
                     .isOnair(false)
-                    .memberCapacity(6)
+                    .memberCapacity(10)
+                    .status(StudyStatus.RECRUITING)
                     .build();
             if (i == 0) {
                 curStudy.updateStatus(StudyStatus.TERMINATED);

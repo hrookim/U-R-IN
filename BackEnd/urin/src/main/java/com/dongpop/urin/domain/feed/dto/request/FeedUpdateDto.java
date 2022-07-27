@@ -3,6 +3,6 @@ package com.dongpop.urin.domain.feed.dto.request;
 import lombok.Getter;
 
 @Getter
-public class FeedModificationDataDto {
+public class FeedUpdateDto {
     private String contents;
 }
