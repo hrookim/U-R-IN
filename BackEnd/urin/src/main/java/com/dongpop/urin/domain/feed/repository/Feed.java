@@ -19,7 +19,7 @@ public class Feed extends BaseTimeEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
-    private Member member;
+    private Member writer;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "study_id")
@@ -36,14 +36,24 @@ public class Feed extends BaseTimeEntity {
     private boolean isDeleted;
 
     @Builder
-    public Feed(Member member, Study study, String contents) {
-        this.member = member;
+    public Feed(Member writer, Study study, String contents) {
+        this.writer = writer;
         this.study = study;
         this.contents = contents;
     }
 
     public void addParentFeed(Feed parent) {
-        parent.getChildren().add(this);
+        if (parent != null) {
+            parent.getChildren().add(this);
+        }
         this.parent = parent;
+    }
+
+    public void updateFeedData(String contents) {
+        this.contents = contents;
+    }
+
+    public void deleteFeed() {
+        this.isDeleted = true;
     }
 }
