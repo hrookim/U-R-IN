@@ -9,8 +9,9 @@ import com.dongpop.urin.domain.study.dto.request.StudyDataDto;
 import com.dongpop.urin.domain.study.dto.response.*;
 import com.dongpop.urin.domain.study.repository.Study;
 import com.dongpop.urin.domain.study.repository.StudyRepository;
-import com.dongpop.urin.domain.study.repository.StudyState;
+import com.dongpop.urin.domain.study.repository.StudyStatus;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -23,17 +24,8 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
-/**
- * 스터디 요약 리스트(페이징, 검색)
- * 스터디 상세 페이지
- * 스터디 생성
- * 스터디 정보 수정
- * 스터디 가입
- * 스터디 참가자 삭제
- * 7. 스터디 상태 변경
- *
- */
 
+@Slf4j
 @RequiredArgsConstructor
 @Service
 public class StudyService {
@@ -49,9 +41,9 @@ public class StudyService {
     public StudyListDto getStudyList(Pageable pageable, String keyword) {
         Page<Study> pages = null;
         if (StringUtils.hasText(keyword))
-            pages = studyRepository.findAllByTitleContaining(keyword, pageable);
+            pages = studyRepository.findSearchAllStudy(keyword, pageable);
         else
-            pages = studyRepository.findAll(pageable);
+            pages = studyRepository.findAllStudy(pageable);
 
         //TODO: Null체크 로직 추가
         List<StudySummaryDto> studyList = pages.toList().stream().map(s ->
@@ -60,6 +52,7 @@ public class StudyService {
                         .memberCapacity(s.getMemberCapacity())
                         .title(s.getTitle())
                         .currentMember(s.getParticipants().size())
+                        .status(s.getStatus())
                         .build()
         ).collect(Collectors.toList());
 
@@ -87,7 +80,9 @@ public class StudyService {
                 .notice(study.getNotice())
                 .memberCapacity(study.getMemberCapacity())
                 .currentMember(study.getParticipants().size())
-                .dDay((int) Duration.between(LocalDate.now(), study.getExpirationDate()).toDays())
+                .status(study.getStatus())
+                .dDay((int) Duration.between(LocalDate.now().atStartOfDay(),
+                                study.getExpirationDate().atStartOfDay()).toDays())
                 .isOnair(study.isOnair())
                 .participants(dtos)
                 .build();
@@ -98,6 +93,7 @@ public class StudyService {
      */
     @Transactional
     public StudyIdDto generateStudy(StudyDataDto studyData, int memberId) {
+        log.info("memberId : {}, studyData : {}", memberId, studyData);
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new NoSuchElementException("존재하지 않는 회원입니다."));
 
@@ -107,6 +103,7 @@ public class StudyService {
                 //TODO : 종료일이 매우 큰 숫자일 때 저장 값 정하기
                 .expirationDate(studyData.getExpiredDate())
                 .memberCapacity(studyData.getMemberCapacity())
+                .status(StudyStatus.RECRUITING)
                 .build());
 
         participantRepository.save(Participant.builder()
@@ -125,6 +122,15 @@ public class StudyService {
         //TODO: 해당 회원이 수정 권한이 있는지 검증
         Study study = studyRepository.findById(studyId)
                 .orElseThrow(() -> new NoSuchElementException("해당 스터디는 존재하지 않습니다."));
+
+        if (study.getParticipants().size() > studyData.getMemberCapacity()) {
+            //TODO: Exception 정하기
+            throw new RuntimeException("현재 인원보다 적은 수용인원은 설정 불가합니다.");
+        }
+        if (study.getStatus().equals(StudyStatus.TERMINATED)) {
+            throw new RuntimeException("스터디 종료 상태에서는 정보를 변경할 수 없습니다.");
+        }
+
         study.updateStudyInfo(studyData.getTitle(), studyData.getNotice(),
                 studyData.getMemberCapacity(), studyData.getExpiredDate());
         return new StudyIdDto(studyId);
@@ -139,6 +145,15 @@ public class StudyService {
                 .orElseThrow(() -> new NoSuchElementException("없는 회원입니다."));
         Study study = studyRepository.findById(studyId)
                 .orElseThrow(() -> new NoSuchElementException("해당 스터디가 존재하지 않습니다."));
+
+        if (study.getParticipants().size() >= study.getMemberCapacity()) {
+            //TODO: Exception정하기
+            throw new RuntimeException("스터디 허용 인원을 초과합니다.");
+        }
+
+        if (study.getParticipants().size() + 1 == study.getMemberCapacity()) {
+            study.updateStatus(StudyStatus.COMPLETED);
+        }
 
         Integer participantId = participantRepository.save(Participant.builder()
                 .study(study)
@@ -163,9 +178,15 @@ public class StudyService {
                 .orElseThrow(() -> new NoSuchElementException("해당 참가자는 없습니다."));
 
         if (isPossible(deleteParticipant, memberId, studyId)) {
-            participantRepository.delete(deleteParticipant);
+            deleteStudyParticipant(study, deleteParticipant);
         }
         //TODO: else인 경우는 삭제가 불가능한 경우 -> Exception 던져주기
+    }
+
+    private void deleteStudyParticipant(Study study, Participant deleteParticipant) {
+        participantRepository.delete(deleteParticipant);
+        if (study.getStatus().equals(StudyStatus.COMPLETED))
+            study.updateStatus(StudyStatus.RECRUITING);
     }
 
     /**
@@ -173,7 +194,7 @@ public class StudyService {
      * 스터디 상태 변경
      */
     @Transactional
-    public StudyStatusDto changeStudyStatus(int studyId, StudyState status) {
+    public StudyStatusDto changeStudyStatus(int studyId, StudyStatus status) {
         Study study = studyRepository.findById(studyId)
                 .orElseThrow(() -> new NoSuchElementException("해당 스터디가 존재하지 않습니다."));
 

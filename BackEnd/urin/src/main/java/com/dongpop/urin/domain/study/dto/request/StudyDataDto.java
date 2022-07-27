@@ -1,10 +1,12 @@
 package com.dongpop.urin.domain.study.dto.request;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 import java.time.LocalDate;
 
+@AllArgsConstructor
 @Data
 public class StudyDataDto {
     private String title;

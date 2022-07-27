@@ -6,7 +6,6 @@ import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,7 +21,7 @@ public class Study extends BaseTimeEntity {
     private String title;
     private String notice;
     @Enumerated(EnumType.STRING)
-    private StudyState status;
+    private StudyStatus status;
     private int memberCapacity;
 
     @OneToMany(mappedBy = "study")
@@ -32,7 +31,7 @@ public class Study extends BaseTimeEntity {
     private boolean isOnair;
 
     @Builder
-    public Study(String title, String notice, StudyState status, int memberCapacity, LocalDate expirationDate, boolean isOnair) {
+    public Study(String title, String notice, StudyStatus status, int memberCapacity, LocalDate expirationDate, boolean isOnair) {
         this.title = title;
         this.notice = notice;
         this.status = status;
@@ -49,7 +48,7 @@ public class Study extends BaseTimeEntity {
         this.memberCapacity = memberCapacity;
     }
 
-    public void updateStatus(StudyState status) {
+    public void updateStatus(StudyStatus status) {
         this.status = status;
     }
 

@@ -1,5 +1,6 @@
 package com.dongpop.urin.domain.study.dto.response;
 
+import com.dongpop.urin.domain.study.repository.StudyStatus;
 import lombok.Builder;
 import lombok.Data;
 import lombok.Getter;
@@ -11,4 +12,5 @@ public class StudySummaryDto {
     private String title;
     private int memberCapacity;
     private int currentMember;
+    private StudyStatus status;
 }
