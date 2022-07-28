@@ -27,7 +27,6 @@ public class Participant extends BaseTimeEntity {
     @JoinColumn(name = "study_id")
     private Study study;
 
-    @Column(updatable = false)
     private boolean isLeader;
 
     @Builder

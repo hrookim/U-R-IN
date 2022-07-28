@@ -8,7 +8,6 @@ import com.dongpop.urin.domain.study.repository.Study;
 import com.dongpop.urin.domain.study.repository.StudyRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -20,7 +19,8 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@DataJpaTest
+@SpringBootTest
+@Transactional
 class FeedRepositoryTest {
 
     @Autowired
@@ -68,14 +68,14 @@ class FeedRepositoryTest {
         for (int i = 0; i < 5; i++) {
             Feed parent = Feed.builder()
                     .study(study)
-                    .writer(members.get(i))
+                    .member(members.get(i))
                     .contents("부모 컨텐츠" + i)
                     .build();
             feedRepository.save(parent);
             for (int j = 0; j < 5; j++) {
                 Feed child = Feed.builder()
                         .study(study)
-                        .writer(members.get(j))
+                        .member(members.get(j))
                         .contents("자식 컨텐츠" + j)
                         .build();
                 child.addParentFeed(parent);
@@ -86,10 +86,26 @@ class FeedRepositoryTest {
         em.flush();
         em.clear();
 
-        System.out.println("\n\n=============================================================\n\n");
+//        Feed feed = feedRepository.findAll().get(0);
+//        System.out.println("===================\n");
+//        System.out.println("id: " + feed.getId());
+//        System.out.println("contents: " + feed.getContents());
+//        System.out.println("parent : " + feed.getParent());
+//        System.out.println("===== 자식들 =====");
+//        for (int i = 0; i < 5; i++) {
+//            Feed child = feed.getChildren().get(i);
+//            System.out.println("  id: " + child.getId());
+//            System.out.println("  contents: " + child.getContents());
+//            System.out.println("  parent : " + child.getParent());
+//        }
+//        System.out.println();
 
         PageRequest pageRequest = PageRequest.of(0, 2);
-        Page<Feed> feedPage = feedRepository.findAllByStudyIdAndParentIsNull(study.getId(), pageRequest);
+        Page<Feed> feedPage = feedRepository.findAllByStudyId(study.getId(), pageRequest);
+
+        System.out.println("==============\n");
+        System.out.println("study id : " + study.getId());
+        System.out.println("page size : " + feedPage.toList().size());
 
         assertThat(feedPage.getTotalElements()).isEqualTo(5);
         assertThat(feedPage.toList().size()).isEqualTo(2);
