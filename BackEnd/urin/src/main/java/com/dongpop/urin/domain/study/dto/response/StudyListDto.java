@@ -1,11 +1,14 @@
 package com.dongpop.urin.domain.study.dto.response;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.Getter;
 
 import java.util.List;
 
-@Getter
+@AllArgsConstructor
+@Data
 public class StudyListDto {
-    private int totalElements;
+    private int totalPages;
     private List<StudySummaryDto> studyList;
 }

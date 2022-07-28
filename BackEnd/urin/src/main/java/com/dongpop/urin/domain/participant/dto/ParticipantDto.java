@@ -1,8 +1,10 @@
 package com.dongpop.urin.domain.participant.dto;
 
-import lombok.Getter;
+import lombok.Builder;
+import lombok.Data;
 
-@Getter
+@Builder
+@Data
 public class ParticipantDto {
     private int id;
     private String nickname;

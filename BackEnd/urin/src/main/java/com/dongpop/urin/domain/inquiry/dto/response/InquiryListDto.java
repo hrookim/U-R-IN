@@ -1,10 +1,14 @@
 package com.dongpop.urin.domain.inquiry.dto.response;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.Getter;
 
 import java.util.List;
 
-@Getter
+@AllArgsConstructor
+@Data
 public class InquiryListDto {
-    private List<InquiryDto> qnaList;
+    private int totalPages;
+    private List<InquiryDto> inquiryList;
 }

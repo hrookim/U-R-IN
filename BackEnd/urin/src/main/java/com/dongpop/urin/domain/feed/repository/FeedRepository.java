@@ -11,6 +11,6 @@ import java.util.List;
 
 public interface FeedRepository extends JpaRepository<Feed, Integer> {
 
-    @EntityGraph(attributePaths = {"member", "study", "parent"})
+    @EntityGraph(attributePaths = {"writer", "study", "parent"})
     Page<Feed> findAllByStudyIdAndParentIsNull(Integer studyId, Pageable pageable);
 }
