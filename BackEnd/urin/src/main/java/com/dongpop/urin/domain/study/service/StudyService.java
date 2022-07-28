@@ -124,7 +124,7 @@ public class StudyService {
                 .orElseThrow(() -> new NoSuchElementException("해당 스터디는 존재하지 않습니다."));
 
         if (study.getParticipants().size() > studyData.getMemberCapacity()) {
-            //TODO: Exception 정하기
+            //TODO : Exception 정하기
             throw new RuntimeException("현재 인원보다 적은 수용인원은 설정 불가합니다.");
         }
         if (study.getStatus().equals(StudyStatus.TERMINATED)) {
