@@ -5,7 +5,6 @@ import com.dongpop.urin.domain.participant.repository.Participant;
 import lombok.*;
 
 import javax.persistence.*;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,39 +19,35 @@ public class Study extends BaseTimeEntity {
 
     private String title;
     private String notice;
+
     @Enumerated(EnumType.STRING)
-    private StudyStatus status;
+    private StudyState status;
+
     private int memberCapacity;
 
     @OneToMany(mappedBy = "study")
     private List<Participant> participants = new ArrayList<>();
 
-    private LocalDate expirationDate;
     private boolean isOnair;
 
     @Builder
-    public Study(String title, String notice, StudyStatus status, int memberCapacity, LocalDate expirationDate, boolean isOnair) {
+    public Study(String title, String notice, StudyState status, int memberCapacity, boolean isOnair) {
         this.title = title;
         this.notice = notice;
         this.status = status;
         this.memberCapacity = memberCapacity;
-        this.expirationDate = expirationDate;
         this.isOnair = isOnair;
     }
 
     //TODO : 유효성 검사 방법 확인하기
-    public void updateStudyInfo(String title, String notice, int memberCapacity, LocalDate expirationDate) {
+    public void updateStudyInfo(String title, String notice, StudyState status, int memberCapacity) {
         this.title = title;
         this.notice = notice;
-        this.expirationDate = expirationDate;
+        this.status = status;
         this.memberCapacity = memberCapacity;
     }
 
-    public void updateStatus(StudyStatus status) {
+    public void updateStatus(StudyState status) {
         this.status = status;
-    }
-
-    public void changeOnairStatus() {
-        isOnair = !isOnair;
     }
 }

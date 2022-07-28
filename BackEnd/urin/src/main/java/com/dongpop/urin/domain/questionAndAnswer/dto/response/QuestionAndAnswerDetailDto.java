@@ -1,12 +1,10 @@
-package com.dongpop.urin.domain.feed.dto.response;
+package com.dongpop.urin.domain.questionAndAnswer.dto.response;
 
 import lombok.Getter;
 
-import java.util.List;
-
 @Getter
-public class FeedDetailDto {
-    private int feedId;
+public class QuestionAndAnswerDetailDto {
+    private int qnaId;
     private String contents;
     private String createdAt;
     private boolean isDeleted;
