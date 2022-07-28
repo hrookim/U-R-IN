@@ -2,12 +2,14 @@ package com.dongpop.urin.domain.study.dto.request;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
+import lombok.ToString;
 
 import java.time.LocalDate;
 
+@ToString
 @AllArgsConstructor
-@Data
+@Getter
 public class StudyDataDto {
     private String title;
     private String notice;

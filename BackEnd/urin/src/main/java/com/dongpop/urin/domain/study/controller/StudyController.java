@@ -7,11 +7,15 @@ import com.dongpop.urin.domain.study.service.StudyService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.net.URI;
+import java.util.UUID;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -23,7 +27,8 @@ public class StudyController {
     private final StudyService studyService;
 
     @GetMapping
-    public ResponseEntity<StudyListDto> getStudyList(Pageable pageable, String keyword) {
+    public ResponseEntity<StudyListDto> getStudyList(@PageableDefault(size=24) Pageable pageable,
+                                                     String keyword) {
         return ResponseEntity.ok()
                 .body(studyService.getStudyList(pageable, keyword));
     }
@@ -48,7 +53,7 @@ public class StudyController {
 
     @PutMapping("/{studyId}")
     public ResponseEntity<StudyIdDto> editStudy(@PathVariable int studyId, @RequestBody StudyDataDto studyData) {
-        log.info("[REQUEST] >>>>> Edit Study / studyData : {}", studyData);
+        log.info("[REQUEST] >>>>> METHOD {} / studyData : {}", studyData);
         return ResponseEntity.ok()
                 .body(studyService.editStudy(studyId, studyData));
     }

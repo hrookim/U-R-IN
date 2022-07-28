@@ -183,14 +183,7 @@ public class StudyService {
         //TODO: else인 경우는 삭제가 불가능한 경우 -> Exception 던져주기
     }
 
-    private void deleteStudyParticipant(Study study, Participant deleteParticipant) {
-        participantRepository.delete(deleteParticipant);
-        if (study.getStatus().equals(StudyStatus.COMPLETED))
-            study.updateStatus(StudyStatus.RECRUITING);
-    }
-
     /**
-     *
      * 스터디 상태 변경
      */
     @Transactional
@@ -198,9 +191,15 @@ public class StudyService {
         Study study = studyRepository.findById(studyId)
                 .orElseThrow(() -> new NoSuchElementException("해당 스터디가 존재하지 않습니다."));
 
-        //TODO: 상태변경 체크 로직 추가하기
+        //TODO: 상태변경 가능한 지 체크
         study.updateStatus(status);
         return new StudyStatusDto(studyId, status.name());
+    }
+
+    private void deleteStudyParticipant(Study study, Participant deleteParticipant) {
+        participantRepository.delete(deleteParticipant);
+        if (study.getStatus().equals(StudyStatus.COMPLETED))
+            study.updateStatus(StudyStatus.RECRUITING);
     }
 
     private boolean isPossible(Participant deleteParticipant, int memberId, int studyId) {
