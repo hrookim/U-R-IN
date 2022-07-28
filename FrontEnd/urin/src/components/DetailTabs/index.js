@@ -14,7 +14,7 @@ const DetailTabs = () => {
   };
 
   return (
-    <>
+    <div>
       <Tabs onChange={handleChange} value={value}>
         <Tab label="정보" />
         <Tab label="질의응답" />
@@ -24,7 +24,7 @@ const DetailTabs = () => {
       {value === 0 && <DetailInfo />}
       {value === 1 && <DetailInquiry />}
       {value === 2 && <DetailFeed />}
-    </>
+    </div>
   );
 };
 

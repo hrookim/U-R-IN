@@ -59,7 +59,7 @@ const DetailInquiry = () => {
   const [inquiryList, setInquiryList] = useState(data.inquiryList);
 
   return (
-    <>
+    <div>
       <p>궁금한 점을 방장에게 질문해보세요!</p>
       <DetailInquiryInput />
       {inquiryList.map((inquiryListItem) => (
@@ -69,7 +69,7 @@ const DetailInquiry = () => {
         />
       ))}
       <Pagination count={totalPages} />
-    </>
+    </div>
   );
 };
 

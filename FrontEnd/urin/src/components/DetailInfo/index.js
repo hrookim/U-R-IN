@@ -26,16 +26,14 @@ const DetailInfo = () => {
       </div>
       <div>
         <h2>멤버</h2>
-        {participants.map((participant) => {
-          return (
-            <>
-              <Avatar>{participant.nickname}</Avatar>
-              <div>{participant.nickname}</div>
-              {/* 왕관모양 */}
-              {/* 강퇴버튼 */}
-            </>
-          );
-        })}
+        {participants.map((participant) => (
+          <div key={participant.id}>
+            <Avatar>{participant.nickname}</Avatar>
+            <span>{participant.nickname}</span>
+            {/* 왕관모양 */}
+            {/* 강퇴버튼 */}
+          </div>
+        ))}
       </div>
     </div>
   );
