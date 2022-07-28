@@ -9,13 +9,15 @@ const DetailFeed = () => {
     totalPages: 1,
     feedList: [
       {
-        feedId: 3,
-        contents: "스터디 방식이 어떻게 되나요?",
-        writerId: 2,
-        writer: "삼성가고싶당",
-        createdAt: "2022-07-27 10:00:00",
-        isDeleted: false,
-        child: [
+        parent: {
+          feedId: 3,
+          contents: "스터디 방식이 어떻게 되나요?",
+          writerId: 2,
+          writer: "삼성가고싶당",
+          createdAt: "2022-07-27 10:00:00",
+          isDeleted: false,
+        },
+        children: [
           {
             feedId: 4,
             contents: "주 1회 진행 예정입니다.",
@@ -35,13 +37,15 @@ const DetailFeed = () => {
         ],
       },
       {
-        feedId: 1,
-        contents: "안녕하세요?",
-        writerId: 2,
-        writer: "삼성가고싶당",
-        createdAt: "2022-07-27 09:00:00",
-        isDeleted: false,
-        child: [
+        parent: {
+          feedId: 1,
+          contents: "안녕하세요?",
+          writerId: 2,
+          writer: "삼성가고싶당",
+          createdAt: "2022-07-27 09:00:00",
+          isDeleted: false,
+        },
+        children: [
           {
             feedId: 2,
             contents: "안녕하세요",
@@ -58,9 +62,11 @@ const DetailFeed = () => {
   const [totalPages, setTotalPages] = useState(data.totalPages);
   const [feedList, setFeedList] = useState(data.feedList);
 
+  // TODO: 로그인한 유저가 스터디 멤버인지 확인하는 로직 추가
+
   return (
     <div>
-      <p>궁금한 점을 방장에게 질문해보세요!</p>
+      <p>피드입니다!</p>
       <DetailFeedInput />
       {feedList.map((feedListItem) => (
         <DetailFeedListItem

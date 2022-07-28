@@ -4,12 +4,10 @@ const DetailFeedInput = () => {
   const [value, setValue] = useState("");
   const onKeyUp = (event) => {
     setValue(event.target.value);
-    // console.log(value);
   };
 
   const onSubmit = (event) => {
     event.preventDefault();
-    // console.log(event);
     // TODO:value 제출
     setValue("");
   };
@@ -20,6 +18,7 @@ const DetailFeedInput = () => {
         <input onKeyUp={onKeyUp} />
         <button type="submit">제출</button>
       </form>
+      <hr />
     </div>
   );
 };

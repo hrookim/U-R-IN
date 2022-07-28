@@ -7,8 +7,8 @@ import FeedCommentInput from "../FeedCommentInput";
 const DetailFeedListItem = ({ feedListItem }) => {
   return (
     <div>
-      <FeedParentCommentItem feedListItem={feedListItem} />
-      {feedListItem.child.map((childListItem) => (
+      <FeedParentCommentItem parentItem={feedListItem.parent} />
+      {feedListItem.children.map((childListItem) => (
         <FeedChildCommentItem
           key={childListItem.feedId}
           childListItem={childListItem}

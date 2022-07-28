@@ -1,10 +1,13 @@
 import React from "react";
+import { Avatar } from "@mui/material";
 
-const FeedParentCommentItem = ({ feedListItem }) => {
+const FeedParentCommentItem = ({ parentItem }) => {
   return (
     <div>
-      <p>{feedListItem.writer}</p>
-      <p>{feedListItem.contents}</p>
+      <Avatar>{parentItem.writer[0]}</Avatar>
+      <p>{parentItem.writer}</p>
+      <p>{parentItem.contents}</p>
+      <hr />
     </div>
   );
 };
