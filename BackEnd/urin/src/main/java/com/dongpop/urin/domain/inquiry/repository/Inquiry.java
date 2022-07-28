@@ -1,9 +1,12 @@
-package com.dongpop.urin.domain.feed.repository;
+package com.dongpop.urin.domain.inquiry.repository;
 
 import com.dongpop.urin.domain.common.entity.BaseTimeEntity;
 import com.dongpop.urin.domain.member.repository.Member;
 import com.dongpop.urin.domain.study.repository.Study;
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -12,9 +15,10 @@ import java.util.List;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
-@Table(name = "feeds")
-public class Feed extends BaseTimeEntity {
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+@Table(name = "inquiries")
+public class Inquiry extends BaseTimeEntity {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -27,33 +31,33 @@ public class Feed extends BaseTimeEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "parent_id")
-    private Feed parent;
+    private Inquiry parent;
 
     @OneToMany(mappedBy = "parent")
-    private List<Feed> children = new ArrayList<>();
+    private List<Inquiry> children = new ArrayList<>();
 
     private String contents;
     private boolean isDeleted;
 
     @Builder
-    public Feed(Member writer, Study study, String contents) {
+    public Inquiry(Member writer, Study study, String contents) {
         this.writer = writer;
         this.study = study;
         this.contents = contents;
     }
 
-    public void addParentFeed(Feed parent) {
+    public void addParentInquiry(Inquiry parent) {
         if (parent != null) {
             parent.getChildren().add(this);
         }
         this.parent = parent;
     }
 
-    public void updateFeedData(String contents) {
+    public void updateInquiryData(String contents) {
         this.contents = contents;
     }
 
-    public void deleteFeed() {
+    public void deleteInquiry() {
         this.isDeleted = true;
     }
 }
