@@ -7,8 +7,9 @@ import InquiryCommentInput from "../InquiryCommentInput";
 const DetailInquiryListItem = ({ inquiryListItem }) => {
   return (
     <div>
-      <InquiryParentCommentItem inquiryListItem={inquiryListItem} />
-      {inquiryListItem.child.map((childListItem) => (
+      <InquiryParentCommentItem parentItem={inquiryListItem.parent} />
+      <hr />
+      {inquiryListItem.children.map((childListItem) => (
         <InquiryChildCommentItem
           key={childListItem.inquiryId}
           childListItem={childListItem}

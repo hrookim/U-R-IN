@@ -1,10 +1,12 @@
 import React from "react";
+import { Avatar } from "@mui/material";
 
-const InquiryParentCommentItem = ({ inquiryListItem }) => {
+const InquiryParentCommentItem = ({ parentItem }) => {
   return (
     <div>
-      <p>{inquiryListItem.writer}</p>
-      <p>{inquiryListItem.contents}</p>
+      <Avatar>{parentItem.writer[0]}</Avatar>
+      <p>{parentItem.writer}</p>
+      <p>{parentItem.contents}</p>
     </div>
   );
 };

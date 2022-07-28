@@ -9,13 +9,15 @@ const DetailInquiry = () => {
     totalPages: 1,
     inquiryList: [
       {
-        inquiryId: 3,
-        contents: "스터디 방식이 어떻게 되나요?",
-        writerId: 2,
-        writer: "삼성가고싶당",
-        createdAt: "2022-07-27 10:00:00",
-        isDeleted: false,
-        child: [
+        parent: {
+          inquiryId: 3,
+          contents: "스터디 방식이 어떻게 되나요?",
+          writerId: 2,
+          writer: "삼성가고싶당",
+          createdAt: "2022-07-27 10:00:00",
+          isDeleted: false,
+        },
+        children: [
           {
             inquiryId: 4,
             contents: "주 1회 진행 예정입니다.",
@@ -35,13 +37,15 @@ const DetailInquiry = () => {
         ],
       },
       {
-        inquiryId: 1,
-        contents: "안녕하세요?",
-        writerId: 2,
-        writer: "삼성가고싶당",
-        createdAt: "2022-07-27 09:00:00",
-        isDeleted: false,
-        child: [
+        parent: {
+          inquiryId: 1,
+          contents: "안녕하세요?",
+          writerId: 2,
+          writer: "삼성가고싶당",
+          createdAt: "2022-07-27 09:00:00",
+          isDeleted: false,
+        },
+        children: [
           {
             inquiryId: 2,
             contents: "안녕하세요",

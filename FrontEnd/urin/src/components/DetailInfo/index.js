@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import { Avatar, Typography } from "@mui/material";
+import { faCrown } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 const DetailInfo = () => {
   const [contents, setContents] = useState(
@@ -28,10 +30,12 @@ const DetailInfo = () => {
         <h2>멤버</h2>
         {participants.map((participant) => (
           <div key={participant.id}>
-            <Avatar>{participant.nickname}</Avatar>
-            <span>{participant.nickname}</span>
-            {/* 왕관모양 */}
-            {/* 강퇴버튼 */}
+            <Avatar>{participant.nickname[0]}</Avatar>
+            <span>
+              {participant.nickname}
+              {participant.isLeader && <FontAwesomeIcon icon={faCrown} />}
+            </span>
+            {/* TODO: 강퇴버튼 - 로그인 한 유저가 방장이라면 강퇴기능 추가 */}
           </div>
         ))}
       </div>
