@@ -118,9 +118,17 @@
 }
 
 .color-third {
-  color: #01208F
+  color: #01208F;
 }
 
 .color-accent {
-  color:#FFB802
+  color: #FFB802;
+}
+
+.color-deemphasis {
+  color: #d3d3d3; 
+}
+
+.color-disabled {
+  color: #4d4d4d;
 }
