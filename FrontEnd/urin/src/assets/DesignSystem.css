@@ -132,3 +132,43 @@
 .color-disabled {
   color: #4d4d4d;
 }
+
+/* Background Color System */
+
+.bgcolor-main {
+  background-color: #0037FA;
+}
+
+.bgcolor-sub {
+  background-color: #02BDFF;
+}
+
+.bgcolor-third {
+  background-color: #01208F;
+}
+
+.bgcolor-accent {
+  background-color: #FFB802;
+}
+
+.bgcolor-deemphasis {
+  background-color: #d3d3d3; 
+}
+
+.bgcolor-disabled {
+  background-color: #4d4d4d;
+}
+
+/* Button */
+
+.btn-radius {
+  border-radius: 20px;
+}
+
+.btn-hover:hover {
+  background-color: #FFB802;
+}
+
+.btn-text-shadow {
+  text-shadow: 0px 0px 5px rgba(0, 0, 0, 0.4);
+}
