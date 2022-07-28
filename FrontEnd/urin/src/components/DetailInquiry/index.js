@@ -68,7 +68,7 @@ const DetailInquiry = () => {
       <DetailInquiryInput />
       {inquiryList.map((inquiryListItem) => (
         <DetailInquiryListItem
-          key={inquiryListItem.inquiryId}
+          key={inquiryListItem.parent.inquiryId}
           inquiryListItem={inquiryListItem}
         />
       ))}

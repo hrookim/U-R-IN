@@ -70,7 +70,7 @@ const DetailFeed = () => {
       <DetailFeedInput />
       {feedList.map((feedListItem) => (
         <DetailFeedListItem
-          key={feedListItem.feedId}
+          key={feedListItem.parent.feedId}
           feedListItem={feedListItem}
         />
       ))}
