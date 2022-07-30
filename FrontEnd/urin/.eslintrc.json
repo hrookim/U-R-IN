@@ -30,6 +30,7 @@
         "react/jsx-one-expression-per-line": 0,
         "react-hooks/exhaustive-deps": 0,
         "no-unused-vars": 1,
-        "eqeqeq": "off"
+        "eqeqeq": "off",
+        "import/no-unresolved": "off"
     }
 }
