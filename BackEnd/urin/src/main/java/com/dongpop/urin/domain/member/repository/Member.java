@@ -17,16 +17,28 @@ public class Member extends BaseTimeEntity {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    private String username;
+    private String identifier;
+    private String memberName;
     private String nickname;
     private String password;
     private String role;
+    private String email;
+    private String profileImage;
+
+    private String refreshToken;
 
     @Builder
-    public Member(String username, String nickname, String password, String role) {
-        this.username = username;
+    public Member(String identifier, String memberName, String nickname, String password, String role, String email, String profileImage) {
+        this.identifier = identifier;
+        this.memberName = memberName;
         this.nickname = nickname;
         this.password = password;
+        this.email = email;
         this.role = role;
+        this.profileImage = profileImage;
+    }
+
+    public void saveRefreshToken(String refreshToken) {
+        this.refreshToken = refreshToken;
     }
 }

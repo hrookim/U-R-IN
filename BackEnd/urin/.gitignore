@@ -38,3 +38,4 @@ out/
 
 ### config file ###
 application-server.yml
+application-private.yml

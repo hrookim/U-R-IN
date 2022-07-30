@@ -1,0 +1,31 @@
+token:
+  secret: secret1secret1
+  access:
+    name: Access-Token
+    expired-time: 600
+    expired-time-milli: 600000
+  refresh:
+    name: Refresh-Token
+    expired-time: 1209600
+    expired-time-milli: 1209600000
+
+spring:
+  security:
+    oauth2:
+      client:
+        registration:
+          kakao:
+            client-id: f7f0ef574cef898392f2817ec06357c5
+            redirect-uri: http://localhost:8090/login/oauth2/code/kakao
+            authorization-grant-type: authorization_code
+            client-authentication-method: POST
+            client-name: Kakao
+            scope:
+              - profile_nickname
+              - account_email
+        provider:
+          kakao:
+            authorization-uri: https://kauth.kakao.com/oauth/authorize
+            token-uri: https://kauth.kakao.com/oauth/token
+            user-info-uri: https://kapi.kakao.com/v2/user/me
+            user-name-attribute: id
