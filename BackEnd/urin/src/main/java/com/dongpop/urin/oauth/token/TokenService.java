@@ -5,13 +5,16 @@ import com.dongpop.urin.domain.member.repository.MemberRepository;
 import io.jsonwebtoken.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import javax.transaction.Transactional;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.concurrent.ConcurrentHashMap;
 
 
 @Slf4j
@@ -20,6 +23,25 @@ import java.util.NoSuchElementException;
 public class TokenService {
     private final MemberRepository memberRepository;
     private final TokenProperties tokenProperties;
+    private final Map<String, Integer> blackList = new ConcurrentHashMap<>();
+
+    @Scheduled(fixedRate = 600000)
+    private void clearBlackList() {
+        blackList.forEach((token, id) -> {
+            if (!validateToken(token))
+                blackList.remove(token);
+        });
+    }
+
+    public void setBlackList(String accessToken, Integer memberId) {
+        if (!StringUtils.hasText(accessToken) || memberId == null || memberId == 0)
+            return;
+        blackList.put(accessToken, memberId);
+    }
+
+    public boolean isInBlackList(String accessToken) {
+        return blackList.get(accessToken) == null ? false : true;
+    }
 
     @Transactional
     public TokenSet issueNewToken(String identifier) {
@@ -60,7 +82,8 @@ public class TokenService {
     public boolean validateToken(String token) {
         try {
             Jwts.parser().setSigningKey(tokenProperties.getSecret()).parseClaimsJws(token);
-            return true;
+            if (!isInBlackList(token))
+                return true;
         } catch (SecurityException | MalformedJwtException e) {
             log.info("JWT Signature is wrong.");
         }  catch (UnsupportedJwtException e) {
@@ -87,7 +110,22 @@ public class TokenService {
             log.info("JWT Token is wrong.");
         } catch (ExpiredJwtException e) {
             log.info("JWT Token is Expired");
-            throw e;
+        }
+        return 0;
+    }
+
+    public Claims getClaimsInToken(String token) {
+        try {
+            return Jwts.parser().setSigningKey(tokenProperties.getSecret())
+                    .parseClaimsJws(token).getBody();
+        } catch (SecurityException | MalformedJwtException e) {
+            log.info("JWT Signature is wrong.");
+        }  catch (UnsupportedJwtException e) {
+            log.info("JWT Token is unsupported.");
+        } catch (IllegalArgumentException e) {
+            log.info("JWT Token is wrong.");
+        } catch (ExpiredJwtException e) {
+            log.info("JWT Token is Expired");
         }
         return null;
     }

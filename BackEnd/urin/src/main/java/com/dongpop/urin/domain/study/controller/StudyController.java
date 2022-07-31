@@ -48,6 +48,7 @@ public class StudyController {
                                                     @AuthenticationPrincipal MemberPrincipal memberPrincipal) {
         log.info("[REQUEST] >>>>> Create Study / studyData : {}", studyData);
         Member member = memberPrincipal.getMember();
+        log.info("memberId = {}, memberNickName = {}", member.getId(), member.getNickname());
         StudyIdDto studyIdDto = studyService.generateStudy(studyData, member);
         URI location = URI.create(ROOTURI + studyIdDto.getStudyId());
 
@@ -67,7 +68,6 @@ public class StudyController {
     @PostMapping("/{studyId}/participants")
     public ResponseEntity<StudyJoinDto> joinStudy(@PathVariable int studyId,
                                                   @AuthenticationPrincipal MemberPrincipal memberPrincipal) {
-        //TODO: 회원 번호 뽑아오기
         Member member = memberPrincipal.getMember();
         StudyJoinDto studyJoinDto = studyService.joinStudy(member, studyId);
         URI location = URI.create(ROOTURI + studyJoinDto.getParticipantId());
@@ -79,7 +79,6 @@ public class StudyController {
     @DeleteMapping("/{studyId}/participants/{participantsId}")
     public ResponseEntity<Void> removeStudyMember(@PathVariable int studyId, @PathVariable int participantsId,
                                                   @AuthenticationPrincipal MemberPrincipal memberPrincipal) {
-        //TODO: 회원 번호 뽑아오기
         Member member = memberPrincipal.getMember();
         studyService.removeStudyMember(member, studyId, participantsId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
