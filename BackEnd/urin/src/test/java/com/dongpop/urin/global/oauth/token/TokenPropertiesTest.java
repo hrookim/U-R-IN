@@ -1,5 +1,6 @@
 package com.dongpop.urin.global.oauth.token;
 
+import com.dongpop.urin.oauth.token.TokenProperties;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

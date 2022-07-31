@@ -1,12 +1,12 @@
 package com.dongpop.urin.global.config.security;
 
 import com.dongpop.urin.domain.member.repository.MemberRepository;
-import com.dongpop.urin.global.oauth.exception.RestAuthenticationEntryPoint;
-import com.dongpop.urin.global.oauth.filter.TokenAuthenticationFilter;
-import com.dongpop.urin.global.oauth.handler.OAuth2AuthenticationFailureHandler;
-import com.dongpop.urin.global.oauth.handler.OAuth2AuthenticationSuccessHandler;
-import com.dongpop.urin.global.oauth.repository.HttpCookieOAuth2AuthorizationRequestRepository;
-import com.dongpop.urin.global.oauth.service.CustomOAuth2UserService;
+import com.dongpop.urin.oauth.exception.RestAuthenticationEntryPoint;
+import com.dongpop.urin.oauth.filter.TokenAuthenticationFilter;
+import com.dongpop.urin.oauth.handler.OAuth2AuthenticationFailureHandler;
+import com.dongpop.urin.oauth.handler.OAuth2AuthenticationSuccessHandler;
+import com.dongpop.urin.oauth.repository.HttpCookieOAuth2AuthorizationRequestRepository;
+import com.dongpop.urin.oauth.service.CustomOAuth2UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;

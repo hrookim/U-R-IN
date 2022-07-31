@@ -32,39 +32,4 @@ public class UrinApplication {
 		SpringApplication.run(UrinApplication.class, args);
 	}
 
-	@Bean
-	CommandLineRunner run(StudyService studyService,
-						  MemberService memberService,
-						  FeedService feedService,
-						  InquiryService inquiryService) {
-		return args -> {
-			for (int i = 0; i < 100; i++) {
-				Member curMember = Member.builder()
-						.nickname("이름" + i)
-						.password("pass" + i)
-						.role("user")
-						.build();
-				memberService.signUp(curMember);
-			}
-
-			for (int i = 0; i < 100; i++) {
-				StudyDataDto studyDataDto = new
-						StudyDataDto("제목" + i, "공지" + i,
-						LocalDate.parse("2022-12-31", DateTimeFormatter.ISO_DATE), 6);
-				studyService.generateStudy(studyDataDto, i % 10 + 1);
-			}
-
-			for (int i = 11; i <= 100; i++) {
-				studyService.joinStudy(i, i % 20 + 1);
-			}
-
-			for (int i = 1; i <= 100; i++) {
-				int parent = 0;
-				if (i > 10) {
-					parent = i % 10;
-				}
-				feedService.writeFeed(i, i % 10 + 1, new FeedDataDto(parent, "댓글달기"+i));
-			}
-		};
-	}
 }

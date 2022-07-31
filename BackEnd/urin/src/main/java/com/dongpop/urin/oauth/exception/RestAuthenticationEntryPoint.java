@@ -1,4 +1,4 @@
-package com.dongpop.urin.global.oauth.exception;
+package com.dongpop.urin.oauth.exception;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.AuthenticationException;

@@ -1,7 +1,7 @@
-package com.dongpop.urin.global.oauth.filter;
+package com.dongpop.urin.oauth.filter;
 
-import com.dongpop.urin.global.oauth.service.CustomUserDetailsService;
-import com.dongpop.urin.global.oauth.token.TokenService;
+import com.dongpop.urin.oauth.service.CustomUserDetailsService;
+import com.dongpop.urin.oauth.token.TokenService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;

@@ -1,7 +1,7 @@
-package com.dongpop.urin.global.oauth.handler;
+package com.dongpop.urin.oauth.handler;
 
-import com.dongpop.urin.global.oauth.repository.HttpCookieOAuth2AuthorizationRequestRepository;
-import com.dongpop.urin.global.oauth.util.CookieUtils;
+import com.dongpop.urin.oauth.repository.HttpCookieOAuth2AuthorizationRequestRepository;
+import com.dongpop.urin.oauth.util.CookieUtils;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.AuthenticationException;
@@ -15,8 +15,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-import static com.dongpop.urin.global.oauth.repository.HttpCookieOAuth2AuthorizationRequestRepository.REDIRECT_URI_PARAM_COOKIE_NAME;
-
 @RequiredArgsConstructor
 @Component
 public class OAuth2AuthenticationFailureHandler extends SimpleUrlAuthenticationFailureHandler {
@@ -27,7 +25,7 @@ public class OAuth2AuthenticationFailureHandler extends SimpleUrlAuthenticationF
                                         HttpServletResponse response,
                                         AuthenticationException exception) throws IOException, ServletException {
         //TODO: 프론트와 로그인 실패 시 로직 정해서 수정하기
-        String targetUrl = CookieUtils.getCookie(request, REDIRECT_URI_PARAM_COOKIE_NAME)
+        String targetUrl = CookieUtils.getCookie(request, HttpCookieOAuth2AuthorizationRequestRepository.REDIRECT_URI_PARAM_COOKIE_NAME)
                 .map(Cookie::getValue)
                 .orElse(("/"));
         targetUrl = UriComponentsBuilder.fromUriString(targetUrl)

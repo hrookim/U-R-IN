@@ -1,10 +1,10 @@
-package com.dongpop.urin.global.oauth.handler;
+package com.dongpop.urin.oauth.handler;
 
-import com.dongpop.urin.global.oauth.repository.HttpCookieOAuth2AuthorizationRequestRepository;
-import com.dongpop.urin.global.oauth.token.TokenProperties;
-import com.dongpop.urin.global.oauth.token.TokenService;
-import com.dongpop.urin.global.oauth.token.TokenSet;
-import com.dongpop.urin.global.oauth.util.CookieUtils;
+import com.dongpop.urin.oauth.repository.HttpCookieOAuth2AuthorizationRequestRepository;
+import com.dongpop.urin.oauth.token.TokenProperties;
+import com.dongpop.urin.oauth.token.TokenService;
+import com.dongpop.urin.oauth.token.TokenSet;
+import com.dongpop.urin.oauth.util.CookieUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,7 +23,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-import static com.dongpop.urin.global.oauth.repository.HttpCookieOAuth2AuthorizationRequestRepository.REDIRECT_URI_PARAM_COOKIE_NAME;
+import static com.dongpop.urin.oauth.repository.HttpCookieOAuth2AuthorizationRequestRepository.REDIRECT_URI_PARAM_COOKIE_NAME;
 
 @Slf4j
 @RequiredArgsConstructor

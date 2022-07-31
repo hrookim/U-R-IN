@@ -1,4 +1,4 @@
-package com.dongpop.urin.global.oauth.token;
+package com.dongpop.urin.oauth.token;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

@@ -8,15 +8,12 @@ import com.dongpop.urin.domain.feed.dto.response.FeedListDto;
 import com.dongpop.urin.domain.feed.repository.Feed;
 import com.dongpop.urin.domain.feed.repository.FeedRepository;
 import com.dongpop.urin.domain.member.repository.Member;
-import com.dongpop.urin.domain.member.repository.MemberRepository;
 import com.dongpop.urin.domain.study.repository.Study;
 import com.dongpop.urin.domain.study.repository.StudyRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.*;
 
 import javax.transaction.Transactional;
 import java.time.format.DateTimeFormatter;
@@ -33,7 +30,6 @@ public class FeedService {
 
     private final FeedRepository feedRepository;
     private final StudyRepository studyRepository;
-    private final MemberRepository memberRepository;
 
     @Transactional
     public FeedListDto getStudyFeeds(int studyId, Pageable pageable) {
@@ -70,12 +66,9 @@ public class FeedService {
     }
 
     @Transactional
-    public void writeFeed(int writerId, int studyId, FeedDataDto feedDataDto) {
+    public void writeFeed(Member writer, int studyId, FeedDataDto feedDataDto) {
         Study study = studyRepository.findById(studyId)
                 .orElseThrow(() -> new NoSuchElementException("해당 스터디가 존재하지 않습니다."));
-        Member writer = memberRepository.findById(writerId)
-                .orElseThrow(() -> new NoSuchElementException("해당 회원이 존재하지 않습니다."));
-
         Feed newFeed = Feed.builder()
                 .contents(feedDataDto.getContents())
                 .writer(writer)
@@ -89,22 +82,20 @@ public class FeedService {
     }
 
     @Transactional
-    public void updateFeed( int memberId, int studyId, int feedId, String contents) {
-        //회원 번호로 권한만 확인 후 바로 업데이트
-        Feed feed = checkWriterAuthorizaion(memberId, feedId);
+    public void updateFeed(Member member, int studyId, int feedId, String contents) {
+        Feed feed = checkWriterAuthorizaion(member, feedId);
         feed.updateFeedData(contents);
     }
 
     @Transactional
-    public void deleteFeed(int memberId, int studyId, int feedId) {
-        Feed feed = checkWriterAuthorizaion(memberId, feedId);
+    public void deleteFeed(Member member, int studyId, int feedId) {
+        Feed feed = checkWriterAuthorizaion(member, feedId);
         feed.deleteFeed();
     }
-    private Feed checkWriterAuthorizaion(int memberId, int feedId) {
-        Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new NoSuchElementException("해당 회원이 존재하지 않습니다."));
+    private Feed checkWriterAuthorizaion(Member member, int feedId) {
         Feed feed = feedRepository.findById(feedId)
                 .orElseThrow(() -> new NoSuchElementException("해당 피드가 존재하지 않습니다."));
+
         if (member.getId() != feed.getWriter().getId()) {
             //TODO: 401에러 던지기
             throw new RuntimeException("권한이 없습니다.");

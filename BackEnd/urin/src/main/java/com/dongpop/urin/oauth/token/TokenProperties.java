@@ -1,4 +1,4 @@
-package com.dongpop.urin.global.oauth.token;
+package com.dongpop.urin.oauth.token;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -8,7 +8,7 @@ import org.springframework.boot.context.properties.ConstructorBinding;
 @Getter
 @RequiredArgsConstructor
 @ConstructorBinding
-@ConfigurationProperties(value = "token", ignoreInvalidFields = true) //TODO: 바인딩 테스트
+@ConfigurationProperties(value = "token", ignoreInvalidFields = true)
 public final class TokenProperties {
     private final String secret;
     private final Access access;

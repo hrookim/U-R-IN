@@ -92,11 +92,8 @@ public class StudyService {
      * 스터디 생성
      */
     @Transactional
-    public StudyIdDto generateStudy(StudyDataDto studyData, int memberId) {
-        log.info("memberId : {}, studyData : {}", memberId, studyData);
-        Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new NoSuchElementException("존재하지 않는 회원입니다."));
-
+    public StudyIdDto generateStudy(StudyDataDto studyData, Member member) {
+        log.info("memberId : {}, studyData : {}", member.getId(), studyData);
         Study study = studyRepository.save(Study.builder()
                 .title(studyData.getTitle())
                 .notice(studyData.getNotice())
@@ -118,11 +115,13 @@ public class StudyService {
      * 스터디 정보 수정
      */
     @Transactional
-    public StudyIdDto editStudy(int studyId, StudyDataDto studyData) {
-        //TODO: 해당 회원이 수정 권한이 있는지 검증
+    public StudyIdDto editStudy(Member member, int studyId, StudyDataDto studyData) {
         Study study = studyRepository.findById(studyId)
                 .orElseThrow(() -> new NoSuchElementException("해당 스터디는 존재하지 않습니다."));
 
+        if (study.getStudyLeader().getId() == member.getId()) {
+            throw new RuntimeException("수정 권한이 없습니다.");
+        }
         if (study.getParticipants().size() > studyData.getMemberCapacity()) {
             //TODO : Exception 정하기
             throw new RuntimeException("현재 인원보다 적은 수용인원은 설정 불가합니다.");
@@ -140,9 +139,7 @@ public class StudyService {
      * 스터디 가입
      */
     @Transactional
-    public StudyJoinDto joinStudy(int memberId, int studyId) {
-        Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new NoSuchElementException("없는 회원입니다."));
+    public StudyJoinDto joinStudy(Member member, int studyId) {
         Study study = studyRepository.findById(studyId)
                 .orElseThrow(() -> new NoSuchElementException("해당 스터디가 존재하지 않습니다."));
 
@@ -169,15 +166,13 @@ public class StudyService {
      * - 방장이 다른 사람을 강퇴
      */
     @Transactional
-    public void removeStudyMember(int memberId, int studyId, int participantsId) {
-        Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new NoSuchElementException("없는 회원입니다."));
+    public void removeStudyMember(Member member, int studyId, int participantsId) {
         Study study = studyRepository.findById(studyId)
                 .orElseThrow(() -> new NoSuchElementException("해당 스터디가 존재하지 않습니다."));
         Participant deleteParticipant = participantRepository.findById(participantsId)
                 .orElseThrow(() -> new NoSuchElementException("해당 참가자는 없습니다."));
 
-        if (isPossible(deleteParticipant, memberId, studyId)) {
+        if (isPossible(deleteParticipant, member.getId(), studyId)) {
             deleteStudyParticipant(study, deleteParticipant);
         }
         //TODO: else인 경우는 삭제가 불가능한 경우 -> Exception 던져주기
@@ -187,10 +182,14 @@ public class StudyService {
      * 스터디 상태 변경
      */
     @Transactional
-    public StudyStatusDto changeStudyStatus(int studyId, StudyStatus status) {
+    public StudyStatusDto changeStudyStatus(Member member, int studyId, StudyStatus status) {
         Study study = studyRepository.findById(studyId)
                 .orElseThrow(() -> new NoSuchElementException("해당 스터디가 존재하지 않습니다."));
 
+        if (status.name().equals(StudyStatus.TERMINATED.name()) &&
+                study.getStudyLeader().getId() != member.getId()) {
+            throw new RuntimeException("스터디 종료는 방장만 가능합니다.");
+        }
         //TODO: 상태변경 가능한 지 체크
         study.updateStatus(status);
         return new StudyStatusDto(studyId, status.name());

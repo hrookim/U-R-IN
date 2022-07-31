@@ -1,4 +1,4 @@
-package com.dongpop.urin.global.oauth.service;
+package com.dongpop.urin.oauth.service;
 
 import com.dongpop.urin.domain.member.repository.Member;
 import com.dongpop.urin.domain.member.repository.MemberRepository;

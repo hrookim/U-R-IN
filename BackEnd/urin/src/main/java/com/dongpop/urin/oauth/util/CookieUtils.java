@@ -1,4 +1,4 @@
-package com.dongpop.urin.global.oauth.util;
+package com.dongpop.urin.oauth.util;
 
 import org.springframework.util.SerializationUtils;
 
