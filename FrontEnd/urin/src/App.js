@@ -25,11 +25,11 @@ const App = () => {
         <Route path="/study/create" element={<StudyCreationForm />} />
         <Route path="/study/:studyId" element={<StudyDetail />} />
         <Route path="/study/:studyId/edit" element={<StudyUpdateForm />} />
-        <Route path="/mypage/" element={<MyPage />} />
+        {/* <Route path="/mypage/" element={<MyPage />} />
         <Route
           path="/study/:studyId/meeting/:meetingId"
           element={<Meeting />}
-        />
+        /> */}
       </Routes>
     </Router>
   );
