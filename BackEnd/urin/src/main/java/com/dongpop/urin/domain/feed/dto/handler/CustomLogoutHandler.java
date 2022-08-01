@@ -1,4 +1,4 @@
-package com.dongpop.urin.domain.feed.handler;
+package com.dongpop.urin.domain.feed.dto.handler;
 
 import com.dongpop.urin.domain.member.repository.Member;
 import com.dongpop.urin.domain.member.repository.MemberRepository;

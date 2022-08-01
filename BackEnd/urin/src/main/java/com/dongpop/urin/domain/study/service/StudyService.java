@@ -10,6 +10,8 @@ import com.dongpop.urin.domain.study.dto.response.*;
 import com.dongpop.urin.domain.study.repository.Study;
 import com.dongpop.urin.domain.study.repository.StudyRepository;
 import com.dongpop.urin.domain.study.repository.StudyStatus;
+import com.dongpop.urin.global.error.errorcode.StudyErrorCode;
+import com.dongpop.urin.global.error.exception.CustomException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -23,6 +25,8 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
+
+import static com.dongpop.urin.global.error.errorcode.StudyErrorCode.*;
 
 
 @Slf4j
@@ -120,14 +124,13 @@ public class StudyService {
                 .orElseThrow(() -> new NoSuchElementException("해당 스터디는 존재하지 않습니다."));
 
         if (study.getStudyLeader().getId() == member.getId()) {
-            throw new RuntimeException("수정 권한이 없습니다.");
+            throw new CustomException(POSSIBLE_ONLY_LEADER);
         }
         if (study.getParticipants().size() > studyData.getMemberCapacity()) {
-            //TODO : Exception 정하기
-            throw new RuntimeException("현재 인원보다 적은 수용인원은 설정 불가합니다.");
+            throw new CustomException(IMPOSSIBLE_SET_MEMBER_CAPACITY);
         }
         if (study.getStatus().equals(StudyStatus.TERMINATED)) {
-            throw new RuntimeException("스터디 종료 상태에서는 정보를 변경할 수 없습니다.");
+            throw new CustomException(CAN_NOT_EDITING_TERMINATED_STUDY);
         }
 
         study.updateStudyInfo(studyData.getTitle(), studyData.getNotice(),
@@ -144,8 +147,7 @@ public class StudyService {
                 .orElseThrow(() -> new NoSuchElementException("해당 스터디가 존재하지 않습니다."));
 
         if (study.getParticipants().size() >= study.getMemberCapacity()) {
-            //TODO: Exception정하기
-            throw new RuntimeException("스터디 허용 인원을 초과합니다.");
+            throw new CustomException(STUDY_IS_FULL);
         }
 
         if (study.getParticipants().size() + 1 == study.getMemberCapacity()) {
@@ -174,8 +176,9 @@ public class StudyService {
 
         if (isPossible(deleteParticipant, member.getId(), studyId)) {
             deleteStudyParticipant(study, deleteParticipant);
+            return;
         }
-        //TODO: else인 경우는 삭제가 불가능한 경우 -> Exception 던져주기
+        //TODO: 불가능한 경우에 따라 Exception이 달라짐 -> 수정하기
     }
 
     /**
@@ -188,7 +191,7 @@ public class StudyService {
 
         if (status.name().equals(StudyStatus.TERMINATED.name()) &&
                 study.getStudyLeader().getId() != member.getId()) {
-            throw new RuntimeException("스터디 종료는 방장만 가능합니다.");
+            throw new CustomException(POSSIBLE_ONLY_LEADER);
         }
         //TODO: 상태변경 가능한 지 체크
         study.updateStatus(status);
