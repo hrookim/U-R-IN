@@ -1,6 +1,8 @@
 spring:
   profiles:
     active: server
+    include: private
+
 
 logging.level:
   org.hibernate.SQL: debug

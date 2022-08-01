@@ -8,7 +8,6 @@ import com.dongpop.urin.domain.inquiry.dto.response.InquiryListDto;
 import com.dongpop.urin.domain.inquiry.repository.Inquiry;
 import com.dongpop.urin.domain.inquiry.repository.InquiryRepository;
 import com.dongpop.urin.domain.member.repository.Member;
-import com.dongpop.urin.domain.member.repository.MemberRepository;
 import com.dongpop.urin.domain.study.repository.Study;
 import com.dongpop.urin.domain.study.repository.StudyRepository;
 import lombok.RequiredArgsConstructor;
@@ -31,7 +30,6 @@ public class InquiryService {
 
     private final InquiryRepository inquiryRepository;
     private final StudyRepository studyRepository;
-    private final MemberRepository memberRepository;
 
     @Transactional
     public InquiryListDto getStudyInquiries(int studyId, Pageable pageable) {
@@ -68,12 +66,9 @@ public class InquiryService {
     }
 
     @Transactional
-    public void writeInquiry(int writerId, int studyId, InquiryDataDto inquiryDataDto) {
+    public void writeInquiry(Member writer, int studyId, InquiryDataDto inquiryDataDto) {
         Study study = studyRepository.findById(studyId)
                 .orElseThrow(() -> new NoSuchElementException("해당 스터디가 존재하지 않습니다."));
-        Member writer = memberRepository.findById(writerId)
-                .orElseThrow(() -> new NoSuchElementException("해당 회원이 존재하지 않습니다."));
-
         Inquiry newInquiry = Inquiry.builder()
                 .contents(inquiryDataDto.getContents())
                 .writer(writer)
@@ -87,21 +82,20 @@ public class InquiryService {
     }
 
     @Transactional
-    public void updateFeed(int memberId, int studyId, int inquiryId, String contents) {
-        Inquiry inquiry = checkWriterAuthorizaion(memberId, inquiryId);
+    public void updateFeed(Member member, int studyId, int inquiryId, String contents) {
+        Inquiry inquiry = checkWriterAuthorizaion(member, inquiryId);
         inquiry.updateInquiryData(contents);
     }
 
     @Transactional
-    public void deleteInquiry(int memberId, int studyId, int inquiryId) {
-        Inquiry inquiry = checkWriterAuthorizaion(memberId, inquiryId);
+    public void deleteInquiry(Member member, int studyId, int inquiryId) {
+        Inquiry inquiry = checkWriterAuthorizaion(member, inquiryId);
         inquiry.deleteInquiry();
     }
-    private Inquiry checkWriterAuthorizaion(int memberId, int inquiryId) {
-        Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new NoSuchElementException("해당 회원이 존재하지 않습니다."));
+    private Inquiry checkWriterAuthorizaion(Member member, int inquiryId) {
         Inquiry inquiry = inquiryRepository.findById(inquiryId)
                 .orElseThrow(() -> new NoSuchElementException("해당 질문이 존재하지 않습니다."));
+
         if (member.getId() != inquiry.getWriter().getId()) {
             //TODO: 401에러 던지기
             throw new RuntimeException("권한이 없습니다.");

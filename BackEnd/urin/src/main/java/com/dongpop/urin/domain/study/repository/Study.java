@@ -1,6 +1,7 @@
 package com.dongpop.urin.domain.study.repository;
 
 import com.dongpop.urin.domain.common.entity.BaseTimeEntity;
+import com.dongpop.urin.domain.member.repository.Member;
 import com.dongpop.urin.domain.participant.repository.Participant;
 import lombok.*;
 
@@ -8,6 +9,7 @@ import javax.persistence.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -38,6 +40,17 @@ public class Study extends BaseTimeEntity {
         this.memberCapacity = memberCapacity;
         this.expirationDate = expirationDate;
         this.isOnair = isOnair;
+    }
+
+    public Member getStudyLeader() {
+        Member member = null;
+        for (Participant participant : participants) {
+            if (participant.isLeader()) {
+                member = participant.getMember();
+                break;
+            }
+        }
+        return member;
     }
 
     //TODO : 유효성 검사 방법 확인하기

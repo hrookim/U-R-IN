@@ -4,10 +4,16 @@ import com.dongpop.urin.domain.feed.dto.request.FeedDataDto;
 import com.dongpop.urin.domain.feed.dto.request.FeedUpdateDto;
 import com.dongpop.urin.domain.feed.dto.response.FeedListDto;
 import com.dongpop.urin.domain.feed.service.FeedService;
+import com.dongpop.urin.domain.member.repository.Member;
+import com.dongpop.urin.oauth.model.MemberPrincipal;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
 
 @RequiredArgsConstructor
 @RestController
@@ -23,26 +29,31 @@ public class FeedController {
     }
 
     @PostMapping("/{studyId}/feeds")
-    public ResponseEntity<?> writeFeed(@PathVariable int studyId, @RequestBody FeedDataDto feedDataDto) {
-        int memberId = 1;
-        feedService.writeFeed(memberId, studyId, feedDataDto);
+    public ResponseEntity<?> writeFeed(@PathVariable int studyId,
+                                       @RequestBody FeedDataDto feedDataDto,
+                                       @AuthenticationPrincipal MemberPrincipal memberPrincipal) {
+        Member member = memberPrincipal.getMember();
+        feedService.writeFeed(member, studyId, feedDataDto);
 
         //TODO: Created로 변경
         return ResponseEntity.noContent().build();
     }
 
     @PutMapping("/{studyId}/feeds/{feedId}")
-    public ResponseEntity<?> updateFeed(@PathVariable int studyId, @PathVariable int feedId, @RequestBody FeedUpdateDto feedUpdateDto) {
-        int memberId = 1;
-        feedService.updateFeed(memberId, studyId, feedId, feedUpdateDto.getContents());
+    public ResponseEntity<?> updateFeed(@PathVariable int studyId, @PathVariable int feedId,
+                                        @RequestBody FeedUpdateDto feedUpdateDto,
+                                        @AuthenticationPrincipal MemberPrincipal memberPrincipal) {
+        Member member = memberPrincipal.getMember();
+        feedService.updateFeed(member, studyId, feedId, feedUpdateDto.getContents());
 
         return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping("/{studyId}/feeds/{feedId}")
-    public ResponseEntity<?> deleteFeed(@PathVariable int studyId, @PathVariable int feedId) {
-        int memberId = 1;
-        feedService.deleteFeed(memberId, studyId, feedId);
+    public ResponseEntity<?> deleteFeed(@PathVariable int studyId, @PathVariable int feedId,
+                                        @AuthenticationPrincipal MemberPrincipal memberPrincipal) {
+        Member member = memberPrincipal.getMember();
+        feedService.deleteFeed(member, studyId, feedId);
 
         return ResponseEntity.noContent().build();
     }
