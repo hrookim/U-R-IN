@@ -1,4 +1,4 @@
-package com.dongpop.urin.oauth.handler;
+package com.dongpop.urin.domain.feed.handler;
 
 import com.dongpop.urin.oauth.repository.HttpCookieOAuth2AuthorizationRequestRepository;
 import com.dongpop.urin.oauth.token.TokenProperties;

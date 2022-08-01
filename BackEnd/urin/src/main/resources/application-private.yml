@@ -2,8 +2,8 @@ token:
   secret: secret1secret1
   access:
     name: Access-Token
-    expired-time: 600
-    expired-time-milli: 600000
+    expired-time: 3600
+    expired-time-milli: 3600000
   refresh:
     name: Refresh-Token
     expired-time: 1209600

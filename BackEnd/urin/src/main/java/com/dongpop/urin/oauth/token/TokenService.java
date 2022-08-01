@@ -26,7 +26,7 @@ public class TokenService {
     private final Map<String, Integer> blackList = new ConcurrentHashMap<>();
 
     @Scheduled(fixedRate = 600000)
-    private void clearBlackList() {
+    protected void clearBlackList() {
         blackList.forEach((token, id) -> {
             if (!validateToken(token))
                 blackList.remove(token);
