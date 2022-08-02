@@ -33,7 +33,7 @@ const studySlice = createSlice({
         title: "string",
       },
     ],
-    totalPages: 0,
+    totalPages: 1,
   },
   reducers: {},
   extraReducers: {
