@@ -1,18 +1,17 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
 const Login = () => {
-  const [accessToken, setAccessToken] = useState("");
+  const token = new URLSearchParams(document.location.search).get("token");
+  // Params 없이 들어왔을 경우
+  if (token) {
+    localStorage.setItem("accessToken", token);
+  }
+
   const navigate = useNavigate();
-
   useEffect(() => {
-    // TODO: 이미 로그인 한 유저가 접근한 경우 메인페이지로 바로 redirect
-
-    // 로그인 과정
-    setAccessToken(URLSearchParams(Document.location.search).get("token"));
-    localStorage.setItem("accessToken", accessToken);
     navigate("/");
-  }, []);
+  });
 
   return <div>로그인 중입니다</div>;
 };
