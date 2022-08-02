@@ -8,10 +8,12 @@ import MyPage from "./pages/MyPage";
 import StudyDetail from "./pages/StudyDetail";
 import StudyCreationForm from "./pages/StudyCreationForm";
 import StudyUpdateForm from "./pages/StudyUpdateForm";
+import Login from "./pages/Login";
+import Logout from "./pages/Logout";
 
 const App = () => {
-  const [studyId, setStudyId] = useState(1);
-  const [meetingId, setMeetingId] = useState(1);
+  // const [studyId, setStudyId] = useState(1);
+  // const [meetingId, setMeetingId] = useState(1);
 
   // TODO: 토큰 확인 후 비로그인시 랜딩페이지로 이동하는 로직 추가
   //       로그인을 했어도 페이지에 대한 권한이 없을 경우 로직 추가(StudyUpdateForm, Meeting)
@@ -25,6 +27,8 @@ const App = () => {
         <Route path="/study/create" element={<StudyCreationForm />} />
         <Route path="/study/:studyId" element={<StudyDetail />} />
         <Route path="/study/:studyId/edit" element={<StudyUpdateForm />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/logout" element={<Logout />} />
         {/* <Route path="/mypage/" element={<MyPage />} />
         <Route
           path="/study/:studyId/meeting/:meetingId"
