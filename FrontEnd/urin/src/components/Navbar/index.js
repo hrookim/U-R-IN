@@ -2,12 +2,12 @@ import React, { useState } from "react";
 import Container from "react-bootstrap/Container";
 import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
-import "./navbar.css";
+import "./index.css";
 import Avatar from "@mui/material/Avatar";
 import NotificationsNoneIcon from "@mui/icons-material/NotificationsNone";
 import "../../assets/DesignSystem.css";
 
-import logoImg from "./logo_img.png";
+import logoImg from "../../assets/images/logo_img.png";
 
 const NavComponent = () => {
   return (
