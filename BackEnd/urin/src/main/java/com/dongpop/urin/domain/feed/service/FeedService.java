@@ -10,6 +10,9 @@ import com.dongpop.urin.domain.feed.repository.FeedRepository;
 import com.dongpop.urin.domain.member.repository.Member;
 import com.dongpop.urin.domain.study.repository.Study;
 import com.dongpop.urin.domain.study.repository.StudyRepository;
+import com.dongpop.urin.global.error.errorcode.CommonErrorCode;
+import com.dongpop.urin.global.error.errorcode.StudyErrorCode;
+import com.dongpop.urin.global.error.exception.CustomException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -21,6 +24,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
+
+import static com.dongpop.urin.global.error.errorcode.CommonErrorCode.*;
+import static com.dongpop.urin.global.error.errorcode.StudyErrorCode.*;
 
 @RequiredArgsConstructor
 @Service
@@ -68,7 +74,7 @@ public class FeedService {
     @Transactional
     public void writeFeed(Member writer, int studyId, FeedDataDto feedDataDto) {
         Study study = studyRepository.findById(studyId)
-                .orElseThrow(() -> new NoSuchElementException("해당 스터디가 존재하지 않습니다."));
+                .orElseThrow(() -> new CustomException(STUDY_DOES_NOT_EXIST));
         Feed newFeed = Feed.builder()
                 .contents(feedDataDto.getContents())
                 .writer(writer)
@@ -94,11 +100,10 @@ public class FeedService {
     }
     private Feed checkWriterAuthorizaion(Member member, int feedId) {
         Feed feed = feedRepository.findById(feedId)
-                .orElseThrow(() -> new NoSuchElementException("해당 피드가 존재하지 않습니다."));
+                .orElseThrow(() -> new CustomException(NO_SUCH_ELEMENTS));
 
         if (member.getId() != feed.getWriter().getId()) {
-            //TODO: 401에러 던지기
-            throw new RuntimeException("권한이 없습니다.");
+            throw new CustomException(DO_NOT_HAVE_AUTHORIZATION);
         }
         return feed;
     }
