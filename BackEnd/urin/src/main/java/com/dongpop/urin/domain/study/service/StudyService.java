@@ -1,7 +1,6 @@
 package com.dongpop.urin.domain.study.service;
 
 import com.dongpop.urin.domain.member.repository.Member;
-import com.dongpop.urin.domain.member.repository.MemberRepository;
 import com.dongpop.urin.domain.participant.dto.ParticipantDto;
 import com.dongpop.urin.domain.participant.repository.Participant;
 import com.dongpop.urin.domain.participant.repository.ParticipantRepository;
@@ -10,8 +9,6 @@ import com.dongpop.urin.domain.study.dto.response.*;
 import com.dongpop.urin.domain.study.repository.Study;
 import com.dongpop.urin.domain.study.repository.StudyRepository;
 import com.dongpop.urin.domain.study.repository.StudyStatus;
-import com.dongpop.urin.global.error.errorcode.ParticipantErrorCode;
-import com.dongpop.urin.global.error.errorcode.StudyErrorCode;
 import com.dongpop.urin.global.error.exception.CustomException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,7 +21,6 @@ import javax.transaction.Transactional;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 import static com.dongpop.urin.global.error.errorcode.ParticipantErrorCode.*;
@@ -51,7 +47,7 @@ public class StudyService {
             pages = studyRepository.findAllStudy(pageable);
 
         if (pages.isEmpty()) {
-            throw new CustomException(STUDY_IS_NOT_EXIST);
+            throw new CustomException(STUDY_DOES_NOT_EXIST);
         }
         List<StudySummaryDto> studyList = pages.toList().stream().map(s ->
                 StudySummaryDto.builder()
@@ -72,7 +68,7 @@ public class StudyService {
     @Transactional
     public StudyDetailDto getStudyDetail(int studyId) {
         Study study = studyRepository.findById(studyId)
-                .orElseThrow(() -> new CustomException(STUDY_IS_NOT_EXIST));
+                .orElseThrow(() -> new CustomException(STUDY_DOES_NOT_EXIST));
 
         List<ParticipantDto> dtos = study.getParticipants().stream()
                 .map(p -> ParticipantDto.builder()
@@ -124,7 +120,7 @@ public class StudyService {
     @Transactional
     public StudyIdDto editStudy(Member member, int studyId, StudyDataDto studyData) {
         Study study = studyRepository.findById(studyId)
-                .orElseThrow(() -> new CustomException(STUDY_IS_NOT_EXIST));
+                .orElseThrow(() -> new CustomException(STUDY_DOES_NOT_EXIST));
 
         if (study.getStudyLeader().getId() == member.getId()) {
             throw new CustomException(POSSIBLE_ONLY_LEADER);
@@ -147,7 +143,7 @@ public class StudyService {
     @Transactional
     public StudyJoinDto joinStudy(Member member, int studyId) {
         Study study = studyRepository.findById(studyId)
-                .orElseThrow(() -> new CustomException(STUDY_IS_NOT_EXIST));
+                .orElseThrow(() -> new CustomException(STUDY_DOES_NOT_EXIST));
 
         if (study.getParticipants().size() >= study.getMemberCapacity()) {
             throw new CustomException(STUDY_IS_FULL);
@@ -173,7 +169,7 @@ public class StudyService {
     @Transactional
     public void removeStudyMember(Member member, int studyId, int participantsId) {
         Study study = studyRepository.findById(studyId)
-                .orElseThrow(() -> new CustomException(STUDY_IS_NOT_EXIST));
+                .orElseThrow(() -> new CustomException(STUDY_DOES_NOT_EXIST));
         Participant deleteParticipant = participantRepository.findById(participantsId)
                 .orElseThrow(() -> new CustomException(PARTICIPANT_IS_NOT_EXIST));
 
@@ -189,7 +185,7 @@ public class StudyService {
     @Transactional
     public StudyStatusDto changeStudyStatus(Member member, int studyId, StudyStatus status) {
         Study study = studyRepository.findById(studyId)
-                .orElseThrow(() -> new CustomException(STUDY_IS_NOT_EXIST));
+                .orElseThrow(() -> new CustomException(STUDY_DOES_NOT_EXIST));
 
         if (status.name().equals(StudyStatus.TERMINATED.name()) &&
                 study.getStudyLeader().getId() != member.getId()) {

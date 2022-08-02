@@ -8,8 +8,10 @@ import org.springframework.http.HttpStatus;
 @Getter
 @AllArgsConstructor
 public enum CommonErrorCode implements ErrorCode {
-    PARAMETER_IS_NOT_VALID(HttpStatus.BAD_REQUEST, "Parameter is not valid.");
+    DO_NOT_HAVE_AUTHORIZATION(HttpStatus.FORBIDDEN, "You don't have an authorization."),
+    NO_SUCH_ELEMENTS(HttpStatus.NOT_FOUND, "Don't exist such resource.")
+    ;
 
     private final HttpStatus httpStatus;
-    private String message;
+    private final String message;
 }
