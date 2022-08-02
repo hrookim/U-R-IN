@@ -1,11 +1,11 @@
 import React from "react";
-// import DetailHeader from "../../components/DetailHeader";
+import DetailHeader from "../../components/DetailHeader";
 import DetailTabs from "../../components/DetailTabs";
 
 const StudyDetail = () => {
   return (
     <>
-      {/* <DetailHeader /> */}
+      <DetailHeader />
       <DetailTabs />
     </>
   );
