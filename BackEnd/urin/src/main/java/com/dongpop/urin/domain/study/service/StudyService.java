@@ -10,6 +10,7 @@ import com.dongpop.urin.domain.study.dto.response.*;
 import com.dongpop.urin.domain.study.repository.Study;
 import com.dongpop.urin.domain.study.repository.StudyRepository;
 import com.dongpop.urin.domain.study.repository.StudyStatus;
+import com.dongpop.urin.global.error.errorcode.ParticipantErrorCode;
 import com.dongpop.urin.global.error.errorcode.StudyErrorCode;
 import com.dongpop.urin.global.error.exception.CustomException;
 import lombok.RequiredArgsConstructor;
@@ -26,6 +27,7 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
+import static com.dongpop.urin.global.error.errorcode.ParticipantErrorCode.*;
 import static com.dongpop.urin.global.error.errorcode.StudyErrorCode.*;
 
 
@@ -35,7 +37,6 @@ import static com.dongpop.urin.global.error.errorcode.StudyErrorCode.*;
 public class StudyService {
 
     private final StudyRepository studyRepository;
-    private final MemberRepository memberRepository;
     private final ParticipantRepository participantRepository;
 
     /**
@@ -49,7 +50,9 @@ public class StudyService {
         else
             pages = studyRepository.findAllStudy(pageable);
 
-        //TODO: Null체크 로직 추가
+        if (pages.isEmpty()) {
+            throw new CustomException(STUDY_IS_NOT_EXIST);
+        }
         List<StudySummaryDto> studyList = pages.toList().stream().map(s ->
                 StudySummaryDto.builder()
                         .id(s.getId())
@@ -69,7 +72,7 @@ public class StudyService {
     @Transactional
     public StudyDetailDto getStudyDetail(int studyId) {
         Study study = studyRepository.findById(studyId)
-                .orElseThrow(() -> new NoSuchElementException("해당 스터디가 존재하지 않습니다."));
+                .orElseThrow(() -> new CustomException(STUDY_IS_NOT_EXIST));
 
         List<ParticipantDto> dtos = study.getParticipants().stream()
                 .map(p -> ParticipantDto.builder()
@@ -121,7 +124,7 @@ public class StudyService {
     @Transactional
     public StudyIdDto editStudy(Member member, int studyId, StudyDataDto studyData) {
         Study study = studyRepository.findById(studyId)
-                .orElseThrow(() -> new NoSuchElementException("해당 스터디는 존재하지 않습니다."));
+                .orElseThrow(() -> new CustomException(STUDY_IS_NOT_EXIST));
 
         if (study.getStudyLeader().getId() == member.getId()) {
             throw new CustomException(POSSIBLE_ONLY_LEADER);
@@ -144,7 +147,7 @@ public class StudyService {
     @Transactional
     public StudyJoinDto joinStudy(Member member, int studyId) {
         Study study = studyRepository.findById(studyId)
-                .orElseThrow(() -> new NoSuchElementException("해당 스터디가 존재하지 않습니다."));
+                .orElseThrow(() -> new CustomException(STUDY_IS_NOT_EXIST));
 
         if (study.getParticipants().size() >= study.getMemberCapacity()) {
             throw new CustomException(STUDY_IS_FULL);
@@ -170,15 +173,14 @@ public class StudyService {
     @Transactional
     public void removeStudyMember(Member member, int studyId, int participantsId) {
         Study study = studyRepository.findById(studyId)
-                .orElseThrow(() -> new NoSuchElementException("해당 스터디가 존재하지 않습니다."));
+                .orElseThrow(() -> new CustomException(STUDY_IS_NOT_EXIST));
         Participant deleteParticipant = participantRepository.findById(participantsId)
-                .orElseThrow(() -> new NoSuchElementException("해당 참가자는 없습니다."));
+                .orElseThrow(() -> new CustomException(PARTICIPANT_IS_NOT_EXIST));
 
         if (isPossible(deleteParticipant, member.getId(), studyId)) {
             deleteStudyParticipant(study, deleteParticipant);
             return;
         }
-        //TODO: 불가능한 경우에 따라 Exception이 달라짐 -> 수정하기
     }
 
     /**
@@ -187,7 +189,7 @@ public class StudyService {
     @Transactional
     public StudyStatusDto changeStudyStatus(Member member, int studyId, StudyStatus status) {
         Study study = studyRepository.findById(studyId)
-                .orElseThrow(() -> new NoSuchElementException("해당 스터디가 존재하지 않습니다."));
+                .orElseThrow(() -> new CustomException(STUDY_IS_NOT_EXIST));
 
         if (status.name().equals(StudyStatus.TERMINATED.name()) &&
                 study.getStudyLeader().getId() != member.getId()) {
@@ -206,14 +208,21 @@ public class StudyService {
 
     private boolean isPossible(Participant deleteParticipant, int memberId, int studyId) {
         //참가자는 방장 리스트가 아니어야함, 참가자와 내가 다르면 내가 방장이어야 함, 참가자와 내가 같으면 나는 방장이면 안됨
-        if (deleteParticipant.isLeader())
-            return false;
+        if (deleteParticipant.isLeader()) {
+            throw new CustomException(CAN_NOT_DELETE_LEADER_PARTICIPANT);
+        }
 
         Participant leadersParticipant = participantRepository.findLeader(studyId)
-                .orElseThrow(() -> new NoSuchElementException("방장 찾기 실패"));
+                .orElseThrow(() -> new CustomException(FAIL_TO_FIND_LEADER));
         int studyLeaderId = leadersParticipant.getMember().getId();
 
-        return deleteParticipant.getMember().getId() != memberId ?
-                studyLeaderId == memberId : studyLeaderId != memberId;
+        if (deleteParticipant.getMember().getId() != memberId) {
+            if (studyLeaderId != memberId)
+                throw new CustomException(POSSIBLE_ONLY_LEADER);
+        } else {
+            if (studyLeaderId == memberId)
+                throw new CustomException(CAN_NOT_DELETE_LEADER_PARTICIPANT);
+        }
+        return true;
     }
 }
