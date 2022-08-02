@@ -6,6 +6,10 @@ import NavComponent from "../../components/Navbar";
 import "../../assets/DesignSystem.css";
 
 const LandingPage = () => {
+  const onClick = () => {
+    window.location.href = process.env.REACT_APP_SOCIAL_LOGIN_URL;
+  };
+
   return (
     <div>
       <NavComponent />
@@ -16,17 +20,16 @@ const LandingPage = () => {
         화상 면접 스터디 솔루션입니다. UR IN은 비대면 시대에 맞춰 AI를 활용하여
         면접을 준비할 수 있도록 돕는 화상 면접 스터디 솔루션입니다.
       </p>
-      {/* Button 클릭시 카카오로그인 페이지로 redirect */}
-      {/* TODO: 배포 전 URL 수정 필요 */}
-      <a href="http://localhost:8080/oauth2/authorization/kakao?redirect_uri=http://localhost:3000/login">
-        <Button
-          type="button"
-          variant="contained"
-          className="bgcolor-main btn-hover btn-radius font-50 font-sm btn-text-shadow"
-        >
-          시작하기
-        </Button>
-      </a>
+
+      {/* 카카오로그인 버튼 */}
+      <Button
+        onClick={onClick}
+        type="button"
+        variant="contained"
+        className="bgcolor-main btn-hover btn-radius font-50 font-sm btn-text-shadow"
+      >
+        시작하기
+      </Button>
 
       <p className="font-80 font-lg">면접을 위한 새로운 경험</p>
       <p className="font-80 font-lg">

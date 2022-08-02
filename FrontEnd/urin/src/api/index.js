@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const BASE_URL = "https://i7a504.p.ssafy.io/api/v1/";
+const BASE_URL = process.env.REACT_APP_BACK_BASE_URL;
 const accessToken = localStorage.getItem("accessToken");
 
 const axiosInstance = axios.create();
