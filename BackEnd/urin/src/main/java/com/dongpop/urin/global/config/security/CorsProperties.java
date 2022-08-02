@@ -12,5 +12,5 @@ import java.util.List;
 @ConstructorBinding
 @ConfigurationProperties(value = "cors", ignoreInvalidFields = true)
 public class CorsProperties {
-    private final List<String> allowOrigins;
+    private final String allowOrigin;
 }
