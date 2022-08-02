@@ -57,7 +57,9 @@ const StudyCreationForm = () => {
             <DatePicker
               locale={ko}
               format="yyyy-MM-dd"
-              onChange={(date) => setForm({ ...form, expiredDate: date })}
+              onChange={(date) =>
+                setForm({ ...form, expiredDate: date.toLocaleDateString() })
+              }
               inline
             />
           </Grid>
