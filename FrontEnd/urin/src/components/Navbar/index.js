@@ -22,13 +22,10 @@ const NavComponent = () => {
             <Nav.Link className="nav-link font-50" href="#link">
               리포트 보기
             </Nav.Link>
-            <Nav.Link className="nav-link font-50" href="#link">
-              로고 png 새로 넣어라
-            </Nav.Link>
           </Nav>
         </Navbar.Collapse>
         <NotificationsNoneIcon />
-        <Avatar> HE </Avatar>
+        <Avatar id="avatar" />
       </Container>
     </Navbar>
   );
