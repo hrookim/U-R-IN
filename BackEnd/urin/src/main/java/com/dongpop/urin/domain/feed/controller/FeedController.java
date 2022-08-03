@@ -11,6 +11,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -30,7 +31,7 @@ public class FeedController {
 
     @PostMapping("/{studyId}/feeds")
     public ResponseEntity<?> writeFeed(@PathVariable int studyId,
-                                       @RequestBody FeedDataDto feedDataDto,
+                                       @Validated @RequestBody FeedDataDto feedDataDto,
                                        @AuthenticationPrincipal MemberPrincipal memberPrincipal) {
         Member member = memberPrincipal.getMember();
         feedService.writeFeed(member, studyId, feedDataDto);
@@ -41,7 +42,7 @@ public class FeedController {
 
     @PutMapping("/{studyId}/feeds/{feedId}")
     public ResponseEntity<?> updateFeed(@PathVariable int studyId, @PathVariable int feedId,
-                                        @RequestBody FeedUpdateDto feedUpdateDto,
+                                        @Validated @RequestBody FeedUpdateDto feedUpdateDto,
                                         @AuthenticationPrincipal MemberPrincipal memberPrincipal) {
         Member member = memberPrincipal.getMember();
         feedService.updateFeed(member, studyId, feedId, feedUpdateDto.getContents());

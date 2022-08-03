@@ -14,6 +14,7 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -44,7 +45,7 @@ public class StudyController {
 
     //TODO: 날짜 받는 양식 정하기!!
     @PostMapping
-    public ResponseEntity<StudyIdDto> generateStudy(@RequestBody StudyDataDto studyData,
+    public ResponseEntity<StudyIdDto> generateStudy(@Validated @RequestBody StudyDataDto studyData,
                                                     @AuthenticationPrincipal MemberPrincipal memberPrincipal) {
         log.info("[REQUEST] >>>>> Create Study / studyData : {}", studyData);
         Member member = memberPrincipal.getMember();
@@ -57,7 +58,7 @@ public class StudyController {
     }
 
     @PutMapping("/{studyId}")
-    public ResponseEntity<StudyIdDto> editStudy(@PathVariable int studyId, @RequestBody StudyDataDto studyData,
+    public ResponseEntity<StudyIdDto> editStudy(@PathVariable int studyId, @Validated @RequestBody StudyDataDto studyData,
                                                 @AuthenticationPrincipal MemberPrincipal memberPrincipal) {
         log.info("[REQUEST] >>>>> METHOD {} / studyData : {}", studyData);
         Member member = memberPrincipal.getMember();
@@ -85,7 +86,7 @@ public class StudyController {
     }
 
     @PatchMapping("/{studyId}")
-    public ResponseEntity<StudyStatusDto> changeStudyStatus(@PathVariable int studyId, @RequestBody StudyStateDto status,
+    public ResponseEntity<StudyStatusDto> changeStudyStatus(@PathVariable int studyId, @Validated @RequestBody StudyStateDto status,
                                                             @AuthenticationPrincipal MemberPrincipal memberPrincipal) {
         //TODO: Enum binding test
         log.info("[REQUEST] >>>>> Change Study Status / StudyState : {}", status.getStatus().name());

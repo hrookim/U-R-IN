@@ -4,11 +4,13 @@ import com.dongpop.urin.global.error.errorcode.ErrorCode;
 import com.dongpop.urin.global.error.errorcode.ValidationErrorCode;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.Setter;
 import org.springframework.http.ResponseEntity;
 
 import java.time.LocalDateTime;
 
 @Getter
+@Setter
 @Builder
 public class ErrorResponse {
     private final LocalDateTime timestamp = LocalDateTime.now();

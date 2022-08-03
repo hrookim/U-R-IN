@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.NoSuchElementException;
@@ -28,7 +29,7 @@ public class InquiryController {
 
     @PostMapping("/{studyId}/inquiry")
     public ResponseEntity<?> writeInquiry(@PathVariable int studyId,
-                                          @RequestBody InquiryDataDto inquiryDataDto,
+                                          @Validated @RequestBody InquiryDataDto inquiryDataDto,
                                           @AuthenticationPrincipal MemberPrincipal memberPrincipal) {
         Member member = memberPrincipal.getMember();
         inquiryService.writeInquiry(member, studyId, inquiryDataDto);
@@ -39,7 +40,7 @@ public class InquiryController {
 
     @PutMapping("/{studyId}/inquiry/{inquiryId}")
     public ResponseEntity<?> updateInquiry(@PathVariable int studyId, @PathVariable int inquiryId,
-                                           @RequestBody String contents, @AuthenticationPrincipal MemberPrincipal memberPrincipal) {
+                                           @Validated @RequestBody String contents, @AuthenticationPrincipal MemberPrincipal memberPrincipal) {
         Member member = memberPrincipal.getMember();
         inquiryService.updateFeed(member, studyId, inquiryId, contents);
 
