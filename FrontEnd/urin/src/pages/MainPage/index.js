@@ -51,7 +51,6 @@ const MainPage = () => {
 
   return (
     <div>
-      <NavComponent />
       <Button variant="outlined">Outlined</Button>
       <Checkbox {...label} defaultChecked />
       <p>모집 중인 스터디만 보기</p>
