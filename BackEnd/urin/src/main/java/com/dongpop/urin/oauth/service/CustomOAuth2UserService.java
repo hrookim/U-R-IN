@@ -25,19 +25,12 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         Map<String, Object> attributes = oAuth2User.getAttributes();
 
         Long id = (Long) attributes.get("id");
+        String identifier = String.valueOf(id);
+
         Map<String, String> properties = (Map<String, String>) attributes.get("properties");
         String memberName = properties.get("nickname");
-        String profileImage = properties.get("profile_image");
+        log.info("id = {}, memberName = {}", id, memberName);
 
-        String email = "";
-        Map<String, Object> kakao_account = (Map<String, Object>) attributes.get("kakao_account");
-        if ((Boolean) kakao_account.get("has_email")) {
-            email = (String) kakao_account.get("email");
-        }
-        String identifier = email + id;
-        log.info("id = {}, memberName = {}, profile_image = {}", id, memberName, profileImage);
-
-        String finalEmail = email;
         Member findMember = memberRepository.findByIdentifier(identifier)
                 .orElseGet(() -> {
                     log.info("Execute Join Member");
@@ -47,7 +40,6 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
                             .nickname(memberName)
                             .password(passwordEncoder.encode(identifier))
                             .role("ROLE_USER")
-                            .email(finalEmail)
                             .build()
                     );
                 });

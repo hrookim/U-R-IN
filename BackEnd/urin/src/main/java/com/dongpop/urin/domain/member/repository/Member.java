@@ -15,15 +15,13 @@ import javax.persistence.*;
 public class Member extends BaseTimeEntity {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Integer id; //PK
 
     private String identifier;
     private String memberName;
     private String nickname;
     private String password;
     private String role;
-    private String email;
-    private String profileImage;
 
     private String refreshToken;
 
@@ -33,9 +31,7 @@ public class Member extends BaseTimeEntity {
         this.memberName = memberName;
         this.nickname = nickname;
         this.password = password;
-        this.email = email;
         this.role = role;
-        this.profileImage = profileImage;
     }
 
     public void saveRefreshToken(String refreshToken) {
