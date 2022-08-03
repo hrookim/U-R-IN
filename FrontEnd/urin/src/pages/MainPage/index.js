@@ -1,6 +1,6 @@
 /* eslint-disable react/jsx-props-no-spreading */
 
-import React from "react";
+import React, { useEffect } from "react";
 
 import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
@@ -13,8 +13,9 @@ import SearchIcon from "@mui/icons-material/Search";
 import { Button, CardActionArea, CardActions } from "@mui/material";
 import Pagination from "@mui/material/Pagination";
 import Stack from "@mui/material/Stack";
-
+import { useDispatch, useSelector } from "react-redux";
 import NavComponent from "../../components/Navbar";
+import { getStudyList } from "../../store/studyListSlice";
 import Footer from "../../components/Footer";
 
 const studyArr = [{ 1: 1 }, { 2: 2 }];
@@ -22,6 +23,37 @@ const studyArr = [{ 1: 1 }, { 2: 2 }];
 const label = { inputProps: { "aria-label": "Checkbox demo" } };
 
 const MainPage = () => {
+  const label = { inputProps: { "aria-label": "Checkbox demo" } };
+
+  // const dispatch = useDispatch();
+  // const studies = useSelector((state) => state.studies);
+  // useEffect(() => {
+  //   dispatch(getStudyList());
+  // }, []);
+  const studies = [
+    {
+      currentMember: 0,
+      id: 0,
+      memberCapacity: 0,
+      status: "COMPLETED",
+      title: "string",
+    },
+    {
+      currentMember: 3,
+      id: 1,
+      memberCapacity: 4,
+      status: "NOT YET",
+      title: "string",
+    },
+    {
+      currentMember: 2,
+      id: 2,
+      memberCapacity: 4,
+      status: "COMPLETED",
+      title: "string",
+    },
+  ];
+
   return (
     <div>
       <NavComponent />
@@ -40,7 +72,7 @@ const MainPage = () => {
       </Box>
       <SearchIcon />
 
-      {studyArr.map((index, item) => (
+      {studies.map((item, index) => (
         <Card sx={{ maxWidth: 345 }}>
           <CardActionArea>
             <CardMedia
@@ -51,11 +83,10 @@ const MainPage = () => {
             />
             <CardContent>
               <Typography gutterBottom variant="h5" component="div">
-                Lizard
+                {item.title}
               </Typography>
               <Typography variant="body2" color="text.secondary">
-                Lizards are a widespread group of squamate reptiles, with over
-                6,000 species, ranging across all continents except Antarctica
+                {item.status}
               </Typography>
             </CardContent>
           </CardActionArea>
