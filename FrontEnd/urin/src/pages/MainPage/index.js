@@ -16,6 +16,11 @@ import Stack from "@mui/material/Stack";
 import { useDispatch, useSelector } from "react-redux";
 import NavComponent from "../../components/Navbar";
 import { getStudyList } from "../../store/studyListSlice";
+import Footer from "../../components/Footer";
+
+const studyArr = [{ 1: 1 }, { 2: 2 }];
+
+const label = { inputProps: { "aria-label": "Checkbox demo" } };
 
 const MainPage = () => {
   const label = { inputProps: { "aria-label": "Checkbox demo" } };
@@ -95,6 +100,7 @@ const MainPage = () => {
       <Stack spacing={2}>
         <Pagination count={10} />
       </Stack>
+      <Footer />
     </div>
   );
 };
