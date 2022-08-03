@@ -15,6 +15,7 @@ import Pagination from "@mui/material/Pagination";
 import Stack from "@mui/material/Stack";
 
 import NavComponent from "../../components/Navbar";
+import Footer from "../../components/Footer";
 
 const studyArr = [{ 1: 1 }, { 2: 2 }];
 
@@ -68,6 +69,7 @@ const MainPage = () => {
       <Stack spacing={2}>
         <Pagination count={10} />
       </Stack>
+      <Footer />
     </div>
   );
 };
