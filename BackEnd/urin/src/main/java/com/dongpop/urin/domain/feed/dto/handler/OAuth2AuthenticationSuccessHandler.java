@@ -37,17 +37,11 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
-        log.info("====== [Entry onAuthenticationSuccess] ======");
         OAuth2User oAuth2User = (OAuth2User) authentication.getPrincipal();
         Map<String, Object> attributes = oAuth2User.getAttributes();
 
         Long id = (Long) attributes.get("id");
-        String email = "";
-        Map<String, Object> kakao_account = (Map<String, Object>) attributes.get("kakao_account");
-        if ((Boolean) kakao_account.get("has_email")) {
-            email = (String) kakao_account.get("email");
-        }
-        String identifier = email + id;
+        String identifier = String.valueOf(id);
 
         TokenSet tokenSet = tokenService.issueNewToken(identifier);
 

@@ -52,7 +52,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                     .addLogoutHandler(customLogoutHandler)
                 .and()
                 .authorizeRequests()
-                    .antMatchers("/oauth2/**").permitAll()
+                    .antMatchers("/oauth2/**", "/swagger-ui/**", "/swagger-resources/**",
+                            "/v2/**").permitAll()
                     .anyRequest().authenticated()
                 .and()
                 .addFilterBefore(tokenAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
@@ -87,7 +88,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     public CorsConfigurationSource corsConfigurationSource(CorsProperties corsProperties) {
         CorsConfiguration configuration = new CorsConfiguration();
 
-        configuration.addAllowedOrigin(corsProperties.getAllowOrigin());
+        corsProperties.getAllowOrigins().forEach((origin) -> {
+            configuration.addAllowedOrigin(origin);
+        });
         configuration.addAllowedHeader("*");
         configuration.addAllowedMethod("*");
         configuration.setAllowCredentials(true);
