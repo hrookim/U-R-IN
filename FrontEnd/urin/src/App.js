@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from "react";
+import axios from "axios";
+
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 
 import LandingPage from "./pages/LandingPage";
@@ -17,6 +19,8 @@ import NavComponent from "./components/Navbar";
 const App = () => {
   const privateAccess = !!localStorage.getItem("accessToken");
   const publicAccess = !privateAccess;
+
+  useEffect(() => {});
   // const [studyId, setStudyId] = useState(1);
   // const [meetingId, setMeetingId] = useState(1);
 

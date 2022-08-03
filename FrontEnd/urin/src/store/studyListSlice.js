@@ -7,7 +7,7 @@ export const getStudyList = createAsyncThunk("GET_STUDY_LIST", async () => {
   return response.data;
 });
 
-const studySlice = createSlice({
+const studyListSlice = createSlice({
   name: "studies",
   initialState: {
     studyList: [
@@ -15,20 +15,6 @@ const studySlice = createSlice({
         currentMember: 0,
         id: 0,
         memberCapacity: 0,
-        status: "COMPLETED",
-        title: "string",
-      },
-      {
-        currentMember: 3,
-        id: 1,
-        memberCapacity: 4,
-        status: "NOT YET",
-        title: "string",
-      },
-      {
-        currentMember: 2,
-        id: 2,
-        memberCapacity: 4,
         status: "COMPLETED",
         title: "string",
       },
@@ -41,4 +27,4 @@ const studySlice = createSlice({
   },
 });
 
-export default studySlice.reducer;
+export default studyListSlice.reducer;
