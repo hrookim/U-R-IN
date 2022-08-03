@@ -73,9 +73,14 @@ public class StudyService {
         List<ParticipantDto> dtos = study.getParticipants().stream()
                 .map(p -> ParticipantDto.builder()
                         .id(p.getId())
+                        .memberId(p.getMember().getId())
                         .nickname(p.getMember().getNickname())
                         .isLeader(p.isLeader())
                         .build()).collect(Collectors.toList());
+
+        int dDay = (int) Duration.between(LocalDate.now().atStartOfDay(),
+                study.getExpirationDate().atStartOfDay()).toDays();
+        dDay = dDay > 36500 ? -1 : dDay;
 
         return StudyDetailDto.builder()
                 .id(study.getId())
@@ -84,8 +89,7 @@ public class StudyService {
                 .memberCapacity(study.getMemberCapacity())
                 .currentMember(study.getParticipants().size())
                 .status(study.getStatus())
-                .dDay((int) Duration.between(LocalDate.now().atStartOfDay(),
-                                study.getExpirationDate().atStartOfDay()).toDays())
+                .dDay(dDay)
                 .isOnair(study.isOnair())
                 .participants(dtos)
                 .build();
@@ -97,11 +101,12 @@ public class StudyService {
     @Transactional
     public StudyIdDto generateStudy(StudyDataDto studyData, Member member) {
         log.info("memberId : {}, studyData : {}", member.getId(), studyData);
+        LocalDate expirationDate = studyData.getExpiredDate() != null ?
+                studyData.getExpiredDate() : LocalDate.of(2222, 1, 1);
         Study study = studyRepository.save(Study.builder()
                 .title(studyData.getTitle())
                 .notice(studyData.getNotice())
-                //TODO : 종료일이 매우 큰 숫자일 때 저장 값 정하기
-                .expirationDate(studyData.getExpiredDate())
+                .expirationDate(expirationDate)
                 .memberCapacity(studyData.getMemberCapacity())
                 .status(StudyStatus.RECRUITING)
                 .build());

@@ -15,7 +15,7 @@ import javax.persistence.*;
 public class Member extends BaseTimeEntity {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id; //PK
+    private Integer id;
 
     private String identifier;
     private String memberName;

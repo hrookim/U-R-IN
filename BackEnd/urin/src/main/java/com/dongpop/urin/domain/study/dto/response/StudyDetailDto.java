@@ -17,6 +17,6 @@ public class StudyDetailDto {
     private int currentMember;
     private StudyStatus status;
     private int dDay;
-    private boolean isOnair;
+    private Boolean isOnair;
     private List<ParticipantDto> participants;
 }

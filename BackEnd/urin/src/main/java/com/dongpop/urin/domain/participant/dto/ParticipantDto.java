@@ -7,6 +7,7 @@ import lombok.Data;
 @Data
 public class ParticipantDto {
     private int id;
+    private int memberId;
     private String nickname;
-    private boolean isLeader;
+    private Boolean isLeader;
 }
