@@ -1,13 +1,20 @@
 import React, { useState } from "react";
+import moment from "moment";
 import { Button, Grid, TextField } from "@mui/material";
 import DatePicker from "react-datepicker";
 import { ko } from "date-fns/esm/locale";
 import "react-datepicker/dist/react-datepicker.css";
+import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { createStudy } from "../../store/studySlice";
 
 const StudyCreationForm = () => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
   const [form, setForm] = useState({
     title: "",
-    contents: "",
+    notice: "",
     expiredDate: "",
     memberCapacity: "",
   });
@@ -22,9 +29,9 @@ const StudyCreationForm = () => {
   };
 
   const onSubmit = (e) => {
-    alert("제출이 완료되었습니다!");
+    alert("스터디 생성이 완료되었습니다:)");
     e.preventDefault();
-    // 나중에 createStudy 함수로 연동시켜야 한다.
+    dispatch(createStudy({ form, navigate }));
   };
 
   return (
@@ -39,18 +46,20 @@ const StudyCreationForm = () => {
               label="Title"
               type="text"
               onChange={onChange}
+              required
             />
           </Grid>
           <Grid item>
             <TextField
               style={{ width: "400px", margin: "5px" }}
               type="text"
-              label="Contents"
-              name="contents"
+              label="Notice"
+              name="notice"
               variant="outlined"
               multiline
               rows={10}
               onChange={onChange}
+              required
             />
           </Grid>
           <Grid item>
@@ -58,9 +67,13 @@ const StudyCreationForm = () => {
               locale={ko}
               format="yyyy-MM-dd"
               onChange={(date) =>
-                setForm({ ...form, expiredDate: date.toLocaleDateString() })
+                setForm({
+                  ...form,
+                  expiredDate: moment(date).format("YYYY-MM-DD"),
+                })
               }
               inline
+              required
             />
           </Grid>
 
@@ -71,6 +84,7 @@ const StudyCreationForm = () => {
               label="Member Capacity"
               type="number"
               onChange={onChange}
+              required
             />
           </Grid>
 

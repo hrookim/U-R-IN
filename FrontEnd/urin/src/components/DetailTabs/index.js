@@ -6,7 +6,7 @@ import DetailInfo from "../DetailInfo";
 import DetailInquiry from "../DetailInquiry";
 import DetailFeed from "../DetailFeed";
 
-const DetailTabs = () => {
+const DetailTabs = ({ study }) => {
   const [value, setValue] = useState(0);
   const handleChange = (event, newValue) => {
     event.preventDefault();
@@ -21,9 +21,9 @@ const DetailTabs = () => {
         <Tab label="피드" />
       </Tabs>
 
-      {value === 0 && <DetailInfo />}
-      {value === 1 && <DetailInquiry />}
-      {value === 2 && <DetailFeed />}
+      {value === 0 && <DetailInfo study={study} />}
+      {value === 1 && <DetailInquiry study={study} />}
+      {value === 2 && <DetailFeed study={study} />}
     </div>
   );
 };

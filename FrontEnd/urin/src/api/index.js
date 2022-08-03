@@ -10,7 +10,7 @@ axiosInstance.defaults.baseURL = BASE_URL;
 if (accessToken) {
   axiosInstance.defaults.headers.common[
     // eslint-disable-next-line dot-notation
-    "Authenticate"
+    "Authorization"
   ] = `Bearer ${localStorage.getItem("accessToken")}`;
 }
 
