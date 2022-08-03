@@ -1,26 +1,53 @@
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import React from "react";
+import {
+  createAsyncThunk,
+  createSlice,
+  isRejectedWithValue,
+} from "@reduxjs/toolkit";
 import axiosInstance from "../api";
+
+// FIXME: navigate를 하고 싶다면, component에서 받아와야 한다! 자세한 코드는 createStudy 참조
 
 // study
 // 스터디 상세 보기
 export const getStudy = createAsyncThunk("GET_STUDY", async (studyId) => {
-  console.log("스터디 가져오는 중");
-  const response = await axiosInstance.get(`studies/${studyId}`);
-  return response.data;
+  try {
+    console.log("스터디 가져오는 중");
+    const response = await axiosInstance.get(`studies/${studyId}`);
+    return response.data;
+  } catch (err) {
+    console.log(err);
+    return isRejectedWithValue(err.response.data);
+  }
 });
 
 // 스터디 생성
-export const createStudy = createAsyncThunk("CREATE_STUDY", async (form) => {
-  const response = await axiosInstance.post(`studies/`, form);
-  return response.data;
-});
+export const createStudy = createAsyncThunk(
+  "CREATE_STUDY",
+  async ({ form, navigate }) => {
+    try {
+      const response = await axiosInstance.post(`studies/`, form);
+      const { studyId } = response.data;
+      navigate(`/study/${studyId}`);
+      return response.data;
+    } catch (err) {
+      console.log(err);
+      return isRejectedWithValue(err.response.data);
+    }
+  }
+);
 
 // 스터디 정보 수정
 export const updateStudy = createAsyncThunk(
   "UPDATE_STUDY",
   async (studyId, form) => {
-    const response = await axiosInstance.put(`studies/${studyId}`, form);
-    return response.data;
+    try {
+      const response = await axiosInstance.put(`studies/${studyId}`, form);
+      return response.data;
+    } catch (err) {
+      console.log(err);
+      return isRejectedWithValue(err.response.data);
+    }
   }
 );
 
@@ -28,18 +55,30 @@ export const updateStudy = createAsyncThunk(
 export const changeStudyStatus = createAsyncThunk(
   "CHANGE_STUDY_STATUS",
   async (studyId, status) => {
-    const response = await axiosInstance.patch(`studies/${studyId}`, {
-      status,
-    });
-    return response.data;
+    try {
+      const response = await axiosInstance.patch(`studies/${studyId}`, {
+        status,
+      });
+      return response.data;
+    } catch (err) {
+      console.log(err);
+      return isRejectedWithValue(err.response.data);
+    }
   }
 );
 
 // participants
 // 스터디 가입
 export const joinStudy = createAsyncThunk("JOIN_STUDY", async (studyId) => {
-  const response = await axiosInstance.post(`studies/${studyId}/participants`);
-  return response.data;
+  try {
+    const response = await axiosInstance.post(
+      `studies/${studyId}/participants`
+    );
+    return response.data;
+  } catch (err) {
+    console.log(err);
+    return isRejectedWithValue(err.response.data);
+  }
 });
 
 // 스터디 참가자 삭제
@@ -47,10 +86,15 @@ export const joinStudy = createAsyncThunk("JOIN_STUDY", async (studyId) => {
 export const leaveStudy = createAsyncThunk(
   "LEAVE_STUDY",
   async (studyId, participantsId) => {
-    const response = await axiosInstance.delete(
-      `studies/${studyId}/participants/${participantsId}`
-    );
-    return response.data;
+    try {
+      const response = await axiosInstance.delete(
+        `studies/${studyId}/participants/${participantsId}`
+      );
+      return response.data;
+    } catch (err) {
+      console.log(err);
+      return isRejectedWithValue(err.response.data);
+    }
   }
 );
 
@@ -70,16 +114,14 @@ const studySlice = createSlice({
     participants: [
       {
         id: 0,
-        // TODO: leader vs isLeader? Back과 협의 필요, isLeader로 바꾸는게 좋을 듯
-        leader: true,
+        isLeader: true,
         nickname: "string",
       },
     ],
     status: "COMPLETED",
     title: "string",
   },
-  // 비동기 통신이 없는 상황에서 사용
-  // 서버에 요청 없이 study의 상태를 바꿀 일이 없기 때문에 딱히 쓸 일이 없음
+  // 비동기 통신이 없는 상황에서 사용 : 서버에 요청 없이 study의 상태를 바꿀 일이 없기 때문에 딱히 쓸 일이 없음
   reducers: {},
 
   // [함수명.함수상태]: (state, { payload }) => {상태를 변경 or 함수가 실행된 다음 하고 싶은 행동}
@@ -93,9 +135,8 @@ const studySlice = createSlice({
   // getStudy가 완료되면 현재 상태인 state를 payload(getStudy가 받아온 response.data)로 대체시키겠다.
   extraReducers: {
     [getStudy.fulfilled]: (state, { payload }) => payload,
-    [createStudy.fulfilled]: (state, { payload }) => {
-      // 스터디 생성 성공 => 생성된 스터디 방으로 이동해야 함
-    },
+    // [createStudy.pending]: (state, {payload}) => {},
+    [createStudy.fulfilled]: (state, { payload }) => {},
     // TODO
     // [updateStudy.fulfilled]:
     // [changeStudyStatus.fulfilled]:
