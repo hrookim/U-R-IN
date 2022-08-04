@@ -1,6 +1,5 @@
 package com.dongpop.urin.domain.meeting.repository;
 
-import com.dongpop.urin.domain.common.entity.BaseTimeEntity;
 import com.dongpop.urin.domain.study.repository.Study;
 import lombok.Getter;
 import org.springframework.data.annotation.CreatedDate;
