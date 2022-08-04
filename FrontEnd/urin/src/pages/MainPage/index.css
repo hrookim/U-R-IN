@@ -1,3 +1,14 @@
+.header{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.header > div{
+  display: flex;
+  align-items: center;
+}
+
 .searchbox{
   display: inline;
 }
@@ -7,6 +18,7 @@
 
 }
 
+
 .card-title{
   margin: 0 0 0 0;
 }
@@ -14,4 +26,9 @@
 .card-status{
   display: flex;
   justify-content: end;
+}
+
+.pagination{
+  display: flex;
+  justify-content: center;
 }
