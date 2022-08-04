@@ -1,5 +1,5 @@
 package com.dongpop.urin.domain.study.repository;
 
-public enum StudyStatus {
+public enum StudyState {
     RECRUITING, COMPLETED, TERMINATED;
 }

@@ -7,10 +7,21 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-import java.util.List;
-
 public interface FeedRepository extends JpaRepository<Feed, Integer> {
 
-    @EntityGraph(attributePaths = {"writer", "study", "parent"})
-    Page<Feed> findAllByStudyIdAndParentIsNull(Integer studyId, Pageable pageable);
+    @Query(
+            value = "SELECT f FROM Feed f" +
+                    " JOIN FETCH f.study s" +
+                    " JOIN FETCH f.member m" +
+                    " LEFT JOIN FETCH f.parent p" +
+                    " WHERE s.id = :studyId" +
+                    " AND f.parent IS NULL",
+
+            countQuery = "SELECT f FROM Feed f" +
+//                        " JOIN FETCH f.study s" +
+//                        " JOIN FETCH f.parent p" +
+                        " WHERE f.study.id = :studyId" +
+                        " AND f.parent IS NULL"
+    )
+    Page<Feed> findAllByStudyId(@Param("studyId") Integer studyId, Pageable pageable);
 }

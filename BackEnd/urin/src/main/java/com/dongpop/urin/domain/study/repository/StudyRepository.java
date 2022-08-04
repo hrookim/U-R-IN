@@ -6,20 +6,17 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
 
 import java.util.Optional;
 
 public interface StudyRepository extends JpaRepository<Study, Integer> {
-    @Query("SELECT s FROM Study s" +
-            " WHERE s.status NOT IN (com.dongpop.urin.domain.study.repository.StudyStatus.TERMINATED)")
-    Page<Study> findAllStudy(Pageable pageable);
 
-    @Query("SELECT s FROM Study s" +
-            " WHERE s.status NOT IN (com.dongpop.urin.domain.study.repository.StudyStatus.TERMINATED)" +
-            " AND s.title LIKE %:keyword%")
-    Page<Study> findSearchAllStudy(@Param("keyword") String keyword, Pageable pageable);
+    @Query(
+            value = "SELECT s FROM Study s",
+            countQuery = "SELECT count(s) FROM Study s"
+    )
+    Page<Study> findByAll(Pageable pageable);
 
     @EntityGraph(attributePaths = {"participants"})
-    Optional<Study> findById(Integer id);
+    Optional<Study> findById(Integer studyId);
 }
