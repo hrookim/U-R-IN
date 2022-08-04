@@ -45,10 +45,6 @@ public class StudyRepositoryImpl implements StudyRepositoryCustom {
     }
 
     private BooleanExpression keywordLike(String keyword) {
-        System.out.println("\n===== 쿼리 확인 =====");
-        System.out.println("keyword : " + keyword);
-        System.out.println("Boolean : " + StringUtils.hasText(keyword));
-        System.out.println("====================\n");
         return StringUtils.hasText(keyword) ? study.title.contains(keyword) : null;
     }
 
