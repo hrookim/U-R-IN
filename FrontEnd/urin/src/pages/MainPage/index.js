@@ -1,14 +1,6 @@
 /* eslint-disable react/jsx-props-no-spreading */
 
-<<<<<<< HEAD
 import React, { useEffect, useRef } from "react";
-=======
-import React, { useEffect } from "react";
-import "./index.css";
-import { useNavigate } from "react-router-dom";
-
-import Grid from "@mui/material/Grid";
->>>>>>> frontend
 
 import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
@@ -27,9 +19,7 @@ import { checkValidation } from "../../store/checkValidationSlice";
 import { getMemeberId } from "../../store/memberSlice";
 
 const MainPage = () => {
-  const dispatch = useDispatch();
   const studies = useSelector((state) => state.studies);
-
   const mounted = useRef(false);
   const dispatch = useDispatch();
 
@@ -46,11 +36,10 @@ const MainPage = () => {
     }
   }, [memberId]);
 
-  const studies = [{}];
   return (
     <div>
       <Button variant="outlined">Outlined</Button>
-      <Checkbox {...label} defaultChecked />
+      <Checkbox defaultChecked />
       <p>모집 중인 스터디만 보기</p>
       <Box
         className="searchbox"
