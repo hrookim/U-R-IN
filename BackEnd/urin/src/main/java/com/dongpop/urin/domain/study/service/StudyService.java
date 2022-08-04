@@ -81,6 +81,7 @@ public class StudyService {
         int dDay = (int) Duration.between(LocalDate.now().atStartOfDay(),
                 study.getExpirationDate().atStartOfDay()).toDays();
         dDay = dDay > 36500 ? -1 : dDay;
+        LocalDate expirationDate = dDay < 0 ? null : study.getExpirationDate();
 
         return StudyDetailDto.builder()
                 .id(study.getId())
@@ -89,6 +90,7 @@ public class StudyService {
                 .memberCapacity(study.getMemberCapacity())
                 .currentMember(study.getParticipants().size())
                 .status(study.getStatus())
+                .expirationDate(expirationDate)
                 .dDay(dDay)
                 .isOnair(study.isOnair())
                 .participants(dtos)

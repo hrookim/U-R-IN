@@ -5,6 +5,7 @@ import com.dongpop.urin.domain.study.repository.StudyStatus;
 import lombok.Builder;
 import lombok.Data;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Builder
@@ -16,6 +17,7 @@ public class StudyDetailDto {
     private int memberCapacity;
     private int currentMember;
     private StudyStatus status;
+    private LocalDate expirationDate;
     private int dDay;
     private Boolean isOnair;
     private List<ParticipantDto> participants;
