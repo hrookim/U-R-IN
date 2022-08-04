@@ -3,12 +3,16 @@ package com.dongpop.urin.domain.study.repository;
 import com.dongpop.urin.domain.common.entity.BaseTimeEntity;
 import com.dongpop.urin.domain.member.repository.Member;
 import com.dongpop.urin.domain.participant.repository.Participant;
+import com.dongpop.urin.global.error.errorcode.StudyErrorCode;
+import com.dongpop.urin.global.error.exception.CustomException;
 import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.dongpop.urin.global.error.errorcode.StudyErrorCode.*;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -56,6 +60,11 @@ public class Study extends BaseTimeEntity {
     public void updateStudyInfo(String title, String notice, int memberCapacity, LocalDate expirationDate) {
         this.title = title;
         this.notice = notice;
+        if (expirationDate == null) {
+            expirationDate = LocalDate.of(2222, 1, 1);
+        } else if (expirationDate.isBefore(LocalDate.now())) {
+            throw new CustomException(IMPOSSIBLE_SET_EXPIRATION_DATE_BEFORE_TODAY);
+        }
         this.expirationDate = expirationDate;
         this.memberCapacity = memberCapacity;
     }

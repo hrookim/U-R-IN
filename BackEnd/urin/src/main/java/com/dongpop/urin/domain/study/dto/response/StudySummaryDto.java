@@ -4,6 +4,7 @@ import com.dongpop.urin.domain.study.repository.StudyStatus;
 import lombok.Builder;
 import lombok.Data;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Builder
 @Data

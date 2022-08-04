@@ -32,9 +32,11 @@ public class StudyController {
 
     @GetMapping
     public ResponseEntity<StudyListDto> getStudyList(@PageableDefault(size=24) Pageable pageable,
-                                                     String keyword) {
+                                                     String keyword, Boolean isRecruiting) {
+        log.info("[StudyList Parameters] : pageable = {}, keyword = {}, isRecruiting = {}",
+                pageable, keyword, isRecruiting);
         return ResponseEntity.ok()
-                .body(studyService.getStudyList(pageable, keyword));
+                .body(studyService.getStudyList(pageable, keyword, isRecruiting));
     }
 
     @GetMapping("/{studyId}")
