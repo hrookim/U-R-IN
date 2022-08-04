@@ -89,6 +89,7 @@ public class StudyService {
                 .memberCapacity(study.getMemberCapacity())
                 .currentMember(study.getParticipants().size())
                 .status(study.getStatus())
+                .expirationDate(study.getExpirationDate())
                 .dDay(dDay)
                 .isOnair(study.isOnair())
                 .participants(dtos)
@@ -127,7 +128,9 @@ public class StudyService {
         Study study = studyRepository.findById(studyId)
                 .orElseThrow(() -> new CustomException(STUDY_DOES_NOT_EXIST));
 
-        if (study.getStudyLeader().getId() == member.getId()) {
+        if (study.getStudyLeader().getId() != member.getId()) {
+            log.info("Edit can only leader, leaderId = {}, memberId = {}",
+                    study.getStudyLeader().getId(), member.getId());
             throw new CustomException(POSSIBLE_ONLY_LEADER);
         }
         if (study.getParticipants().size() > studyData.getMemberCapacity()) {

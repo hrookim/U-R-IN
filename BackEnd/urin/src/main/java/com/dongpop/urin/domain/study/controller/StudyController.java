@@ -43,7 +43,6 @@ public class StudyController {
                 .body(studyService.getStudyDetail(studyId));
     }
 
-    //TODO: 날짜 받는 양식 정하기!!
     @PostMapping
     public ResponseEntity<StudyIdDto> generateStudy(@Validated @RequestBody StudyDataDto studyData,
                                                     @AuthenticationPrincipal MemberPrincipal memberPrincipal) {
