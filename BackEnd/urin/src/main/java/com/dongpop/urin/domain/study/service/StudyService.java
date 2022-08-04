@@ -20,6 +20,7 @@ import org.springframework.util.StringUtils;
 import javax.transaction.Transactional;
 import java.time.Duration;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -39,7 +40,7 @@ public class StudyService {
      * 스터디 summary 리스트 (검색, 페이징)
      */
     @Transactional
-    public StudyListDto getStudyList(Pageable pageable, String keyword) {
+    public StudyListDto getStudyList(Pageable pageable, String keyword, Boolean isRecruiting) {
         Page<Study> pages = null;
         if (StringUtils.hasText(keyword))
             pages = studyRepository.findSearchAllStudy(keyword, pageable);
@@ -47,7 +48,7 @@ public class StudyService {
             pages = studyRepository.findAllStudy(pageable);
 
         if (pages.isEmpty()) {
-            throw new CustomException(STUDY_DOES_NOT_EXIST);
+            return new StudyListDto(0, new ArrayList<StudySummaryDto>());
         }
         List<StudySummaryDto> studyList = pages.toList().stream().map(s ->
                 StudySummaryDto.builder()
