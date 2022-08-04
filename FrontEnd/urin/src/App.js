@@ -25,6 +25,7 @@ const App = () => {
 
   const dispatch = useDispatch();
   const validation = useSelector((state) => state.validation);
+  // const memberId = useSelector((state) => state.member.memberId);
 
   // useParams는 react-router와 관련
   // 현재 위치가 /study/:studyId이기 때문에
@@ -35,7 +36,9 @@ const App = () => {
   // useEffect의 두번째 인자:
   // 없는 경우, 빈 배열, 배열 안에 의존값 => https://react.vlpt.us/basic/16-useEffect.html
   useEffect(() => {
-    dispatch(checkValidation(memberId));
+    if (localStorage.getItem("accessToken")) {
+      dispatch(checkValidation(memberId));
+    }
   }, []);
 
   // const [studyId, setStudyId] = useState(1);

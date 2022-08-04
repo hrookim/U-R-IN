@@ -10,12 +10,9 @@ export const checkValidation = createAsyncThunk(
   "CHECK_VALIDATION",
   async (memberId) => {
     try {
-      console.log("로그인 여부 가져오는 중");
-      console.log(memberId);
       const response = await axiosInstance.get(`member/${memberId}/validation`);
       return response.data;
     } catch (err) {
-      console.log("=================================================", err);
       return isRejectedWithValue(err.response.data);
     }
   }
