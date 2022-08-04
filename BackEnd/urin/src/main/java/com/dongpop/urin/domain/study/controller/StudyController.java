@@ -49,6 +49,7 @@ public class StudyController {
         log.info("[REQUEST] >>>>> Create Study / studyData : {}", studyData);
         Member member = memberPrincipal.getMember();
         log.info("memberId = {}, memberNickName = {}", member.getId(), member.getNickname());
+        log.info("[Binding Generate Study Data] : studyDataDto = {}", studyData);
         StudyIdDto studyIdDto = studyService.generateStudy(studyData, member);
         URI location = URI.create(ROOTURI + studyIdDto.getStudyId());
 

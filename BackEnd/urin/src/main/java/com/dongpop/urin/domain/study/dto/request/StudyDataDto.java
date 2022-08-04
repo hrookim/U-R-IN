@@ -23,7 +23,7 @@ public class StudyDataDto {
     @Size(min=1, message = "내용을 입력해주세요.")
     private String notice;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "Asia/Seoul")
-    private LocalDate expiredDate;
+    private LocalDate expirationDate;
     @Max(6)
     private int memberCapacity;
 }
