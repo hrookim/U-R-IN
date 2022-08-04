@@ -102,8 +102,8 @@ public class StudyService {
     @Transactional
     public StudyIdDto generateStudy(StudyDataDto studyData, Member member) {
         log.info("memberId : {}, studyData : {}", member.getId(), studyData);
-        LocalDate expirationDate = studyData.getExpiredDate() != null ?
-                studyData.getExpiredDate() : LocalDate.of(2222, 1, 1);
+        LocalDate expirationDate = studyData.getExpirationDate() != null ?
+                studyData.getExpirationDate() : LocalDate.of(2222, 1, 1);
         Study study = studyRepository.save(Study.builder()
                 .title(studyData.getTitle())
                 .notice(studyData.getNotice())
@@ -141,7 +141,7 @@ public class StudyService {
         }
 
         study.updateStudyInfo(studyData.getTitle(), studyData.getNotice(),
-                studyData.getMemberCapacity(), studyData.getExpiredDate());
+                studyData.getMemberCapacity(), studyData.getExpirationDate());
         return new StudyIdDto(studyId);
     }
 
