@@ -12,7 +12,6 @@ const LandingPage = () => {
 
   return (
     <div>
-      <NavComponent />
       <p className="font-80 font-xl">면접을 위한 새로운 경험</p>
       <p className="font-80 font-xl">IMG(오픈비두 완성되면 그 화면 캡쳐)</p>
       <p className="font-40 font-sm">

@@ -1,10 +1,6 @@
 /* eslint-disable react/jsx-props-no-spreading */
 
-import React, { useEffect } from "react";
-import "./index.css";
-import { useNavigate } from "react-router-dom";
-
-import Grid from "@mui/material/Grid";
+import React, { useEffect, useRef } from "react";
 
 import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
@@ -17,41 +13,34 @@ import { Button, CardActionArea, CardActions } from "@mui/material";
 import Pagination from "@mui/material/Pagination";
 import Stack from "@mui/material/Stack";
 import { useDispatch, useSelector } from "react-redux";
-import NavComponent from "../../components/Navbar";
 import Footer from "../../components/Footer";
 import { getStudyList } from "../../store/studyListSlice";
+import { checkValidation } from "../../store/checkValidationSlice";
+import { getMemeberId } from "../../store/memberSlice";
 
 const MainPage = () => {
-  const dispatch = useDispatch();
   const studies = useSelector((state) => state.studies);
-
-  const [checked, setChecked] = React.useState(true);
-
-  const handleChange = (event) => {
-    setChecked(event.target.checked);
-    dispatch(getStudyList());
-  };
+  const mounted = useRef(false);
+  const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(getStudyList());
+    dispatch(getMemeberId());
   }, []);
 
-  const navigate = useNavigate();
-  const toStudyCreation = () => {
-    navigate(`/study/create`);
-  };
+  const memberId = useSelector((state) => state.member.id);
+  useEffect(() => {
+    if (!mounted.current) {
+      mounted.current = true;
+    } else {
+      dispatch(checkValidation(memberId));
+    }
+  }, [memberId]);
+
   return (
     <div>
-      <NavComponent />
-      <Button variant="outlined" onClick={toStudyCreation}>
-        스터디 만들기
-      </Button>
-      <Checkbox
-        checked={checked}
-        onChange={handleChange}
-        inputProps={{ "aria-label": "controlled" }}
-      />{" "}
-      <span className="font-40 font-xs">모집 중인 스터디만 보기</span>
+      <Button variant="outlined">Outlined</Button>
+      <Checkbox defaultChecked />
+      <p>모집 중인 스터디만 보기</p>
       <Box
         className="searchbox"
         component="form"
