@@ -1,13 +1,14 @@
 import React from "react";
 import axios from "axios";
+
 import {
   createAsyncThunk,
   createSlice,
   isRejectedWithValue,
 } from "@reduxjs/toolkit";
 
-export const checkValidation = createAsyncThunk(
-  "CHECK_VALIDATION",
+export const getMemeberId = createAsyncThunk(
+  "GET_MEMBERID",
   async (memberId) => {
     try {
       const BASE_URL = process.env.REACT_APP_BACK_BASE_URL;
@@ -24,8 +25,7 @@ export const checkValidation = createAsyncThunk(
         ] = `Bearer ${localStorage.getItem("accessToken")}`;
       }
 
-      const response = await axiosInstance.get(`member/${memberId}/validation`);
-
+      const response = await axiosInstance.get(`member/me`);
       return response.data;
     } catch (err) {
       alert("잘못된 접근입니다. 제대로 로그인해주세요.");
@@ -34,17 +34,19 @@ export const checkValidation = createAsyncThunk(
   }
 );
 
-const checkValidationSlice = createSlice({
-  name: "validation",
+const memberSlice = createSlice({
+  name: "memeber",
 
   initialState: {
-    validation: false,
+    id: 0,
+    memberName: "Unknown",
+    nickname: "Unknown",
   },
   reducers: {},
 
   extraReducers: {
-    [checkValidation.fulfilled]: (state, { payload }) => payload,
+    [getMemeberId.fulfilled]: (state, { payload }) => payload,
   },
 });
 
-export default checkValidationSlice.reducer;
+export default memberSlice.reducer;

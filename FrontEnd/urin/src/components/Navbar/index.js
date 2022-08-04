@@ -17,6 +17,7 @@ import {
 import { NotificationsNone, Logout } from "@mui/icons-material/";
 
 import logoImg from "../../assets/images/logo_img.png";
+import Logoutfunction from "../../pages/Logout/index";
 
 const NavComponent = () => {
   const location = useLocation();
@@ -117,12 +118,14 @@ const NavComponent = () => {
                   </MenuItem>
                   <Divider />
                   <MenuItem>어떠한 정보 스터디 참여횟수랄지</MenuItem>
-                  <MenuItem>
-                    <ListItemIcon>
-                      <Logout fontSize="small" />
-                    </ListItemIcon>
-                    Logout
-                  </MenuItem>
+                  <Link to="/logout">
+                    <MenuItem>
+                      <ListItemIcon>
+                        <Logout fontSize="small" />
+                      </ListItemIcon>
+                      Logout
+                    </MenuItem>
+                  </Link>
                 </Menu>
               </div>{" "}
               <Navbar.Toggle aria-controls="basic-navbar-nav" />

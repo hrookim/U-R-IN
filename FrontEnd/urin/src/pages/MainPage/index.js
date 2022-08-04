@@ -1,6 +1,6 @@
 /* eslint-disable react/jsx-props-no-spreading */
 
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 
 import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
@@ -16,16 +16,28 @@ import Stack from "@mui/material/Stack";
 import { useDispatch, useSelector } from "react-redux";
 import Footer from "../../components/Footer";
 import { getStudyList } from "../../store/studyListSlice";
+import { checkValidation } from "../../store/checkValidationSlice";
+import { getMemeberId } from "../../store/memberSlice";
 
 const MainPage = () => {
   const label = { inputProps: { "aria-label": "Checkbox demo" } };
 
-  // const dispatch = useDispatch();
-  // const studies = useSelector((state) => state.studies);
-  // useEffect(() => {
-  //   dispatch(getStudyList());
-  // }, []);
-  // console.log(studies);
+  const mounted = useRef(false);
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(getMemeberId());
+  }, []);
+
+  const memberId = useSelector((state) => state.member.id);
+  useEffect(() => {
+    if (!mounted.current) {
+      mounted.current = true;
+    } else {
+      dispatch(checkValidation(memberId));
+    }
+  }, [memberId]);
+
   const studies = [{}];
   return (
     <div>
