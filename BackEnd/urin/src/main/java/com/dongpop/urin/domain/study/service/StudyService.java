@@ -130,6 +130,8 @@ public class StudyService {
                 .orElseThrow(() -> new CustomException(STUDY_DOES_NOT_EXIST));
 
         if (study.getStudyLeader().getId() == member.getId()) {
+            log.info("Edit can only leader, leaderId = {}, memberId = {}",
+                    study.getStudyLeader().getId(), member.getId());
             throw new CustomException(POSSIBLE_ONLY_LEADER);
         }
         if (study.getParticipants().size() > studyData.getMemberCapacity()) {
