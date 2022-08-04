@@ -12,10 +12,10 @@ const DetailInquiry = () => {
   const dispatch = useDispatch();
   const { studyId } = useParams();
   const inquiry = useSelector((state) => state.inquiry);
-
-  useEffect(() => {
-    dispatch(getInquiry(studyId));
-  }, []);
+  console.log(inquiry);
+  // useEffect(() => {
+  //   dispatch(getInquiry(studyId));
+  // }, []);
 
   return (
     <div>

@@ -7,7 +7,7 @@ import feedReducer from "./feedSlice";
 
 const rootReducer = combineReducers({
   study: studyReducer,
-  studyList: studyListReducer,
+  studies: studyListReducer,
   inquiry: inquiryReducer,
   feed: feedReducer,
 });
