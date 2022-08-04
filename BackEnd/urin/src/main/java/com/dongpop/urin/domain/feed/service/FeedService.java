@@ -10,8 +10,6 @@ import com.dongpop.urin.domain.feed.repository.FeedRepository;
 import com.dongpop.urin.domain.member.repository.Member;
 import com.dongpop.urin.domain.study.repository.Study;
 import com.dongpop.urin.domain.study.repository.StudyRepository;
-import com.dongpop.urin.global.error.errorcode.CommonErrorCode;
-import com.dongpop.urin.global.error.errorcode.StudyErrorCode;
 import com.dongpop.urin.global.error.exception.CustomException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -22,11 +20,11 @@ import javax.transaction.Transactional;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
-import static com.dongpop.urin.global.error.errorcode.CommonErrorCode.*;
-import static com.dongpop.urin.global.error.errorcode.StudyErrorCode.*;
+import static com.dongpop.urin.global.error.errorcode.CommonErrorCode.DO_NOT_HAVE_AUTHORIZATION;
+import static com.dongpop.urin.global.error.errorcode.CommonErrorCode.NO_SUCH_ELEMENTS;
+import static com.dongpop.urin.global.error.errorcode.StudyErrorCode.STUDY_DOES_NOT_EXIST;
 
 @RequiredArgsConstructor
 @Service
@@ -95,7 +93,14 @@ public class FeedService {
 
     @Transactional
     public void deleteFeed(Member member, int studyId, int feedId) {
-        Feed feed = checkWriterAuthorizaion(member, feedId);
+        Feed feed = feedRepository.findById(feedId)
+                .orElseThrow(() -> new CustomException(NO_SUCH_ELEMENTS));
+        Study study = studyRepository.findById(studyId)
+                .orElseThrow(() -> new CustomException(STUDY_DOES_NOT_EXIST));
+
+        if (member.getId() != feed.getWriter().getId() && member.getId() != study.getStudyLeader().getId()) {
+            throw new CustomException(DO_NOT_HAVE_AUTHORIZATION);
+        }
         feed.deleteFeed();
     }
     private Feed checkWriterAuthorizaion(Member member, int feedId) {
