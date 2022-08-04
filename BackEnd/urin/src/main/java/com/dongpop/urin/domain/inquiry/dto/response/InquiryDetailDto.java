@@ -1,16 +1,13 @@
-package com.dongpop.urin.domain.feed.dto.response;
+package com.dongpop.urin.domain.inquiry.dto.response;
 
 import lombok.Builder;
 import lombok.Data;
 import lombok.Getter;
 
-import javax.persistence.GeneratedValue;
-import java.util.List;
-
 @Builder
 @Data
-public class FeedDetailDto {
-    private int feedId;
+public class InquiryDetailDto {
+    private int inquiryId;
     private String contents;
     private String createdAt;
     private boolean isDeleted;

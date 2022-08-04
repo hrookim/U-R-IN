@@ -34,7 +34,7 @@ public class MemberController {
 
     @GetMapping("/{memberId}/validation")
     public ResponseEntity<MemberValidDto> checkValidMember(@PathVariable int memberId,
-                                              @AuthenticationPrincipal MemberPrincipal memberPrincipal) {
+                                                           @AuthenticationPrincipal MemberPrincipal memberPrincipal) {
         if (memberPrincipal.getMember().getId() != memberId) {
             //TODO: Exception 401 변경
             throw new RuntimeException();

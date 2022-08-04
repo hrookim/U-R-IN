@@ -114,9 +114,9 @@ public class StudyService {
                 .build());
 
         participantRepository.save(Participant.builder()
-                        .member(member)
-                        .study(study)
-                        .isLeader(true).build());
+                .member(member)
+                .study(study)
+                .isLeader(true).build());
 
         return new StudyIdDto(study.getId());
     }

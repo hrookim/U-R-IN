@@ -54,13 +54,13 @@ public class FeedService {
 
             List<FeedDetailDto> children = f.getChildren().stream()
                     .map(c ->
-                        FeedDetailDto.builder()
-                                .feedId(c.getId())
-                                .contents(c.isDeleted() ? DELETE_MESSAGE : c.getContents())
-                                .writerId(c.getWriter().getId())
-                                .writer(c.getWriter().getNickname())
-                                .createdAt(c.getCreatedAt().format(DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm:ss")))
-                                .isDeleted(c.isDeleted()).build()
+                            FeedDetailDto.builder()
+                                    .feedId(c.getId())
+                                    .contents(c.isDeleted() ? DELETE_MESSAGE : c.getContents())
+                                    .writerId(c.getWriter().getId())
+                                    .writer(c.getWriter().getNickname())
+                                    .createdAt(c.getCreatedAt().format(DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm:ss")))
+                                    .isDeleted(c.isDeleted()).build()
                     ).collect(Collectors.toList());
 
             feedList.add(new FeedDto(parent, children));

@@ -1,4 +1,4 @@
-package com.dongpop.urin.domain.feed.dto.response;
+package com.dongpop.urin.domain.inquiry.dto.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -8,7 +8,7 @@ import java.util.List;
 
 @AllArgsConstructor
 @Data
-public class FeedListDto {
+public class InquiryListDto {
     private int totalPages;
-    private List<FeedDto> feedList;
+    private List<InquiryDto> inquiryList;
 }

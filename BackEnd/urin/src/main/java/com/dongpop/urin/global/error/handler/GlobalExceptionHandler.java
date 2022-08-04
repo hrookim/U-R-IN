@@ -35,7 +35,7 @@ public class GlobalExceptionHandler {
         bindingResult.getAllErrors().forEach(c -> {
             validationErrorCode.setMessage(c.getDefaultMessage());
             validationErrorCode.setParameter(((FieldError)c).getField());
-                  });
+        });
         return ErrorResponse.toResponseEntity(validationErrorCode);
     }
 
