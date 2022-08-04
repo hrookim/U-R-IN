@@ -1,6 +1,14 @@
 /* eslint-disable react/jsx-props-no-spreading */
 
+<<<<<<< HEAD
 import React, { useEffect, useRef } from "react";
+=======
+import React, { useEffect } from "react";
+import "./index.css";
+import { useNavigate } from "react-router-dom";
+
+import Grid from "@mui/material/Grid";
+>>>>>>> frontend
 
 import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
@@ -8,7 +16,6 @@ import Checkbox from "@mui/material/Checkbox";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import CardMedia from "@mui/material/CardMedia";
-import Typography from "@mui/material/Typography";
 import SearchIcon from "@mui/icons-material/Search";
 import { Button, CardActionArea, CardActions } from "@mui/material";
 import Pagination from "@mui/material/Pagination";
@@ -20,7 +27,8 @@ import { checkValidation } from "../../store/checkValidationSlice";
 import { getMemeberId } from "../../store/memberSlice";
 
 const MainPage = () => {
-  const label = { inputProps: { "aria-label": "Checkbox demo" } };
+  const dispatch = useDispatch();
+  const studies = useSelector((state) => state.studies);
 
   const mounted = useRef(false);
   const dispatch = useDispatch();
@@ -45,6 +53,7 @@ const MainPage = () => {
       <Checkbox {...label} defaultChecked />
       <p>모집 중인 스터디만 보기</p>
       <Box
+        className="searchbox"
         component="form"
         sx={{
           "& > :not(style)": { m: 1, width: "25ch" },
@@ -55,9 +64,8 @@ const MainPage = () => {
         <TextField id="outlined-basic" label="Outlined" variant="outlined" />
       </Box>
       <SearchIcon />
-
-      {studies.map((item, index) => (
-        <Card sx={{ maxWidth: 345 }}>
+      {studies.studyList.map((item) => (
+        <Card key={item.id} className="card">
           <CardActionArea>
             <CardMedia
               component="img"
@@ -66,12 +74,11 @@ const MainPage = () => {
               alt="green iguana"
             />
             <CardContent>
-              <Typography gutterBottom variant="h5" component="div">
-                {item.title}
-              </Typography>
-              <Typography variant="body2" color="text.secondary">
-                {item.status}
-              </Typography>
+              <p className="font-70 font-md card-title">{item.title}</p>
+              <p className="font-30 font-xs card-status">
+                {item.status}&nbsp;&nbsp;&nbsp;&nbsp;{item.currentMember} /{" "}
+                {item.memberCapacity}
+              </p>
             </CardContent>
           </CardActionArea>
           <CardActions>

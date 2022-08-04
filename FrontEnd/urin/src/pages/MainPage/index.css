@@ -1,0 +1,17 @@
+.searchbox{
+  display: inline;
+}
+
+.card{
+  width: 240px;
+
+}
+
+.card-title{
+  margin: 0 0 0 0;
+}
+
+.card-status{
+  display: flex;
+  justify-content: end;
+}
