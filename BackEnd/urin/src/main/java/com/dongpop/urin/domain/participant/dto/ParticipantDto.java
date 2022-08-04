@@ -1,10 +1,21 @@
 package com.dongpop.urin.domain.participant.dto;
 
-import lombok.Getter;
+import lombok.Builder;
+import lombok.Data;
 
-@Getter
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
+
+@Builder
+@Data
 public class ParticipantDto {
+    @Positive
     private int id;
+    @Positive
+    private int memberId;
+    @NotBlank
     private String nickname;
-    private boolean isLeader;
+    @NotNull
+    private Boolean isLeader;
 }
