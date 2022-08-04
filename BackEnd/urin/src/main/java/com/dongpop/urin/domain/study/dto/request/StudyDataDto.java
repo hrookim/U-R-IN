@@ -21,6 +21,6 @@ public class StudyDataDto {
     private String notice;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "Asia/Seoul")
     private LocalDate expirationDate;
-    @Min(1) @Max(6)
+    @Min(2) @Max(4)
     private int memberCapacity;
 }
