@@ -93,14 +93,7 @@ public class FeedService {
 
     @Transactional
     public void deleteFeed(Member member, int studyId, int feedId) {
-        Feed feed = feedRepository.findById(feedId)
-                .orElseThrow(() -> new CustomException(NO_SUCH_ELEMENTS));
-        Study study = studyRepository.findById(studyId)
-                .orElseThrow(() -> new CustomException(STUDY_DOES_NOT_EXIST));
-
-        if (member.getId() != feed.getWriter().getId() && member.getId() != study.getStudyLeader().getId()) {
-            throw new CustomException(DO_NOT_HAVE_AUTHORIZATION);
-        }
+        Feed feed = checkWriterAuthorizaion(member, studyId, feedId);
         feed.deleteFeed();
     }
     private Feed checkWriterAuthorizaion(Member member, int feedId) {
@@ -108,6 +101,18 @@ public class FeedService {
                 .orElseThrow(() -> new CustomException(NO_SUCH_ELEMENTS));
 
         if (member.getId() != feed.getWriter().getId()) {
+            throw new CustomException(DO_NOT_HAVE_AUTHORIZATION);
+        }
+        return feed;
+    }
+
+    private Feed checkWriterAuthorizaion(Member member, int studyId, int feedId) {
+        Feed feed = feedRepository.findById(feedId)
+                .orElseThrow(() -> new CustomException(NO_SUCH_ELEMENTS));
+        Study study = studyRepository.findById(studyId)
+                .orElseThrow(() -> new CustomException(STUDY_DOES_NOT_EXIST));
+
+        if (!(member.getId() == feed.getWriter().getId() || member.getId() == study.getStudyLeader().getId())) {
             throw new CustomException(DO_NOT_HAVE_AUTHORIZATION);
         }
         return feed;
