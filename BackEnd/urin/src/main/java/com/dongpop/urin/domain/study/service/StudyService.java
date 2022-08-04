@@ -41,11 +41,7 @@ public class StudyService {
      */
     @Transactional
     public StudyListDto getStudyList(Pageable pageable, String keyword, Boolean isRecruiting) {
-        Page<Study> pages = null;
-        if (StringUtils.hasText(keyword))
-            pages = studyRepository.findSearchAllStudy(keyword, pageable);
-        else
-            pages = studyRepository.findAllStudy(pageable);
+        Page<Study> pages = studyRepository.findStudyList(keyword, isRecruiting, pageable);
 
         if (pages.isEmpty()) {
             return new StudyListDto(0, new ArrayList<StudySummaryDto>());
