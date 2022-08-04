@@ -6,12 +6,12 @@ import { OpenVidu } from "openvidu-browser";
 import StreamComponent from "../../components/OpenVidu/stream";
 import DialogExtensionComponent from "../../components/OpenVidu/dialog-extension";
 import ChatComponent from "../../components/OpenVidu/chat";
+import FeedbackComponent from "../../components/OpenVidu/feedback";
 import ToolbarComponent from "../../components/OpenVidu/toolbar";
 
-import OpenViduLayout from "./layout/openvidu-layout";
 import UserModel from "./models/user-model";
 
-import "./index.css";
+// import "./index.css";
 
 var localUser = new UserModel();
 
@@ -21,7 +21,6 @@ class VideoRoomComponent extends Component {
     this.OPENVIDU_SERVER_URL = process.env.REACT_APP_OPENVIDU_SERVER_URL;
     this.OPENVIDU_SERVER_SECRET = process.env.REACT_APP_OPENVIDU_SERVER_SECRET;
     this.hasBeenUpdated = false;
-    this.layout = new OpenViduLayout();
     let sessionName = this.props.sessionName
       ? this.props.sessionName
       : "SessionA";
@@ -37,13 +36,13 @@ class VideoRoomComponent extends Component {
       localUser: undefined,
       subscribers: [],
       chatDisplay: "none",
+      feedbackDisplay: "none",
       currentVideoDevice: undefined,
     };
 
     this.joinSession = this.joinSession.bind(this);
     this.leaveSession = this.leaveSession.bind(this);
     this.onbeforeunload = this.onbeforeunload.bind(this);
-    this.updateLayout = this.updateLayout.bind(this);
     this.camStatusChanged = this.camStatusChanged.bind(this);
     this.micStatusChanged = this.micStatusChanged.bind(this);
     this.nicknameChanged = this.nicknameChanged.bind(this);
@@ -53,38 +52,19 @@ class VideoRoomComponent extends Component {
     this.stopScreenShare = this.stopScreenShare.bind(this);
     this.closeDialogExtension = this.closeDialogExtension.bind(this);
     this.toggleChat = this.toggleChat.bind(this);
+    this.toggleFeedback = this.toggleFeedback.bind(this);
     this.checkNotification = this.checkNotification.bind(this);
-    this.checkSize = this.checkSize.bind(this);
+    // this.updateLayout = this.updateLayout.bind(this);
+    // this.checkSize = this.checkSize.bind(this);
   }
 
   componentDidMount() {
-    const openViduLayoutOptions = {
-      maxRatio: 3 / 2, // The narrowest ratio that will be used (default 2x3)
-      minRatio: 9 / 16, // The widest ratio that will be used (default 16x9)
-      fixedRatio: false, // If this is true then the aspect ratio of the video is maintained and minRatio and maxRatio are ignored (default false)
-      bigClass: "OV_big", // The class to add to elements that should be sized bigger
-      bigPercentage: 0.8, // The maximum percentage of space the big ones should take up
-      bigFixedRatio: false, // fixedRatio for the big ones
-      bigMaxRatio: 3 / 2, // The narrowest ratio to use for the big elements (default 2x3)
-      bigMinRatio: 9 / 16, // The widest ratio to use for the big elements (default 16x9)
-      bigFirst: true, // Whether to place the big one in the top left (true) or bottom right
-      animate: true, // Whether you want to animate the transitions
-    };
-
-    this.layout.initLayoutContainer(
-      document.getElementById("layout"),
-      openViduLayoutOptions
-    );
     window.addEventListener("beforeunload", this.onbeforeunload);
-    window.addEventListener("resize", this.updateLayout);
-    window.addEventListener("resize", this.checkSize);
     this.joinSession();
   }
 
   componentWillUnmount() {
     window.removeEventListener("beforeunload", this.onbeforeunload);
-    window.removeEventListener("resize", this.updateLayout);
-    window.removeEventListener("resize", this.checkSize);
     this.leaveSession();
   }
 
@@ -168,7 +148,7 @@ class VideoRoomComponent extends Component {
       videoSource: videoDevices[0].deviceId,
       publishAudio: localUser.isAudioActive(),
       publishVideo: localUser.isVideoActive(),
-      resolution: "640x480",
+      resolution: "480x360",
       frameRate: 30,
       insertMode: "APPEND",
     });
@@ -198,7 +178,6 @@ class VideoRoomComponent extends Component {
       { currentVideoDevice: videoDevices[0], localUser: localUser },
       () => {
         this.state.localUser.getStreamManager().on("streamPlaying", (e) => {
-          this.updateLayout();
           publisher.videos[0].video.parentElement.classList.remove(
             "custom-class"
           );
@@ -222,7 +201,6 @@ class VideoRoomComponent extends Component {
             isScreenShareActive: this.state.localUser.isScreenShareActive(),
           });
         }
-        this.updateLayout();
       }
     );
   }
@@ -316,7 +294,6 @@ class VideoRoomComponent extends Component {
         this.checkSomeoneShareScreen();
       }, 20);
       event.preventDefault();
-      this.updateLayout();
     });
   }
 
@@ -348,12 +325,6 @@ class VideoRoomComponent extends Component {
         () => this.checkSomeoneShareScreen()
       );
     });
-  }
-
-  updateLayout() {
-    setTimeout(() => {
-      this.layout.updateLayout();
-    }, 20);
   }
 
   sendSignalUserChanged(data) {
@@ -472,7 +443,6 @@ class VideoRoomComponent extends Component {
       });
     });
     publisher.on("streamPlaying", () => {
-      this.updateLayout();
       publisher.videos[0].video.parentElement.classList.remove("custom-class");
     });
   }
@@ -492,20 +462,19 @@ class VideoRoomComponent extends Component {
     isScreenShared =
       this.state.subscribers.some((user) => user.isScreenShareActive()) ||
       localUser.isScreenShareActive();
-    const openviduLayoutOptions = {
-      maxRatio: 3 / 2,
-      minRatio: 9 / 16,
-      fixedRatio: isScreenShared,
-      bigClass: "OV_big",
-      bigPercentage: 0.8,
-      bigFixedRatio: false,
-      bigMaxRatio: 3 / 2,
-      bigMinRatio: 9 / 16,
-      bigFirst: true,
-      animate: true,
-    };
-    this.layout.setLayoutOptions(openviduLayoutOptions);
-    this.updateLayout();
+    // const openviduLayoutOptions = {
+    //   maxRatio: 3 / 2,
+    //   minRatio: 9 / 16,
+    //   fixedRatio: isScreenShared,
+    //   bigClass: "OV_big",
+    //   bigPercentage: 0.8,
+    //   bigFixedRatio: false,
+    //   bigMaxRatio: 3 / 2,
+    //   bigMinRatio: 9 / 16,
+    //   bigFirst: true,
+    //   animate: true,
+    // };
+    // this.layout.setLayoutOptions(openviduLayoutOptions);
   }
 
   toggleChat(property) {
@@ -520,28 +489,26 @@ class VideoRoomComponent extends Component {
       console.log("chat", display);
       this.setState({ chatDisplay: display });
     }
-    this.updateLayout();
+  }
+
+  toggleFeedback(property) {
+    let displayF = property;
+
+    if (displayF === undefined) {
+      displayF = this.state.feedbackDisplay === "none" ? "block" : "none";
+    }
+    if (displayF === "block") {
+      this.setState({ feedbackDisplay: displayF });
+    } else {
+      console.log("feedback", displayF);
+      this.setState({ feedbackDisplay: displayF });
+    }
   }
 
   checkNotification(event) {
     this.setState({
       messageReceived: this.state.chatDisplay === "none",
     });
-  }
-  checkSize() {
-    if (
-      document.getElementById("layout").offsetWidth <= 700 &&
-      !this.hasBeenUpdated
-    ) {
-      this.toggleChat("none");
-      this.hasBeenUpdated = true;
-    }
-    if (
-      document.getElementById("layout").offsetWidth > 700 &&
-      this.hasBeenUpdated
-    ) {
-      this.hasBeenUpdated = false;
-    }
   }
 
   render() {
@@ -551,6 +518,68 @@ class VideoRoomComponent extends Component {
 
     return (
       <div className="container" id="container">
+        {/* 비디오 영역 */}
+        <div className="row">
+          <div className="col d-flex flex-wrap">
+            {localUser !== undefined &&
+              localUser.getStreamManager() !== undefined && (
+                <div
+                  className="OT_root OT_publisher custom-class p-2"
+                  id="localUser"
+                >
+                  <StreamComponent
+                    user={localUser}
+                    handleNickname={this.nicknameChanged}
+                  />
+                </div>
+              )}
+            {this.state.subscribers.map((sub, i) => (
+              <div
+                key={i}
+                className="OT_root OT_publisher custom-class p-2"
+                id="remoteUsers"
+              >
+                <StreamComponent
+                  user={sub}
+                  streamId={sub.streamManager.stream.streamId}
+                />
+              </div>
+            ))}
+          </div>
+          {(this.state.feedbackDisplay !== "none") |
+            (this.state.chatDisplay !== "none") && (
+            <div className="col-3">
+              {/* 피드백 영역 */}
+              {localUser !== undefined &&
+                localUser.getStreamManager() !== undefined && (
+                  <div>
+                    <FeedbackComponent
+                      feedbackDisplay={this.state.feedbackDisplay}
+                      close={this.toggleFeedback}
+                    />
+                  </div>
+                )}
+
+              {/* 채팅창 영역 */}
+              {localUser !== undefined &&
+                localUser.getStreamManager() !== undefined && (
+                  <div
+                    className="OT_root OT_publisher custom-class"
+                    style={chatDisplay}
+                  >
+                    <ChatComponent
+                      user={localUser}
+                      chatDisplay={this.state.chatDisplay}
+                      close={this.toggleChat}
+                      messageReceived={this.checkNotification}
+                    />
+                  </div>
+                )}
+            </div>
+          )}
+        </div>
+
+        {/* 툴바 영역 */}
         <ToolbarComponent
           sessionId={mySessionId}
           user={localUser}
@@ -563,50 +592,13 @@ class VideoRoomComponent extends Component {
           switchCamera={this.switchCamera}
           leaveSession={this.leaveSession}
           toggleChat={this.toggleChat}
+          toggleFeedback={this.toggleFeedback}
         />
 
         <DialogExtensionComponent
           showDialog={this.state.showExtensionDialog}
           cancelClicked={this.closeDialogExtension}
         />
-
-        <div id="layout" className="bounds">
-          {localUser !== undefined &&
-            localUser.getStreamManager() !== undefined && (
-              <div className="OT_root OT_publisher custom-class" id="localUser">
-                <StreamComponent
-                  user={localUser}
-                  handleNickname={this.nicknameChanged}
-                />
-              </div>
-            )}
-          {this.state.subscribers.map((sub, i) => (
-            <div
-              key={i}
-              className="OT_root OT_publisher custom-class"
-              id="remoteUsers"
-            >
-              <StreamComponent
-                user={sub}
-                streamId={sub.streamManager.stream.streamId}
-              />
-            </div>
-          ))}
-          {localUser !== undefined &&
-            localUser.getStreamManager() !== undefined && (
-              <div
-                className="OT_root OT_publisher custom-class"
-                style={chatDisplay}
-              >
-                <ChatComponent
-                  user={localUser}
-                  chatDisplay={this.state.chatDisplay}
-                  close={this.toggleChat}
-                  messageReceived={this.checkNotification}
-                />
-              </div>
-            )}
-        </div>
       </div>
     );
   }
