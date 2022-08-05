@@ -1,22 +1,14 @@
 import React, { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { useParams } from "react-router-dom";
+// import { useDispatch, useSelector } from "react-redux"; FIXME: 강퇴 기능에서 필요함!
+// import { useParams } from "react-router-dom";
 
 import { Avatar, Typography } from "@mui/material";
 import { faCrown } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-import { getStudy } from "../../store/studySlice";
+import { leaveStudy } from "../../store/studySlice";
 
-const DetailInfo = () => {
-  const dispatch = useDispatch();
-  const { studyId } = useParams();
-  const study = useSelector((state) => state.study);
-
-  useEffect(() => {
-    dispatch(getStudy(studyId));
-  }, []);
-
+const DetailInfo = ({ study }) => {
   return (
     <div>
       <div>
@@ -30,10 +22,9 @@ const DetailInfo = () => {
             <Avatar>{participant.nickname[0]}</Avatar>
             <span>
               {participant.nickname}
-              {/* TODO: leader vs isLeader? */}
-              {participant.leader && <FontAwesomeIcon icon={faCrown} />}
+              {participant.isLeader && <FontAwesomeIcon icon={faCrown} />}
             </span>
-            {/* TODO: 강퇴버튼 - 로그인 한 유저가 방장이라면 강퇴기능 추가 */}
+            {/* TODO: 강퇴버튼 - 로그인 한 유저가 방장이라면 강퇴기능 추가, 버튼 클릭시 leaveStudy걸기 */}
           </div>
         ))}
       </div>

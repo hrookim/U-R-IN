@@ -1,11 +1,87 @@
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import axiosInstance from "../api";
+import axios from "axios";
+import {
+  createAsyncThunk,
+  createSlice,
+  isRejectedWithValue,
+} from "@reduxjs/toolkit";
 
 export const getInquiry = createAsyncThunk("GET_INQUIRY", async (studyId) => {
   console.log("문의사항 가져오는 중");
-  const response = await axiosInstance.get(`studies/${studyId}/inquiry`);
+  const response = await axios.get(
+    `${process.env.REACT_APP_BACK_BASE_URL}studies/${studyId}/inquiry`,
+    {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+      },
+    }
+  );
   return response.data;
 });
+
+// 인콰이어리 생성하기 FIXME: 생성 후 새로 store에 추가를 해야함, 댓글형성도 같이 이뤄짐
+export const createInquiry = createAsyncThunk(
+  "CREATE_INQUIRY",
+  async (studyId, form) => {
+    try {
+      const response = await axios.post(
+        `${process.env.REACT_APP_BACK_BASE_URL}studies/${studyId}/inquiry`,
+        form,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+          },
+        }
+      );
+      return response.data;
+    } catch (err) {
+      console.log(err);
+      return isRejectedWithValue(err.response.data);
+    }
+  }
+);
+
+// 인콰이어리 수정하기 FIXME: feedId를 잡아야 한다!
+export const updateInquiry = createAsyncThunk(
+  "UPDATE_INQUIRY",
+  async ({ studyId, inquiryId, form }) => {
+    try {
+      const response = await axios.put(
+        `${process.env.REACT_APP_BACK_BASE_URL}studies/${studyId}/inquiry/${inquiryId}`,
+        form,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+          },
+        }
+      );
+      return response.data;
+    } catch (err) {
+      console.log(err);
+      return isRejectedWithValue(err.response.data);
+    }
+  }
+);
+
+// 인콰이어리 삭제하기 FIXME:
+export const deleteInquiry = createAsyncThunk(
+  "DELETE_INQUIRY",
+  async ({ studyId, inquiryId }) => {
+    try {
+      const response = await axios.delete(
+        `${process.env.REACT_APP_BACK_BASE_URL}studies/${studyId}/inquiry/${inquiryId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+          },
+        }
+      );
+      return response.data;
+    } catch (err) {
+      console.log(err);
+      return isRejectedWithValue(err.response.data);
+    }
+  }
+);
 
 const inquirySlice = createSlice({
   name: "inquiry",
@@ -32,7 +108,7 @@ const inquirySlice = createSlice({
         },
       },
     ],
-    totalPages: 0,
+    totalPages: 1,
   },
   reducers: {},
   extraReducers: {

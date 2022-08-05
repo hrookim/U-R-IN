@@ -85,25 +85,37 @@
 
 
 /* Font Size */
+.font-xxs {
+  font-size: 12px;
+}
 
 .font-xs {
   font-size: 14px;
 }
 
 .font-sm {
-  font-size: 19px;
+  font-size: 16px;
+
 }
 
 .font-md {
-  font-size: 32px;
+  font-size: 19px;
+
 }
 
 .font-lg {
-  font-size: 48px;
+  font-size: 32px;
+
 }
 
 .font-xl {
+  font-size: 48px;
+
+}
+
+.font-xxl {
   font-size: 72px;
+
 }
 
 

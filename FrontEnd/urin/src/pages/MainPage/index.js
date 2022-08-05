@@ -1,6 +1,6 @@
 /* eslint-disable react/jsx-props-no-spreading */
 
-import React from "react";
+import React, { useEffect, useRef } from "react";
 
 import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
@@ -8,26 +8,41 @@ import Checkbox from "@mui/material/Checkbox";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import CardMedia from "@mui/material/CardMedia";
-import Typography from "@mui/material/Typography";
 import SearchIcon from "@mui/icons-material/Search";
 import { Button, CardActionArea, CardActions } from "@mui/material";
 import Pagination from "@mui/material/Pagination";
 import Stack from "@mui/material/Stack";
-
-import NavComponent from "../../components/Navbar";
-
-const studyArr = [{ 1: 1 }, { 2: 2 }];
-
-const label = { inputProps: { "aria-label": "Checkbox demo" } };
+import { useDispatch, useSelector } from "react-redux";
+import Footer from "../../components/Footer";
+import { getStudyList } from "../../store/studyListSlice";
+import { checkValidation } from "../../store/checkValidationSlice";
+import { getMemeberId } from "../../store/memberSlice";
 
 const MainPage = () => {
+  const studies = useSelector((state) => state.studies);
+  const mounted = useRef(false);
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(getMemeberId());
+  }, []);
+
+  const memberId = useSelector((state) => state.member.id);
+  useEffect(() => {
+    if (!mounted.current) {
+      mounted.current = true;
+    } else {
+      dispatch(checkValidation(memberId));
+    }
+  }, [memberId]);
+
   return (
     <div>
-      <NavComponent />
       <Button variant="outlined">Outlined</Button>
-      <Checkbox {...label} defaultChecked />
+      <Checkbox defaultChecked />
       <p>모집 중인 스터디만 보기</p>
       <Box
+        className="searchbox"
         component="form"
         sx={{
           "& > :not(style)": { m: 1, width: "25ch" },
@@ -38,9 +53,8 @@ const MainPage = () => {
         <TextField id="outlined-basic" label="Outlined" variant="outlined" />
       </Box>
       <SearchIcon />
-
-      {studyArr.map((index, item) => (
-        <Card sx={{ maxWidth: 345 }}>
+      {studies.studyList.map((item) => (
+        <Card key={item.id} className="card">
           <CardActionArea>
             <CardMedia
               component="img"
@@ -49,13 +63,11 @@ const MainPage = () => {
               alt="green iguana"
             />
             <CardContent>
-              <Typography gutterBottom variant="h5" component="div">
-                Lizard
-              </Typography>
-              <Typography variant="body2" color="text.secondary">
-                Lizards are a widespread group of squamate reptiles, with over
-                6,000 species, ranging across all continents except Antarctica
-              </Typography>
+              <p className="font-70 font-md card-title">{item.title}</p>
+              <p className="font-30 font-xs card-status">
+                {item.status}&nbsp;&nbsp;&nbsp;&nbsp;{item.currentMember} /{" "}
+                {item.memberCapacity}
+              </p>
             </CardContent>
           </CardActionArea>
           <CardActions>
@@ -68,6 +80,7 @@ const MainPage = () => {
       <Stack spacing={2}>
         <Pagination count={10} />
       </Stack>
+      <Footer />
     </div>
   );
 };

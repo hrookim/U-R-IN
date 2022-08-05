@@ -1,16 +1,45 @@
-import React, { useState } from "react";
-import { Button, Grid, TextField } from "@mui/material";
+import React, { useState, useEffect } from "react";
+import moment from "moment";
+import {
+  Button,
+  Grid,
+  TextField,
+  Checkbox,
+  FormControlLabel,
+} from "@mui/material";
 import DatePicker from "react-datepicker";
 import { ko } from "date-fns/esm/locale";
 import "react-datepicker/dist/react-datepicker.css";
+import { useDispatch } from "react-redux";
+import { Link, useNavigate } from "react-router-dom";
+import { createStudy } from "../../store/studySlice";
 
 const StudyCreationForm = () => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
   const [form, setForm] = useState({
     title: "",
-    contents: "",
-    expiredDate: "",
+    notice: "",
+    expirationDate: "",
     memberCapacity: "",
   });
+  const [formDate, setFormDate] = useState(new Date());
+  const [disable, setDisable] = useState(false);
+
+  useEffect(() => {
+    if (disable) {
+      setForm({
+        ...form,
+        expirationDate: null,
+      });
+    } else {
+      setForm({
+        ...form,
+        expirationDate: moment(formDate).format("YYYY-MM-DD"),
+      });
+    }
+  }, [disable]);
 
   const onChange = (e) => {
     const { name, value } = e.target;
@@ -22,9 +51,11 @@ const StudyCreationForm = () => {
   };
 
   const onSubmit = (e) => {
-    alert("제출이 완료되었습니다!");
+    alert("스터디 생성이 완료되었습니다:)");
     e.preventDefault();
-    // 나중에 createStudy 함수로 연동시켜야 한다.
+    dispatch(createStudy({ form, navigate })).then((res) => {
+      navigate(`/study/${res.payload.studyId}`);
+    });
   };
 
   return (
@@ -39,28 +70,47 @@ const StudyCreationForm = () => {
               label="Title"
               type="text"
               onChange={onChange}
+              required
             />
           </Grid>
           <Grid item>
             <TextField
               style={{ width: "400px", margin: "5px" }}
               type="text"
-              label="Contents"
-              name="contents"
+              label="Notice"
+              name="notice"
               variant="outlined"
               multiline
               rows={10}
               onChange={onChange}
+              required
             />
           </Grid>
           <Grid item>
             <DatePicker
+              disabled={disable}
               locale={ko}
-              format="yyyy-MM-dd"
-              onChange={(date) =>
-                setForm({ ...form, expiredDate: date.toLocaleDateString() })
+              dateFormat="yyyy/MM/dd"
+              minDate={moment().toDate()}
+              selected={formDate}
+              onChange={(date) => {
+                setFormDate(date);
+                setForm({
+                  ...form,
+                  expirationDate: moment(date).format("YYYY-MM-DD"),
+                });
+              }}
+              required
+            />
+            <FormControlLabel
+              label="종료일 없음"
+              control={
+                <Checkbox
+                  onChange={() => {
+                    setDisable(!disable);
+                  }}
+                />
               }
-              inline
             />
           </Grid>
 
@@ -71,6 +121,7 @@ const StudyCreationForm = () => {
               label="Member Capacity"
               type="number"
               onChange={onChange}
+              required
             />
           </Grid>
 
@@ -85,6 +136,14 @@ const StudyCreationForm = () => {
               }}
             >
               Submit
+            </Button>
+            <Button
+              color="secondary"
+              component={Link}
+              to="/"
+              className="font-40"
+            >
+              취소
             </Button>
           </Grid>
         </Grid>

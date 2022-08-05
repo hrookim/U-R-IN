@@ -1,17 +1,72 @@
-import React, { useState } from "react";
-import { Button, Grid, TextField } from "@mui/material";
+import React, { useState, useEffect } from "react";
+import moment from "moment";
+import { useDispatch, useSelector } from "react-redux";
+import { useParams, useNavigate, Link } from "react-router-dom";
+import {
+  Button,
+  Grid,
+  TextField,
+  Checkbox,
+  FormControlLabel,
+} from "@mui/material";
 import DatePicker from "react-datepicker";
 import { ko } from "date-fns/esm/locale";
 import "react-datepicker/dist/react-datepicker.css";
+import { getStudy, updateStudy } from "../../store/studySlice";
 
 const StudyUpdateForm = () => {
+  const { studyId } = useParams();
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const study = useSelector((state) => state.study);
   const [form, setForm] = useState({
-    title: "삼성전자 면접 스터디",
-    contents: "SSAFY 출신들만 함께해요! 삼전 가즈아!!!!!",
-    expiredDate: "2022-08-02",
-    memberCapacity: "6",
+    title: "",
+    notice: "",
+    expirationDate: "",
+    memberCapacity: "",
   });
-  const formatDate = new Date(form.expiredDate);
+  const [formDate, setFormDate] = useState(new Date());
+  const [disable, setDisable] = useState(false);
+
+  useEffect(() => {
+    if (disable) {
+      setForm({
+        ...form,
+        expirationDate: null,
+      });
+    } else {
+      setForm({
+        ...form,
+        expirationDate: moment(formDate).format("YYYY-MM-DD"),
+      });
+    }
+  }, [disable]);
+
+  useEffect(() => {
+    dispatch(getStudy(studyId));
+    const { title, notice, expirationDate, memberCapacity, dday } = study;
+
+    if (dday === -1) {
+      const formatDate = new Date();
+      setForm({
+        title,
+        notice,
+        expirationDate: moment(formatDate).format("YYYY-MM-DD"),
+        memberCapacity,
+      });
+      setFormDate(formatDate);
+      setDisable(true);
+    } else {
+      const formatDate = new Date(expirationDate);
+      setForm({
+        title,
+        notice,
+        expirationDate: moment(formatDate).format("YYYY-MM-DD"),
+        memberCapacity,
+      });
+      setFormDate(formatDate);
+    }
+  }, []);
 
   const onChange = (e) => {
     const { name, value } = e.target;
@@ -23,9 +78,11 @@ const StudyUpdateForm = () => {
   };
 
   const onSubmit = (e) => {
-    alert("제출이 완료되었습니다!");
+    alert("수정이 완료되었습니다!");
     e.preventDefault();
-    // 나중에 updateStudy 함수로 연동시켜야 한다.
+    dispatch(updateStudy({ studyId, form, navigate })).then((res) => {
+      navigate(`/study/${res.payload.studyId}`);
+    });
   };
 
   return (
@@ -45,11 +102,11 @@ const StudyUpdateForm = () => {
           </Grid>
           <Grid item>
             <TextField
-              value={form.contents}
+              value={form.notice}
               style={{ width: "400px", margin: "5px" }}
               type="text"
-              label="Contents"
-              name="contents"
+              label="Notice"
+              name="notice"
               variant="outlined"
               multiline
               rows={10}
@@ -58,10 +115,30 @@ const StudyUpdateForm = () => {
           </Grid>
           <Grid item>
             <DatePicker
-              selected={formatDate}
+              disabled={disable}
               locale={ko}
-              onChange={(date) => setForm({ ...form, expiredDate: date })}
-              inline
+              dateFormat="yyyy/MM/dd"
+              minDate={moment().toDate()}
+              selected={formDate}
+              onChange={(date) => {
+                setFormDate(date);
+                setForm({
+                  ...form,
+                  expirationDate: moment(date).format("YYYY-MM-DD"),
+                });
+              }}
+              required
+            />
+            <FormControlLabel
+              label="종료일 없음"
+              control={
+                <Checkbox
+                  checked={disable}
+                  onChange={() => {
+                    setDisable(!disable);
+                  }}
+                />
+              }
             />
           </Grid>
 
@@ -87,6 +164,14 @@ const StudyUpdateForm = () => {
               }}
             >
               Submit
+            </Button>
+            <Button
+              color="secondary"
+              component={Link}
+              to={`/study/${studyId}`}
+              className="font-40"
+            >
+              취소
             </Button>
           </Grid>
         </Grid>

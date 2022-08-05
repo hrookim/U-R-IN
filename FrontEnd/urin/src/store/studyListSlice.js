@@ -2,12 +2,12 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axiosInstance from "../api";
 
 export const getStudyList = createAsyncThunk("GET_STUDY_LIST", async () => {
-  console.log("스터디 가져오는 중");
   const response = await axiosInstance.get(`studies/`);
+
   return response.data;
 });
 
-const studySlice = createSlice({
+const studyListSlice = createSlice({
   name: "studies",
   initialState: {
     studyList: [
@@ -19,7 +19,7 @@ const studySlice = createSlice({
         title: "string",
       },
     ],
-    totalPages: 0,
+    totalPages: 1,
   },
   reducers: {},
   extraReducers: {
@@ -27,4 +27,4 @@ const studySlice = createSlice({
   },
 });
 
-export default studySlice.reducer;
+export default studyListSlice.reducer;
