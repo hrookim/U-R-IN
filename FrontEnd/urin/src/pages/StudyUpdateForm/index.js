@@ -27,7 +27,20 @@ const StudyUpdateForm = () => {
   });
   const [formDate, setFormDate] = useState(new Date());
   const [disable, setDisable] = useState(false);
-  const [defaultCheck, setDefaultCheck] = useState(false);
+
+  useEffect(() => {
+    if (disable) {
+      setForm({
+        ...form,
+        expirationDate: null,
+      });
+    } else {
+      setForm({
+        ...form,
+        expirationDate: moment(formDate).format("YYYY-MM-DD"),
+      });
+    }
+  }, [disable]);
 
   useEffect(() => {
     dispatch(getStudy(studyId));
@@ -35,13 +48,22 @@ const StudyUpdateForm = () => {
 
     if (dday === -1) {
       const formatDate = new Date();
-      setForm({ title, notice, expirationDate: formatDate, memberCapacity });
+      setForm({
+        title,
+        notice,
+        expirationDate: moment(formatDate).format("YYYY-MM-DD"),
+        memberCapacity,
+      });
       setFormDate(formatDate);
       setDisable(true);
-      setDefaultCheck(true);
     } else {
       const formatDate = new Date(expirationDate);
-      setForm({ title, notice, expirationDate: formatDate, memberCapacity });
+      setForm({
+        title,
+        notice,
+        expirationDate: moment(formatDate).format("YYYY-MM-DD"),
+        memberCapacity,
+      });
       setFormDate(formatDate);
     }
   }, []);
@@ -58,7 +80,9 @@ const StudyUpdateForm = () => {
   const onSubmit = (e) => {
     alert("수정이 완료되었습니다!");
     e.preventDefault();
-    dispatch(updateStudy({ studyId, form, navigate }));
+    dispatch(updateStudy({ studyId, form, navigate })).then((res) => {
+      navigate(`/study/${res.payload.studyId}`);
+    });
   };
 
   return (
@@ -109,14 +133,9 @@ const StudyUpdateForm = () => {
               label="종료일 없음"
               control={
                 <Checkbox
-                  checked={defaultCheck}
+                  checked={disable}
                   onChange={() => {
                     setDisable(!disable);
-                    setDefaultCheck(!defaultCheck);
-                    setForm({
-                      ...form,
-                      expirationDate: null,
-                    });
                   }}
                 />
               }
