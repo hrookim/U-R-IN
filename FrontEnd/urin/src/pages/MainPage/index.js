@@ -7,25 +7,21 @@ import { useDispatch, useSelector } from "react-redux";
 
 import SearchIcon from "@mui/icons-material/Search";
 import {
-  Box,
   Button,
   Card,
   CardActionArea,
-  CardActions,
   CardContent,
   CardMedia,
   Checkbox,
   FormControlLabel,
   Grid,
-  IconButton,
   Pagination,
   Stack,
-  TextField,
 } from "@mui/material";
 import Footer from "../../components/Footer";
 import { getStudyList } from "../../store/studyListSlice";
 import { checkValidation } from "../../store/checkValidationSlice";
-import { getMemeberId } from "../../store/memberSlice";
+import { getMemberId } from "../../store/memberSlice";
 
 const MainPage = () => {
   const navigate = useNavigate();
@@ -41,22 +37,20 @@ const MainPage = () => {
 
   const [checked, setChecked] = React.useState(true);
 
-  const checkedChange = (event) => {
-    console.log(checked);
-    setChecked(event.target.checked);
+  const checkedChange = (e) => {
+    setChecked(e.target.checked);
   };
 
-  const inputwordChange = (event) => {
-    event.preventDefault();
-    setInputword(event.target.value);
+  const inputwordChange = (e) => {
+    setInputword(e.target.value);
   };
 
-  const keywordChange = (event) => {
-    event.preventDefault();
+  const keywordChange = (e) => {
+    e.preventDefault();
     setKeyword(inputword);
   };
 
-  const pageChange = (event, value) => {
+  const pageChange = (e, value) => {
     setPage(value);
   };
 
@@ -65,8 +59,7 @@ const MainPage = () => {
   };
 
   useEffect(() => {
-    dispatch(getMemeberId());
-
+    dispatch(getMemberId());
     dispatch(getStudyList([page - 1, checked, keyword]));
   }, [page, checked, keyword]);
 
@@ -110,7 +103,6 @@ const MainPage = () => {
           </Button>
         </div>
       </div>
-
       <Grid container spacing={2}>
         {studies.studyList.map((item) => (
           <Grid item xs={12} sm={6} md={4} lg={3} key={item.id}>
@@ -119,17 +111,8 @@ const MainPage = () => {
               className="card"
               sx={{ border: "none", boxShadow: "1", borderRadius: "20px" }}
             >
-              <Link to={`/study/${item.id}`}>
+              <Link to={`/study/${item.id}`} className="card-link">
                 <CardActionArea>
-                  {/* <CardMedia
-                    className="card-img"
-                    component="img"
-                    height="140"
-                    image={`/img/study_img${Math.floor(
-                      Math.random() * 10
-                    )}.png`}
-                    alt="green iguana"
-                  /> */}
                   <CardMedia
                     className="card-img"
                     component="img"

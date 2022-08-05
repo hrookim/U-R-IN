@@ -7,14 +7,8 @@ import axios from "axios";
 
 export const getStudyList = createAsyncThunk("GET_STUDY_LIST", async (arr) => {
   try {
-    console.log("스터디 가져오는 중");
-    console.log(arr);
-    console.log(
-      `${process.env.REACT_APP_BACK_BASE_URL}/studies?page=${arr[0]}&size=24&sort=id,desc&isRecruiting=${arr[1]}&keyword=${arr[2]}`
-    );
-
     const response = await axios.get(
-      `${process.env.REACT_APP_BACK_BASE_URL}/studies?page=${arr[0]}&size=24&sort=id,desc&isRecruiting=${arr[1]}&keyword=${arr[2]}`,
+      `${process.env.REACT_APP_BACK_BASE_URL}studies?page=${arr[0]}&size=24&sort=id,desc&isRecruiting=${arr[1]}&keyword=${arr[2]}`,
       {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
