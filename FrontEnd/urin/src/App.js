@@ -12,6 +12,7 @@ import StudyCreationForm from "./pages/StudyCreationForm";
 import StudyUpdateForm from "./pages/StudyUpdateForm";
 import Login from "./pages/Login";
 import Logout from "./pages/Logout";
+import Meeting from "./pages/Meeting";
 import PrivateRoute from "./components/PrivateRoute/PrivateRoute";
 import PublicRoute from "./components/PublicRoute/PublicRoute";
 import NavComponent from "./components/Navbar";
@@ -71,6 +72,8 @@ const App = () => {
           path="/study/:studyId/meeting/:meetingId"
           element={<Meeting />}
         /> */}
+        {/* FIXME: 임시 meeting 페이지 */}
+        <Route path="/meeting" element={<Meeting />} />
         <Route
           path="/intro"
           element={
