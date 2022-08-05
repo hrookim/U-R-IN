@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { getMemeberId } from "../../store/memberSlice";
+import { getMemberId } from "../../store/memberSlice";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -13,7 +13,7 @@ const Login = () => {
     if (token) {
       localStorage.setItem("accessToken", token);
       (async () => {
-        await dispatch(getMemeberId());
+        await dispatch(getMemberId());
         navigate("/");
       })();
     } else {
