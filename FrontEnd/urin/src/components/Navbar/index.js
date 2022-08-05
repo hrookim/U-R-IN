@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import "./index.css";
 import "../../assets/DesignSystem.css";
 import { useLocation, Link } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 import { Container, Nav, Navbar } from "react-bootstrap/";
 import {
@@ -17,12 +18,13 @@ import {
 import { NotificationsNone, Logout } from "@mui/icons-material/";
 
 import logoImg from "../../assets/images/logo_img.png";
-import Logoutfunction from "../../pages/Logout/index";
 
 const NavComponent = () => {
   const location = useLocation();
 
   const [token, setToken] = useState(localStorage.getItem("access_token"));
+
+  const memberName = useSelector((state) => state.member.nickname);
 
   useEffect(() => {
     setToken(localStorage.getItem("access_token"));
@@ -74,7 +76,9 @@ const NavComponent = () => {
                       aria-haspopup="true"
                       aria-expanded={open ? "true" : undefined}
                     >
-                      <Avatar sx={{ width: 32, height: 32 }}>M</Avatar>
+                      <Avatar sx={{ bgcolor: "#0037FA" }}>
+                        {memberName[0]}
+                      </Avatar>
                     </IconButton>
                   </Tooltip>
                 </Box>
@@ -114,11 +118,11 @@ const NavComponent = () => {
                   anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
                 >
                   <MenuItem>
-                    <Avatar /> 000님 안녕하세요!
+                    <b className="font-50 font-md">{memberName}&nbsp;</b>
+                    <span className="font-30">님 안녕하세요!</span>
                   </MenuItem>
                   <Divider />
-                  <MenuItem>어떠한 정보 스터디 참여횟수랄지</MenuItem>
-                  <Link to="/logout">
+                  <Link to="/logout" className="btn-logout">
                     <MenuItem>
                       <ListItemIcon>
                         <Logout fontSize="small" />
@@ -127,7 +131,7 @@ const NavComponent = () => {
                     </MenuItem>
                   </Link>
                 </Menu>
-              </div>{" "}
+              </div>
               <Navbar.Toggle aria-controls="basic-navbar-nav" />
             </div>
           </Container>
