@@ -72,7 +72,7 @@ const MainPage = () => {
   }, [memberId]);
 
   return (
-    <div>
+    <div className="main-page">
       <div className="header">
         <div>
           <form className="searchbar-form">
@@ -105,11 +105,25 @@ const MainPage = () => {
       </div>
       <Grid container spacing={2}>
         {studies.studyList.map((item) => (
-          <Grid item xs={12} sm={6} md={4} lg={3} key={item.id}>
+          <Grid
+            item
+            xs={12}
+            sm={6}
+            md={4}
+            lg={3}
+            xl={4}
+            key={item.id}
+            className="card-item"
+          >
             <Card
               key={item.id}
               className="card"
-              sx={{ border: "none", boxShadow: "1", borderRadius: "20px" }}
+              sx={{
+                border: "none",
+                boxShadow: "1",
+                borderRadius: "20px",
+                minWidth: "500px",
+              }}
             >
               <Link to={`/study/${item.id}`} className="card-link">
                 <CardActionArea>

@@ -45,6 +45,9 @@ export const createStudy = createAsyncThunk(
       const { studyId } = response.data;
       return response.data;
     } catch (err) {
+      console.log(
+        "-==============================================================================i;"
+      );
       console.log(err);
       return isRejectedWithValue(err.response.data);
     }
