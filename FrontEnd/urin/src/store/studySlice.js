@@ -1,19 +1,26 @@
-import React from "react";
+import axios from "axios";
 import {
   createAsyncThunk,
   createSlice,
   isRejectedWithValue,
 } from "@reduxjs/toolkit";
-import axiosInstance from "../api";
 
 // FIXME: navigate를 하고 싶다면, component에서 받아와야 한다! 자세한 코드는 createStudy 참조
+// TODO: git branch 이름 변경: fix -> 위의 내용 수정, Studyupdate, create에서 종료일 없음 재 클릭시 갱신안되는 것 수정
 
 // study
 // 스터디 상세 보기
 export const getStudy = createAsyncThunk("GET_STUDY", async (studyId) => {
   try {
     console.log("스터디 가져오는 중");
-    const response = await axiosInstance.get(`studies/${studyId}`);
+    const response = await axios.get(
+      `${process.env.REACT_APP_BACK_BASE_URL}studies/${studyId}`,
+      {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+        },
+      }
+    );
     return response.data;
   } catch (err) {
     console.log(err);
@@ -24,11 +31,18 @@ export const getStudy = createAsyncThunk("GET_STUDY", async (studyId) => {
 // 스터디 생성
 export const createStudy = createAsyncThunk(
   "CREATE_STUDY",
-  async ({ form, navigate }) => {
+  async ({ form }) => {
     try {
-      const response = await axiosInstance.post(`studies/`, form);
+      const response = await axios.post(
+        `${process.env.REACT_APP_BACK_BASE_URL}studies/`,
+        form,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+          },
+        }
+      );
       const { studyId } = response.data;
-      navigate(`/study/${studyId}`);
       return response.data;
     } catch (err) {
       console.log(err);
@@ -40,11 +54,18 @@ export const createStudy = createAsyncThunk(
 // 스터디 정보 수정
 export const updateStudy = createAsyncThunk(
   "UPDATE_STUDY",
-  async ({ studyId, form, navigate }) => {
+  async ({ studyId, form }) => {
     try {
-      const response = await axiosInstance.put(`studies/${studyId}`, form);
+      const response = await axios.put(
+        `${process.env.REACT_APP_BACK_BASE_URL}studies/${studyId}`,
+        form,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+          },
+        }
+      );
       const newStudyId = response.data.studyId;
-      navigate(`/study/${newStudyId}`);
       return response.data;
     } catch (err) {
       console.log(err);
@@ -58,9 +79,15 @@ export const changeStudyStatus = createAsyncThunk(
   "CHANGE_STUDY_STATUS",
   async (studyId, status) => {
     try {
-      const response = await axiosInstance.patch(`studies/${studyId}`, {
+      const response = await axios.patch(
+        `${process.env.REACT_APP_BACK_BASE_URL}studies/${studyId}`,
         status,
-      });
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+          },
+        }
+      );
       return response.data;
     } catch (err) {
       console.log(err);
@@ -73,8 +100,13 @@ export const changeStudyStatus = createAsyncThunk(
 // 스터디 가입 FIXME: 내가 스터디원인지 확인 필요 detailHeader
 export const joinStudy = createAsyncThunk("JOIN_STUDY", async (studyId) => {
   try {
-    const response = await axiosInstance.post(
-      `studies/${studyId}/participants`
+    const response = await axios.post(
+      `${process.env.REACT_APP_BACK_BASE_URL}studies/${studyId}/participants`,
+      {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+        },
+      }
     );
     return response.data;
   } catch (err) {
@@ -83,14 +115,19 @@ export const joinStudy = createAsyncThunk("JOIN_STUDY", async (studyId) => {
   }
 });
 
-// 스터디 참가자 삭제 FIXME: 이 기능은... 어느페이지에서 구현되는 기능일까요
+// 스터디 참가자 삭제 FIXME: 분기는 백에서 처리하고 있음!
 // TODO: 스스로 나가는 것과 강퇴 구분 필요, 함수를 나눠야 할 수도 있음
 export const leaveStudy = createAsyncThunk(
   "LEAVE_STUDY",
   async (studyId, participantsId) => {
     try {
-      const response = await axiosInstance.delete(
-        `studies/${studyId}/participants/${participantsId}`
+      const response = await axios.delete(
+        `${process.env.REACT_APP_BACK_BASE_URL}studies/${studyId}/participants/${participantsId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+          },
+        }
       );
       return response.data;
     } catch (err) {
@@ -139,12 +176,12 @@ const studySlice = createSlice({
   extraReducers: {
     [getStudy.fulfilled]: (state, { payload }) => payload,
     // [createStudy.pending]: (state, {payload}) => {},
-    [createStudy.fulfilled]: (state, { payload }) => {},
+    [createStudy.fulfilled]: (state, { payload }) => {}, // FIXME: 삭제해도 된다. state를 직접 변경하는 경우에만 남겨놓으면 되는 코드
     // TODO
     // [updateStudy.fulfilled]:
     // [changeStudyStatus.fulfilled]:
-    // [joinStudy.fulfilled]:
-    // [leaveStudy.fulfilled]:
+    // [joinStudy.fulfilled]: // FIXME: redirect해서 study 상세를 갱신하는 것으로
+    // [leaveStudy.fulfilled]: FIXME: redirect해서 study 상세를 갱신하는 것으로
   },
 });
 
