@@ -2,7 +2,9 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axiosInstance from "../api";
 
 export const getStudyList = createAsyncThunk("GET_STUDY_LIST", async () => {
+  console.log("hello");
   const response = await axiosInstance.get(`studies/`);
+  console.log("hello");
 
   return response.data;
 });

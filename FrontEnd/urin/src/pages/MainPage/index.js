@@ -1,11 +1,10 @@
 /* eslint-disable react/jsx-props-no-spreading */
 
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import "./index.css";
 import { useNavigate, Link } from "react-router-dom";
 
 import Grid from "@mui/material/Grid";
-
 import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
 import Checkbox from "@mui/material/Checkbox";
@@ -17,22 +16,17 @@ import { Button, CardActionArea, CardActions } from "@mui/material";
 import Pagination from "@mui/material/Pagination";
 import Stack from "@mui/material/Stack";
 import { useDispatch, useSelector } from "react-redux";
-import NavComponent from "../../components/Navbar";
 import Footer from "../../components/Footer";
 import { getStudyList } from "../../store/studyListSlice";
+import { checkValidation } from "../../store/checkValidationSlice";
+import { getMemeberId } from "../../store/memberSlice";
 
 const MainPage = () => {
-  const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const studies = useSelector((state) => state.studies);
-
-  const [checked, setChecked] = React.useState(true);
-
-  const handleChange = (event) => {
-    setChecked(event.target.checked);
-    dispatch(getStudyList());
-  };
+  const mounted = useRef(false);
+  const dispatch = useDispatch();
 
   const [page, setPage] = React.useState(1);
   const pageChange = (event, value) => {
@@ -41,31 +35,65 @@ const MainPage = () => {
   };
 
   useEffect(() => {
-    dispatch(getStudyList());
+    dispatch(getMemeberId());
   }, []);
 
   const toStudyCreation = () => {
     navigate(`/study/create`);
   };
 
+  // return (
+  //   <div>
+  //     <NavComponent />
+  //     <div className="header">
+  //       <div>
+  //         <Box
+  //           className="searchbox"
+  //           component="form"
+  //           sx={{
+  //             "& > :not(style)": { m: 1, width: "25ch" },
+  //           }}
+  //           noValidate
+  //           autoComplete="off"
+  //         >
+  //           <TextField
+  //             id="outlined-basic"
+  //             label="Outlined"
+  //             variant="outlined"
+  const memberId = useSelector((state) => state.member.id);
+  useEffect(() => {
+    if (!mounted.current) {
+      mounted.current = true;
+    } else {
+      dispatch(checkValidation(memberId));
+    }
+  }, [memberId]);
+
   return (
     <div>
-      <NavComponent />
-      <div className="header">
-        <div>
-          <Box
-            className="searchbox"
-            component="form"
-            sx={{
-              "& > :not(style)": { m: 1, width: "25ch" },
-            }}
-            noValidate
-            autoComplete="off"
-          >
-            <TextField
-              id="outlined-basic"
-              label="Outlined"
-              variant="outlined"
+      {/* <Button variant="outlined">Outlined</Button>
+      <Checkbox defaultChecked />
+      <p>모집 중인 스터디만 보기</p>
+      <Box
+        className="searchbox"
+        component="form"
+        sx={{
+          "& > :not(style)": { m: 1, width: "25ch" },
+        }}
+        noValidate
+        autoComplete="off"
+      >
+        <TextField id="outlined-basic" label="Outlined" variant="outlined" />
+      </Box>
+      <SearchIcon /> */}
+      {/* {studies.studyList.map((item) => (
+        <Card key={item.id} className="card">
+          <CardActionArea>
+            <CardMedia
+              component="img"
+              height="140"
+              image="https://cdn.pixabay.com/photo/2022/05/18/12/04/flower-7205105_960_720.jpg"
+              alt="green iguana"
             />
           </Box>
           <SearchIcon />
@@ -81,7 +109,7 @@ const MainPage = () => {
             스터디 만들기
           </Button>
         </div>
-      </div>
+      </div> */}
       <Grid container spacing={2}>
         {studies.studyList.map((item) => (
           <Grid item xs={12} sm={6} md={4} lg={3} key={item.id}>
