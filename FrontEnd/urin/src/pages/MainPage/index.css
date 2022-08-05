@@ -15,9 +15,14 @@
 
 .card{
   width: 240px;
+  padding: 20px 20px 20px 20px;
 
 }
 
+.card-img{
+  padding: 10px 10px 10px 10px; 
+  box-shadow: 0px 0px 5px rgba(50, 50, 50, 0.2);
+}
 
 .card-title{
   margin: 0 0 0 0;
@@ -26,6 +31,7 @@
 .card-status{
   display: flex;
   justify-content: end;
+  margin-bottom: 0px;
 }
 
 .pagination{

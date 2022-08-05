@@ -28,6 +28,7 @@ export const getMemeberId = createAsyncThunk(
       const response = await axiosInstance.get(`member/me`);
       return response.data;
     } catch (err) {
+      window.location.href = "http://localhost:3000/intro";
       alert("잘못된 접근입니다. 제대로 로그인해주세요.");
       return isRejectedWithValue(err.response.data);
     }

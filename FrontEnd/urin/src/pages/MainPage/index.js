@@ -3,19 +3,25 @@
 import React, { useEffect, useRef } from "react";
 import "./index.css";
 import { useNavigate, Link } from "react-router-dom";
-
-import Grid from "@mui/material/Grid";
-import Box from "@mui/material/Box";
-import TextField from "@mui/material/TextField";
-import Checkbox from "@mui/material/Checkbox";
-import Card from "@mui/material/Card";
-import CardContent from "@mui/material/CardContent";
-import CardMedia from "@mui/material/CardMedia";
-import SearchIcon from "@mui/icons-material/Search";
-import { Button, CardActionArea, CardActions } from "@mui/material";
-import Pagination from "@mui/material/Pagination";
-import Stack from "@mui/material/Stack";
 import { useDispatch, useSelector } from "react-redux";
+
+import SearchIcon from "@mui/icons-material/Search";
+import {
+  Box,
+  Button,
+  Card,
+  CardActionArea,
+  CardActions,
+  CardContent,
+  CardMedia,
+  Checkbox,
+  FormControlLabel,
+  Grid,
+  IconButton,
+  Pagination,
+  Stack,
+  TextField,
+} from "@mui/material";
 import Footer from "../../components/Footer";
 import { getStudyList } from "../../store/studyListSlice";
 import { checkValidation } from "../../store/checkValidationSlice";
@@ -23,44 +29,47 @@ import { getMemeberId } from "../../store/memberSlice";
 
 const MainPage = () => {
   const navigate = useNavigate();
-
-  const studies = useSelector((state) => state.studies);
-  const mounted = useRef(false);
   const dispatch = useDispatch();
 
+  const memberId = useSelector((state) => state.member.id);
+  const studies = useSelector((state) => state.studies);
+  const mounted = useRef(false);
+
   const [page, setPage] = React.useState(1);
-  const pageChange = (event, value) => {
-    setPage(value);
-    dispatch(getStudyList());
+  const [inputword, setInputword] = React.useState("");
+  const [keyword, setKeyword] = React.useState("");
+
+  const [checked, setChecked] = React.useState(true);
+
+  const checkedChange = (event) => {
+    console.log(checked);
+    setChecked(event.target.checked);
   };
 
-  useEffect(() => {
-    dispatch(getMemeberId());
-  }, []);
+  const inputwordChange = (event) => {
+    event.preventDefault();
+    setInputword(event.target.value);
+  };
+
+  const keywordChange = (event) => {
+    event.preventDefault();
+    setKeyword(inputword);
+  };
+
+  const pageChange = (event, value) => {
+    setPage(value);
+  };
 
   const toStudyCreation = () => {
     navigate(`/study/create`);
   };
 
-  // return (
-  //   <div>
-  //     <NavComponent />
-  //     <div className="header">
-  //       <div>
-  //         <Box
-  //           className="searchbox"
-  //           component="form"
-  //           sx={{
-  //             "& > :not(style)": { m: 1, width: "25ch" },
-  //           }}
-  //           noValidate
-  //           autoComplete="off"
-  //         >
-  //           <TextField
-  //             id="outlined-basic"
-  //             label="Outlined"
-  //             variant="outlined"
-  const memberId = useSelector((state) => state.member.id);
+  useEffect(() => {
+    dispatch(getMemeberId());
+
+    dispatch(getStudyList([page - 1, checked, keyword]));
+  }, [page, checked, keyword]);
+
   useEffect(() => {
     if (!mounted.current) {
       mounted.current = true;
@@ -71,59 +80,61 @@ const MainPage = () => {
 
   return (
     <div>
-      {/* <Button variant="outlined">Outlined</Button>
-      <Checkbox defaultChecked />
-      <p>모집 중인 스터디만 보기</p>
-      <Box
-        className="searchbox"
-        component="form"
-        sx={{
-          "& > :not(style)": { m: 1, width: "25ch" },
-        }}
-        noValidate
-        autoComplete="off"
-      >
-        <TextField id="outlined-basic" label="Outlined" variant="outlined" />
-      </Box>
-      <SearchIcon /> */}
-      {/* {studies.studyList.map((item) => (
-        <Card key={item.id} className="card">
-          <CardActionArea>
-            <CardMedia
-              component="img"
-              height="140"
-              image="https://cdn.pixabay.com/photo/2022/05/18/12/04/flower-7205105_960_720.jpg"
-              alt="green iguana"
+      <div className="header">
+        <div>
+          <form className="searchbar-form">
+            <input
+              className="searchbar"
+              type="text"
+              title="Search"
+              onChange={inputwordChange}
             />
-          </Box>
-          <SearchIcon />
-          <Checkbox
-            checked={checked}
-            onChange={handleChange}
-            inputProps={{ "aria-label": "controlled" }}
+            <Button type="submit" className="btn" onClick={keywordChange}>
+              <SearchIcon className="btn-icon" />
+            </Button>
+          </form>
+          <FormControlLabel
+            label="모집 중인 스터디만 보기"
+            control={
+              <Checkbox
+                checked={checked}
+                onChange={checkedChange}
+                inputProps={{ "aria-label": "controlled" }}
+              />
+            }
           />
-          <span className="font-40 font-xs">모집 중인 스터디만 보기</span>
         </div>
         <div>
           <Button variant="outlined" onClick={toStudyCreation}>
             스터디 만들기
           </Button>
         </div>
-      </div> */}
+      </div>
+
       <Grid container spacing={2}>
         {studies.studyList.map((item) => (
           <Grid item xs={12} sm={6} md={4} lg={3} key={item.id}>
-            <Link to={`/study/${item.id}`}>
-              <Card
-                key={item.id}
-                className="card"
-                sx={{ border: "none", boxShadow: "1", borderRadius: "20px" }}
-              >
+            <Card
+              key={item.id}
+              className="card"
+              sx={{ border: "none", boxShadow: "1", borderRadius: "20px" }}
+            >
+              <Link to={`/study/${item.id}`}>
                 <CardActionArea>
-                  <CardMedia
+                  {/* <CardMedia
+                    className="card-img"
                     component="img"
                     height="140"
-                    image="https://cdn.pixabay.com/photo/2022/05/18/12/04/flower-7205105_960_720.jpg"
+                    image={`/img/study_img${Math.floor(
+                      Math.random() * 10
+                    )}.png`}
+                    alt="green iguana"
+                  /> */}
+                  <CardMedia
+                    className="card-img"
+                    component="img"
+                    height="140"
+                    image={`/img/study_img${item.title.length}.png`}
                     alt="green iguana"
                   />
                   <CardContent>
@@ -134,15 +145,15 @@ const MainPage = () => {
                     </p>
                   </CardContent>
                 </CardActionArea>
-              </Card>
-            </Link>
+              </Link>
+            </Card>
           </Grid>
         ))}
       </Grid>
       <Stack spacing={2}>
         <Pagination
           className="pagination"
-          count={10}
+          count={studies.totalPages}
           page={page}
           onChange={pageChange}
         />
