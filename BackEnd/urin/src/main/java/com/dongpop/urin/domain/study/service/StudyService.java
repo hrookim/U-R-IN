@@ -15,7 +15,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
 
 import javax.transaction.Transactional;
 import java.time.Duration;
@@ -41,11 +40,7 @@ public class StudyService {
      */
     @Transactional
     public StudyListDto getStudyList(Pageable pageable, String keyword, Boolean isRecruiting) {
-        Page<Study> pages = null;
-        if (StringUtils.hasText(keyword))
-            pages = studyRepository.findSearchAllStudy(keyword, pageable);
-        else
-            pages = studyRepository.findAllStudy(pageable);
+        Page<Study> pages = studyRepository.findStudyList(keyword, isRecruiting, pageable);
 
         if (pages.isEmpty()) {
             return new StudyListDto(0, new ArrayList<StudySummaryDto>());
@@ -157,10 +152,8 @@ public class StudyService {
         if (study.getParticipants().size() >= study.getMemberCapacity()) {
             throw new CustomException(STUDY_IS_FULL);
         }
-
-        if (study.getParticipants().size() + 1 == study.getMemberCapacity()) {
-            study.updateStatus(StudyStatus.COMPLETED);
-        }
+        checkAlreadyRegistered(member, study);
+        checkStudyStatus(study);
 
         Integer participantId = participantRepository.save(Participant.builder()
                 .study(study)
@@ -184,7 +177,6 @@ public class StudyService {
 
         if (isPossible(deleteParticipant, member.getId(), studyId)) {
             deleteStudyParticipant(study, deleteParticipant);
-            return;
         }
     }
 
@@ -203,6 +195,20 @@ public class StudyService {
         //TODO: 상태변경 가능한 지 체크
         study.updateStatus(status);
         return new StudyStatusDto(studyId, status.name());
+    }
+
+    private void checkAlreadyRegistered(Member member, Study study) {
+        study.getParticipants().forEach((participant) -> {
+            if (participant.getMember().getId() == member.getId()) {
+                throw new CustomException(ALREADY_REGISTERED_MEMBER);
+            }
+        });
+    }
+
+    private void checkStudyStatus(Study study) {
+        if (study.getParticipants().size() + 1 == study.getMemberCapacity()) {
+            study.updateStatus(StudyStatus.COMPLETED);
+        }
     }
 
     private void deleteStudyParticipant(Study study, Participant deleteParticipant) {
