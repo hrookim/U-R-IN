@@ -13,7 +13,7 @@ public enum StudyErrorCode implements ErrorCode {
     CAN_NOT_EDITING_TERMINATED_STUDY(HttpStatus.CONFLICT, "Can't edit terminated study."),
     STUDY_IS_FULL(HttpStatus.CONFLICT, "Study is full."),
     IMPOSSIBLE_SET_EXPIRATION_DATE_BEFORE_TODAY(HttpStatus.CONFLICT, "Expiration Date can't be set before today."),
-
+    ALREADY_REGISTERED_MEMBER(HttpStatus.BAD_REQUEST, "You are already a registered member."),
     ;
     private final HttpStatus httpStatus;
     private final String message;
