@@ -7,7 +7,7 @@ const Login = () => {
   if (token) {
     localStorage.setItem("accessToken", token);
   }
-
+  // TODO: memberMe로 API 요청받으면 현재 User잡을 수 있음
   const navigate = useNavigate();
   useEffect(() => {
     navigate("/");

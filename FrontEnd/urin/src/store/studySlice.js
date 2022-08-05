@@ -40,9 +40,11 @@ export const createStudy = createAsyncThunk(
 // 스터디 정보 수정
 export const updateStudy = createAsyncThunk(
   "UPDATE_STUDY",
-  async (studyId, form) => {
+  async ({ studyId, form, navigate }) => {
     try {
       const response = await axiosInstance.put(`studies/${studyId}`, form);
+      const newStudyId = response.data.studyId;
+      navigate(`/study/${newStudyId}`);
       return response.data;
     } catch (err) {
       console.log(err);
@@ -51,7 +53,7 @@ export const updateStudy = createAsyncThunk(
   }
 );
 
-// 스터디 상태 변경
+// 스터디 상태 변경 FIXME: 내가 리더인지 확인 필요 detailHeader -> 수정으로 props 넘기기 / 종료하기만 처리하면 됨!
 export const changeStudyStatus = createAsyncThunk(
   "CHANGE_STUDY_STATUS",
   async (studyId, status) => {
@@ -68,7 +70,7 @@ export const changeStudyStatus = createAsyncThunk(
 );
 
 // participants
-// 스터디 가입
+// 스터디 가입 FIXME: 내가 스터디원인지 확인 필요 detailHeader
 export const joinStudy = createAsyncThunk("JOIN_STUDY", async (studyId) => {
   try {
     const response = await axiosInstance.post(
@@ -81,7 +83,7 @@ export const joinStudy = createAsyncThunk("JOIN_STUDY", async (studyId) => {
   }
 });
 
-// 스터디 참가자 삭제
+// 스터디 참가자 삭제 FIXME: 이 기능은... 어느페이지에서 구현되는 기능일까요
 // TODO: 스스로 나가는 것과 강퇴 구분 필요, 함수를 나눠야 할 수도 있음
 export const leaveStudy = createAsyncThunk(
   "LEAVE_STUDY",
@@ -106,6 +108,7 @@ const studySlice = createSlice({
   // 빈 객체 보다는 적당히 형태를 잡아두는게 좋음
   initialState: {
     currentMember: 0,
+    expirationDate: "1996-08-28", // 예시
     dday: 0,
     id: 0,
     memberCapacity: 0,

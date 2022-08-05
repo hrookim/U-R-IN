@@ -24,7 +24,11 @@ const DetailHeader = ({ study }) => {
       </Button>
       <div className="font-lg font-60">{study.title}</div>
       <div className="font-40">{study.status}</div>
-      <div className="font-40">{`D-${study.dday}`}</div>
+      {study.dday === -1 ? (
+        <div />
+      ) : (
+        <div className="font-40">{`D-${study.dday}`}</div>
+      )}
 
       {isLeader ? (
         <div className="font-40">
@@ -60,6 +64,3 @@ const DetailHeader = ({ study }) => {
 };
 
 export default DetailHeader;
-// 1. 방장이냐? -> 미팅 시작하기
-// 2. 스터디원이다 (onair에서 두가지로 나뉘고)
-// 3. 스터디원이 아니다. (status 두가지로 나뉘고)
