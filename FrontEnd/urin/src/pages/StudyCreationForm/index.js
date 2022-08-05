@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import moment from "moment";
 import {
   Button,
@@ -27,6 +27,20 @@ const StudyCreationForm = () => {
   const [formDate, setFormDate] = useState(new Date());
   const [disable, setDisable] = useState(false);
 
+  useEffect(() => {
+    if (disable) {
+      setForm({
+        ...form,
+        expirationDate: null,
+      });
+    } else {
+      setForm({
+        ...form,
+        expirationDate: moment(formDate).format("YYYY-MM-DD"),
+      });
+    }
+  }, [disable]);
+
   const onChange = (e) => {
     const { name, value } = e.target;
     setForm({
@@ -39,7 +53,9 @@ const StudyCreationForm = () => {
   const onSubmit = (e) => {
     alert("스터디 생성이 완료되었습니다:)");
     e.preventDefault();
-    dispatch(createStudy({ form, navigate }));
+    dispatch(createStudy({ form, navigate })).then((res) => {
+      navigate(`/study/${res.payload.studyId}`);
+    });
   };
 
   return (
@@ -92,10 +108,6 @@ const StudyCreationForm = () => {
                 <Checkbox
                   onChange={() => {
                     setDisable(!disable);
-                    setForm({
-                      ...form,
-                      expirationDate: null,
-                    });
                   }}
                 />
               }

@@ -1,14 +1,21 @@
+import axios from "axios";
 import {
   createAsyncThunk,
   createSlice,
   isRejectedWithValue,
 } from "@reduxjs/toolkit";
-import axiosInstance from "../api";
 
 // 피드 리스트 불러오기
 export const getFeed = createAsyncThunk("GET_FEED", async (studyId) => {
   console.log("피드 가져오는 중");
-  const response = await axiosInstance.get(`studies/${studyId}/feeds`);
+  const response = await axios.get(
+    `${process.env.REACT_APP_BACK_BASE_URL}studies/${studyId}/feeds`,
+    {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+      },
+    }
+  );
   return response.data;
 });
 
@@ -17,9 +24,14 @@ export const createFeed = createAsyncThunk(
   "CREATE_FEED",
   async (studyId, form) => {
     try {
-      const response = await axiosInstance.post(
-        `studies/${studyId}/feeds`,
-        form
+      const response = await axios.post(
+        `${process.env.REACT_APP_BACK_BASE_URL}studies/${studyId}/feeds`,
+        form,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+          },
+        }
       );
       return response.data;
     } catch (err) {
@@ -34,9 +46,14 @@ export const updateFeed = createAsyncThunk(
   "UPDATE_FEED",
   async ({ studyId, feedId, form }) => {
     try {
-      const response = await axiosInstance.put(
-        `studies/${studyId}/feeds/${feedId}`,
-        form
+      const response = await axios.put(
+        `${process.env.REACT_APP_BACK_BASE_URL}studies/${studyId}/feeds/${feedId}`,
+        form,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+          },
+        }
       );
       return response.data;
     } catch (err) {
@@ -51,8 +68,13 @@ export const deleteFeed = createAsyncThunk(
   "DELETE_FEED",
   async ({ studyId, feedId }) => {
     try {
-      const response = await axiosInstance.delete(
-        `studies/${studyId}/feeds/${feedId}`
+      const response = await axios.delete(
+        `${process.env.REACT_APP_BACK_BASE_URL}studies/${studyId}/feeds/${feedId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+          },
+        }
       );
       return response.data;
     } catch (err) {

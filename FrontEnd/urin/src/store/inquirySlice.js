@@ -1,13 +1,20 @@
+import axios from "axios";
 import {
   createAsyncThunk,
   createSlice,
   isRejectedWithValue,
 } from "@reduxjs/toolkit";
-import axiosInstance from "../api";
 
 export const getInquiry = createAsyncThunk("GET_INQUIRY", async (studyId) => {
   console.log("문의사항 가져오는 중");
-  const response = await axiosInstance.get(`studies/${studyId}/inquiry`);
+  const response = await axios.get(
+    `${process.env.REACT_APP_BACK_BASE_URL}studies/${studyId}/inquiry`,
+    {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+      },
+    }
+  );
   return response.data;
 });
 
@@ -16,9 +23,14 @@ export const createInquiry = createAsyncThunk(
   "CREATE_INQUIRY",
   async (studyId, form) => {
     try {
-      const response = await axiosInstance.post(
-        `studies/${studyId}/inquiry`,
-        form
+      const response = await axios.post(
+        `${process.env.REACT_APP_BACK_BASE_URL}studies/${studyId}/inquiry`,
+        form,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+          },
+        }
       );
       return response.data;
     } catch (err) {
@@ -33,9 +45,14 @@ export const updateInquiry = createAsyncThunk(
   "UPDATE_INQUIRY",
   async ({ studyId, inquiryId, form }) => {
     try {
-      const response = await axiosInstance.put(
-        `studies/${studyId}/inquiry/${inquiryId}`,
-        form
+      const response = await axios.put(
+        `${process.env.REACT_APP_BACK_BASE_URL}studies/${studyId}/inquiry/${inquiryId}`,
+        form,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+          },
+        }
       );
       return response.data;
     } catch (err) {
@@ -50,8 +67,13 @@ export const deleteInquiry = createAsyncThunk(
   "DELETE_INQUIRY",
   async ({ studyId, inquiryId }) => {
     try {
-      const response = await axiosInstance.delete(
-        `studies/${studyId}/inquiry/${inquiryId}`
+      const response = await axios.delete(
+        `${process.env.REACT_APP_BACK_BASE_URL}studies/${studyId}/inquiry/${inquiryId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+          },
+        }
       );
       return response.data;
     } catch (err) {
