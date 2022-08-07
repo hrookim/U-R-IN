@@ -1,16 +1,25 @@
 .main-page{
-  margin: 0 300px 0 300px;
+  margin: 0 auto 0 auto;
+  max-width: 1200px;
 }
 
 .header{
   display: flex;
   align-items: center;
   justify-content: space-between;
+  padding: 20px 20px 20px 20px;
+  margin: 10px 0 0 0;
 }
 
-.header > div{
+.header-grid-1{
   display: flex;
+  flex-direction: column;
   align-items: center;
+}
+
+.header-grid-2 {
+  display: flex;
+  justify-content: right;
 }
 
 .searchbox{
@@ -23,10 +32,12 @@
 }
 
 .card{
-  width: 240px;
+  width: 250px;
   padding: 20px 20px 20px 20px;
   display: flex;
   justify-content: center;
+  box-shadow: rgba(50, 50, 50, 0.2);
+  margin: 10px auto 10px auto;
 
 }
 
@@ -53,6 +64,7 @@
 .pagination{
   display: flex;
   justify-content: center;
+  margin: 30px 0 10px 0;
 }
 
 
