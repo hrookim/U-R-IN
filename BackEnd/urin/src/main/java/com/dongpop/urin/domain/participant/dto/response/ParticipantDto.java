@@ -1,4 +1,4 @@
-package com.dongpop.urin.domain.participant.dto;
+package com.dongpop.urin.domain.participant.dto.response;
 
 import lombok.Builder;
 import lombok.Data;

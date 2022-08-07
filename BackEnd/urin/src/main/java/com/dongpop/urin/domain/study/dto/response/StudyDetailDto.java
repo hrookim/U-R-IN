@@ -1,6 +1,6 @@
 package com.dongpop.urin.domain.study.dto.response;
 
-import com.dongpop.urin.domain.participant.dto.ParticipantDto;
+import com.dongpop.urin.domain.participant.dto.response.ParticipantDto;
 import com.dongpop.urin.domain.study.repository.StudyStatus;
 import lombok.Builder;
 import lombok.Data;
