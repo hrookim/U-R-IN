@@ -1,12 +1,11 @@
-import React from "react";
+import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
-// import { getMemberId } from "../../store/memberSlice";
 import styled from "styled-components";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSquareXmark } from "@fortawesome/free-solid-svg-icons";
-import { Avatar } from "@mui/material";
-import { deleteInquiry } from "../../store/inquirySlice";
+import { Avatar, Button } from "@mui/material";
+import { deleteInquiry, updateInquiry } from "../../store/inquirySlice";
 
 const StyledXbutton = styled.span`
   color: red;
@@ -21,6 +20,23 @@ const InquiryParentCommentItem = ({
   const dispatch = useDispatch();
   const currentMemberId = useSelector((state) => state.member.id);
   const { studyId } = useParams();
+  const [form, setForm] = useState(parentItem.contents);
+  const [isEditing, setIsEditing] = useState(false);
+
+  const isAuthor = currentMemberId === parentItem.writerId;
+
+  const onChange = (event) => {
+    setForm(event.target.value);
+  };
+
+  const onClickUpdate = () => {
+    const { inquiryId } = parentItem;
+    dispatch(updateInquiry({ studyId, inquiryId, form })).then(() => {
+      setIsEditing(false);
+      setIsCommentDeleted(true);
+      setInterval(() => setIsCommentDeleted(false), 100);
+    });
+  };
 
   const onClickDelete = () => {
     const { inquiryId } = parentItem;
@@ -34,15 +50,43 @@ const InquiryParentCommentItem = ({
     <div>
       <Avatar>{parentItem.writer[0]}</Avatar>
       <p>{parentItem.writer}</p>
-      <div>
-        {parentItem.contents}
-        {!parentItem.isDeleted &&
-          (isLeader || currentMemberId === parentItem.writerId) && (
+      {!isEditing && (
+        <div>
+          {parentItem.contents}
+          {!parentItem.isDeleted && (isLeader || isAuthor) && (
             <StyledXbutton onClick={onClickDelete}>
               <FontAwesomeIcon icon={faSquareXmark} />
             </StyledXbutton>
           )}
-      </div>
+          {!parentItem.isDeleted && isAuthor && (
+            <Button
+              size="small"
+              variant="outlined"
+              onClick={() => {
+                setIsEditing(true);
+              }}
+            >
+              수정
+            </Button>
+          )}
+        </div>
+      )}
+      {isEditing && (
+        <div>
+          <input type="text" onChange={onChange} value={form} />
+          <button type="submit" onClick={onClickUpdate}>
+            수정
+          </button>
+          <button
+            type="button"
+            onClick={() => {
+              setIsEditing(false);
+            }}
+          >
+            취소
+          </button>
+        </div>
+      )}
     </div>
   );
 };

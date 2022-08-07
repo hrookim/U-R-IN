@@ -28,7 +28,7 @@ const StudyCreationForm = () => {
     title: "",
     notice: "",
     expirationDate: "",
-    memberCapacity: "",
+    memberCapacity: 2,
   });
   const [formDate, setFormDate] = useState(new Date());
   const [disable, setDisable] = useState(false);
