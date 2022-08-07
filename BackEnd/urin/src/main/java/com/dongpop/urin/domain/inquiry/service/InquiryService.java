@@ -10,6 +10,8 @@ import com.dongpop.urin.domain.inquiry.repository.InquiryRepository;
 import com.dongpop.urin.domain.member.repository.Member;
 import com.dongpop.urin.domain.study.repository.Study;
 import com.dongpop.urin.domain.study.repository.StudyRepository;
+import com.dongpop.urin.global.error.errorcode.InquiryErrorCode;
+import com.dongpop.urin.global.error.errorcode.StudyErrorCode;
 import com.dongpop.urin.global.error.exception.CustomException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -24,6 +26,7 @@ import java.util.stream.Collectors;
 
 import static com.dongpop.urin.global.error.errorcode.CommonErrorCode.DO_NOT_HAVE_AUTHORIZATION;
 import static com.dongpop.urin.global.error.errorcode.CommonErrorCode.NO_SUCH_ELEMENTS;
+import static com.dongpop.urin.global.error.errorcode.InquiryErrorCode.*;
 import static com.dongpop.urin.global.error.errorcode.StudyErrorCode.STUDY_DOES_NOT_EXIST;
 
 @RequiredArgsConstructor
@@ -37,7 +40,9 @@ public class InquiryService {
 
     @Transactional
     public InquiryListDto getStudyInquiries(int studyId, Pageable pageable) {
-        Page<Inquiry> inquiryPage = inquiryRepository.findAllByStudyIdAndParentIsNull(studyId, pageable);
+        Study study = studyRepository.findById(studyId)
+                .orElseThrow(() -> new CustomException(STUDY_DOES_NOT_EXIST));
+        Page<Inquiry> inquiryPage = inquiryRepository.findAllByStudyAndParentIsNull(study, pageable);
 
         int totalPages = inquiryPage.getTotalPages();
         List<InquiryDto> inquiryList = new ArrayList<>();
@@ -80,6 +85,9 @@ public class InquiryService {
 
         Inquiry parent = inquiryRepository.findById(inquiryDataDto.getParent())
                 .orElseGet(() -> null);
+        if (parent != null && parent.getStudy().getId() != study.getId()) {
+            throw new CustomException(DIFFRENT_STUDY);
+        }
         newInquiry.addParentInquiry(parent);
 
         inquiryRepository.save(newInquiry);
@@ -87,6 +95,7 @@ public class InquiryService {
 
     @Transactional
     public void updateFeed(Member member, int studyId, int inquiryId, String contents) {
+        //TODO: 스터디안에 Inquiry가 속해있는지 확인
         Inquiry inquiry = checkWriterAuthorizaion(member, inquiryId);
         inquiry.updateInquiryData(contents);
     }
@@ -106,8 +115,8 @@ public class InquiryService {
         return inquiry;
     }
 
-    private Inquiry checkWriterAuthorizaion(Member member, int studyId, int feedId) {
-        Inquiry inquiry = inquiryRepository.findById(feedId)
+    private Inquiry checkWriterAuthorizaion(Member member, int studyId, int inquiryId) {
+        Inquiry inquiry = inquiryRepository.findById(inquiryId)
                 .orElseThrow(() -> new CustomException(NO_SUCH_ELEMENTS));
         Study study = studyRepository.findById(studyId)
                 .orElseThrow(() -> new CustomException(STUDY_DOES_NOT_EXIST));

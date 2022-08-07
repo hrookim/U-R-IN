@@ -10,7 +10,7 @@ public class InquiryDetailDto {
     private int inquiryId;
     private String contents;
     private String createdAt;
-    private boolean isDeleted;
+    private Boolean isDeleted;
 
     private int writerId;
     private String writer;
