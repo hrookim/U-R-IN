@@ -1,14 +1,28 @@
 import React, { useEffect } from "react";
-// import { useDispatch, useSelector } from "react-redux"; FIXME: 강퇴 기능에서 필요함!
-// import { useParams } from "react-router-dom";
-
+import { useDispatch } from "react-redux";
+import { useParams } from "react-router-dom";
+import styled from "styled-components";
 import { Avatar, Typography } from "@mui/material";
-import { faCrown } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-
+import { faCrown, faSquareXmark } from "@fortawesome/free-solid-svg-icons";
 import { leaveStudy } from "../../store/studySlice";
 
-const DetailInfo = ({ study }) => {
+const StyledXbutton = styled.span`
+  color: red;
+  cursor: pointer;
+`;
+
+const DetailInfo = ({ study, isLeader, isParticipant, setIsChanged }) => {
+  const dispatch = useDispatch();
+  const { studyId } = useParams();
+
+  const onClickLeave = (memberId) => {
+    const participantId = memberId;
+    dispatch(leaveStudy({ studyId, participantId })).then(() => {
+      setIsChanged(true);
+      setInterval(() => setIsChanged(false), 100);
+    });
+  };
   return (
     <div>
       <div>
@@ -23,8 +37,15 @@ const DetailInfo = ({ study }) => {
             <span>
               {participant.nickname}
               {participant.isLeader && <FontAwesomeIcon icon={faCrown} />}
+              {isLeader && !participant.isLeader && (
+                <StyledXbutton>
+                  <FontAwesomeIcon
+                    icon={faSquareXmark}
+                    onClick={() => onClickLeave(participant.memberId)}
+                  />
+                </StyledXbutton>
+              )}
             </span>
-            {/* TODO: 강퇴버튼 - 로그인 한 유저가 방장이라면 강퇴기능 추가, 버튼 클릭시 leaveStudy걸기 */}
           </div>
         ))}
       </div>
