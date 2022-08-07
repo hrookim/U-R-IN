@@ -51,11 +51,8 @@ const StudyCreationForm = () => {
   };
 
   const onSubmit = (e) => {
-    alert("스터디 생성이 완료되었습니다:)");
     e.preventDefault();
-    dispatch(createStudy({ form, navigate })).then((res) => {
-      navigate(`/study/${res.payload.studyId}`);
-    });
+    dispatch(createStudy({ form, navigate }));
   };
 
   return (
