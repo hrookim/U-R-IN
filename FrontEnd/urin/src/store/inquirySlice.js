@@ -6,7 +6,7 @@ import {
 } from "@reduxjs/toolkit";
 
 export const getInquiry = createAsyncThunk("GET_INQUIRY", async (studyId) => {
-  console.log("문의사항 가져오는 중");
+  console.log("===axios INQUIERY 불러오기===");
   const response = await axios.get(
     `${process.env.REACT_APP_BACK_BASE_URL}studies/${studyId}/inquiry`,
     {
@@ -21,11 +21,25 @@ export const getInquiry = createAsyncThunk("GET_INQUIRY", async (studyId) => {
 // 인콰이어리 생성하기 FIXME: 생성 후 새로 store에 추가를 해야함, 댓글형성도 같이 이뤄짐
 export const createInquiry = createAsyncThunk(
   "CREATE_INQUIRY",
-  async (studyId, form) => {
+  async ({ studyId, form, parentId }) => {
     try {
+      console.log("===axios INQUIERY 생성===", parentId);
+      if (parentId) {
+        const response = await axios.post(
+          `${process.env.REACT_APP_BACK_BASE_URL}studies/${studyId}/inquiry`,
+          { parent: parentId, contents: form }, // FIXME: API 수정 후 입력필요
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+            },
+          }
+        );
+        getInquiry(studyId);
+        return response.data;
+      }
       const response = await axios.post(
         `${process.env.REACT_APP_BACK_BASE_URL}studies/${studyId}/inquiry`,
-        form,
+        { parent: 0, contents: form }, // FIXME: API 수정 후 입력필요
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
@@ -34,6 +48,7 @@ export const createInquiry = createAsyncThunk(
       );
       return response.data;
     } catch (err) {
+      alert("오류입니다!");
       console.log(err);
       return isRejectedWithValue(err.response.data);
     }
@@ -66,6 +81,7 @@ export const updateInquiry = createAsyncThunk(
 export const deleteInquiry = createAsyncThunk(
   "DELETE_INQUIRY",
   async ({ studyId, inquiryId }) => {
+    console.log("===axios INQUIERY 삭제===");
     try {
       const response = await axios.delete(
         `${process.env.REACT_APP_BACK_BASE_URL}studies/${studyId}/inquiry/${inquiryId}`,

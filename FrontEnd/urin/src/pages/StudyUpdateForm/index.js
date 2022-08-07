@@ -43,29 +43,31 @@ const StudyUpdateForm = () => {
   }, [disable]);
 
   useEffect(() => {
-    dispatch(getStudy(studyId));
-    const { title, notice, expirationDate, memberCapacity, dday } = study;
+    dispatch(getStudy({ studyId, navigate })).then(() => {
+      const { title, notice, expirationDate, memberCapacity, dday } = study;
 
-    if (dday === -1) {
-      const formatDate = new Date();
-      setForm({
-        title,
-        notice,
-        expirationDate: moment(formatDate).format("YYYY-MM-DD"),
-        memberCapacity,
-      });
-      setFormDate(formatDate);
-      setDisable(true);
-    } else {
-      const formatDate = new Date(expirationDate);
-      setForm({
-        title,
-        notice,
-        expirationDate: moment(formatDate).format("YYYY-MM-DD"),
-        memberCapacity,
-      });
-      setFormDate(formatDate);
-    }
+      if (dday === -1) {
+        const formatDate = new Date();
+        setForm({
+          title,
+          notice,
+          expirationDate: moment(formatDate).format("YYYY-MM-DD"),
+          memberCapacity,
+        });
+        setFormDate(formatDate);
+        setDisable(true);
+      } else {
+        // console.log("====useEffect 2======");
+        const formatDate = new Date(expirationDate);
+        setForm({
+          title,
+          notice,
+          expirationDate: moment(formatDate).format("YYYY-MM-DD"),
+          memberCapacity,
+        });
+        setFormDate(formatDate);
+      }
+    });
   }, []);
 
   const onChange = (e) => {
@@ -78,11 +80,8 @@ const StudyUpdateForm = () => {
   };
 
   const onSubmit = (e) => {
-    alert("수정이 완료되었습니다!");
     e.preventDefault();
-    dispatch(updateStudy({ studyId, form, navigate })).then((res) => {
-      navigate(`/study/${res.payload.studyId}`);
-    });
+    dispatch(updateStudy({ studyId, form, navigate }));
   };
 
   return (
