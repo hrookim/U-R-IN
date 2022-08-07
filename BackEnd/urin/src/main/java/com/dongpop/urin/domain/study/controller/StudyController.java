@@ -3,23 +3,22 @@ package com.dongpop.urin.domain.study.controller;
 import com.dongpop.urin.domain.member.repository.Member;
 import com.dongpop.urin.domain.study.dto.request.StudyDataDto;
 import com.dongpop.urin.domain.study.dto.request.StudyStateDto;
-import com.dongpop.urin.domain.study.dto.response.*;
+import com.dongpop.urin.domain.study.dto.response.StudyDetailDto;
+import com.dongpop.urin.domain.study.dto.response.StudyIdDto;
+import com.dongpop.urin.domain.study.dto.response.StudyListDto;
+import com.dongpop.urin.domain.study.dto.response.StudyStatusDto;
 import com.dongpop.urin.domain.study.service.StudyService;
 import com.dongpop.urin.oauth.model.MemberPrincipal;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
 import java.net.URI;
-import java.util.UUID;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -61,25 +60,6 @@ public class StudyController {
         Member member = memberPrincipal.getMember();
         return ResponseEntity.ok()
                 .body(studyService.editStudy(member, studyId, studyData));
-    }
-
-    @PostMapping("/{studyId}/participants")
-    public ResponseEntity<StudyJoinDto> joinStudy(@PathVariable int studyId,
-                                                  @AuthenticationPrincipal MemberPrincipal memberPrincipal) {
-        Member member = memberPrincipal.getMember();
-        StudyJoinDto studyJoinDto = studyService.joinStudy(member, studyId);
-        URI location = URI.create(ROOTURI + studyJoinDto.getParticipantId());
-
-        return ResponseEntity.created(location)
-                .body(studyJoinDto);
-    }
-
-    @DeleteMapping("/{studyId}/participants/{participantsId}")
-    public ResponseEntity<Void> removeStudyMember(@PathVariable int studyId, @PathVariable int participantsId,
-                                                  @AuthenticationPrincipal MemberPrincipal memberPrincipal) {
-        Member member = memberPrincipal.getMember();
-        studyService.removeStudyMember(member, studyId, participantsId);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @PatchMapping("/{studyId}")

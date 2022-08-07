@@ -1,7 +1,7 @@
 package com.dongpop.urin.domain.study.service;
 
 import com.dongpop.urin.domain.member.repository.Member;
-import com.dongpop.urin.domain.participant.dto.ParticipantDto;
+import com.dongpop.urin.domain.participant.dto.response.ParticipantDto;
 import com.dongpop.urin.domain.participant.repository.Participant;
 import com.dongpop.urin.domain.participant.repository.ParticipantRepository;
 import com.dongpop.urin.domain.study.dto.request.StudyDataDto;
@@ -23,7 +23,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static com.dongpop.urin.global.error.errorcode.ParticipantErrorCode.*;
 import static com.dongpop.urin.global.error.errorcode.StudyErrorCode.*;
 
 
@@ -142,45 +141,6 @@ public class StudyService {
     }
 
     /**
-     * 스터디 가입
-     */
-    @Transactional
-    public StudyJoinDto joinStudy(Member member, int studyId) {
-        Study study = studyRepository.findById(studyId)
-                .orElseThrow(() -> new CustomException(STUDY_DOES_NOT_EXIST));
-
-        if (study.getParticipants().size() >= study.getMemberCapacity()) {
-            throw new CustomException(STUDY_IS_FULL);
-        }
-        checkAlreadyRegistered(member, study);
-        checkStudyStatus(study);
-
-        Integer participantId = participantRepository.save(Participant.builder()
-                .study(study)
-                .member(member)
-                .isLeader(false)
-                .build()).getId();
-        return new StudyJoinDto(studyId, participantId);
-    }
-
-    /**
-     * 스터디 참가자 삭제
-     * - 내가 스스로 탈퇴
-     * - 방장이 다른 사람을 강퇴
-     */
-    @Transactional
-    public void removeStudyMember(Member member, int studyId, int participantsId) {
-        Study study = studyRepository.findById(studyId)
-                .orElseThrow(() -> new CustomException(STUDY_DOES_NOT_EXIST));
-        Participant deleteParticipant = participantRepository.findById(participantsId)
-                .orElseThrow(() -> new CustomException(PARTICIPANT_IS_NOT_EXIST));
-
-        if (isPossible(deleteParticipant, member.getId(), studyId)) {
-            deleteStudyParticipant(study, deleteParticipant);
-        }
-    }
-
-    /**
      * 스터디 상태 변경
      */
     @Transactional
@@ -195,45 +155,5 @@ public class StudyService {
         //TODO: 상태변경 가능한 지 체크
         study.updateStatus(status);
         return new StudyStatusDto(studyId, status.name());
-    }
-
-    private void checkAlreadyRegistered(Member member, Study study) {
-        study.getParticipants().forEach((participant) -> {
-            if (participant.getMember().getId() == member.getId()) {
-                throw new CustomException(ALREADY_REGISTERED_MEMBER);
-            }
-        });
-    }
-
-    private void checkStudyStatus(Study study) {
-        if (study.getParticipants().size() + 1 == study.getMemberCapacity()) {
-            study.updateStatus(StudyStatus.COMPLETED);
-        }
-    }
-
-    private void deleteStudyParticipant(Study study, Participant deleteParticipant) {
-        participantRepository.delete(deleteParticipant);
-        if (study.getStatus().equals(StudyStatus.COMPLETED))
-            study.updateStatus(StudyStatus.RECRUITING);
-    }
-
-    private boolean isPossible(Participant deleteParticipant, int memberId, int studyId) {
-        //참가자는 방장 리스트가 아니어야함, 참가자와 내가 다르면 내가 방장이어야 함, 참가자와 내가 같으면 나는 방장이면 안됨
-        if (deleteParticipant.isLeader()) {
-            throw new CustomException(CAN_NOT_DELETE_LEADER_PARTICIPANT);
-        }
-
-        Participant leadersParticipant = participantRepository.findLeader(studyId)
-                .orElseThrow(() -> new CustomException(FAIL_TO_FIND_LEADER));
-        int studyLeaderId = leadersParticipant.getMember().getId();
-
-        if (deleteParticipant.getMember().getId() != memberId) {
-            if (studyLeaderId != memberId)
-                throw new CustomException(POSSIBLE_ONLY_LEADER);
-        } else {
-            if (studyLeaderId == memberId)
-                throw new CustomException(CAN_NOT_DELETE_LEADER_PARTICIPANT);
-        }
-        return true;
     }
 }
