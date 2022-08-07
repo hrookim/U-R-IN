@@ -175,7 +175,7 @@ public class StudyService {
         Participant deleteParticipant = participantRepository.findById(participantsId)
                 .orElseThrow(() -> new CustomException(PARTICIPANT_IS_NOT_EXIST));
 
-        if (isPossible(deleteParticipant, member.getId(), studyId)) {
+        if (isPossible(deleteParticipant, member, study)) {
             deleteStudyParticipant(study, deleteParticipant);
         }
     }
@@ -217,22 +217,24 @@ public class StudyService {
             study.updateStatus(StudyStatus.RECRUITING);
     }
 
-    private boolean isPossible(Participant deleteParticipant, int memberId, int studyId) {
-        //참가자는 방장 리스트가 아니어야함, 참가자와 내가 다르면 내가 방장이어야 함, 참가자와 내가 같으면 나는 방장이면 안됨
+    private boolean isPossible(Participant deleteParticipant, Member member, Study study) {
+        //1. 삭제할 참가자는 방장이 아니어야 함.
+        //2. 삭제할 참가자가 study에 속해있어야 함
+        //3. 삭제할 참가자와 내가 다르면 내가 방장이어야 함,
         if (deleteParticipant.isLeader()) {
             throw new CustomException(CAN_NOT_DELETE_LEADER_PARTICIPANT);
         }
+        if (deleteParticipant.getStudy().getId() != study.getId()) {
+            throw new CustomException(PARTICIPANT_DOES_NOT_BELONG_STUDY);
+        }
 
-        Participant leadersParticipant = participantRepository.findLeader(studyId)
+        Participant leadersParticipant = participantRepository.findLeader(study.getId())
                 .orElseThrow(() -> new CustomException(FAIL_TO_FIND_LEADER));
         int studyLeaderId = leadersParticipant.getMember().getId();
 
-        if (deleteParticipant.getMember().getId() != memberId) {
-            if (studyLeaderId != memberId)
+        if (member.getId() != deleteParticipant.getMember().getId()
+                && member.getId() != studyLeaderId) {
                 throw new CustomException(POSSIBLE_ONLY_LEADER);
-        } else {
-            if (studyLeaderId == memberId)
-                throw new CustomException(CAN_NOT_DELETE_LEADER_PARTICIPANT);
         }
         return true;
     }
