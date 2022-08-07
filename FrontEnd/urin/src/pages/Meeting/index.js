@@ -45,7 +45,6 @@ class VideoRoomComponent extends Component {
     this.onbeforeunload = this.onbeforeunload.bind(this);
     this.camStatusChanged = this.camStatusChanged.bind(this);
     this.micStatusChanged = this.micStatusChanged.bind(this);
-    this.nicknameChanged = this.nicknameChanged.bind(this);
     this.toggleFullscreen = this.toggleFullscreen.bind(this);
     this.switchCamera = this.switchCamera.bind(this);
     this.screenShare = this.screenShare.bind(this);
@@ -237,15 +236,6 @@ class VideoRoomComponent extends Component {
     localUser.getStreamManager().publishAudio(localUser.isAudioActive());
     this.sendSignalUserChanged({ isAudioActive: localUser.isAudioActive() });
     this.setState({ localUser: localUser });
-  }
-
-  nicknameChanged(nickname) {
-    let localUser = this.state.localUser;
-    localUser.setNickname(nickname);
-    this.setState({ localUser: localUser });
-    this.sendSignalUserChanged({
-      nickname: this.state.localUser.getNickname(),
-    });
   }
 
   deleteSubscriber(stream) {
@@ -514,41 +504,47 @@ class VideoRoomComponent extends Component {
   render() {
     const mySessionId = this.state.mySessionId;
     const localUser = this.state.localUser;
+    var isChatOrFeedback =
+      (this.state.feedbackDisplay !== "none") |
+      (this.state.chatDisplay !== "none");
     var chatDisplay = { display: this.state.chatDisplay };
 
     return (
-      <div className="container" id="container">
-        {/* 비디오 영역 */}
-        <div className="row">
-          <div className="col d-flex flex-wrap">
-            {localUser !== undefined &&
-              localUser.getStreamManager() !== undefined && (
+      <>
+        <div className="container" id="container" style={{ height: "85vh" }}>
+          {/* 비디오 영역 */}
+          <div className="row" style={{ width: "100%" }}>
+            <div className="col d-flex flex-wrap justify-content-center">
+              {localUser !== undefined &&
+                localUser.getStreamManager() !== undefined && (
+                  <div
+                    className="OT_root OT_publisher custom-class p-2"
+                    id="localUser"
+                  >
+                    <StreamComponent user={localUser} />
+                  </div>
+                )}
+              {this.state.subscribers.map((sub, i) => (
                 <div
+                  key={i}
                   className="OT_root OT_publisher custom-class p-2"
-                  id="localUser"
+                  id="remoteUsers"
                 >
                   <StreamComponent
-                    user={localUser}
-                    handleNickname={this.nicknameChanged}
+                    user={sub}
+                    streamId={sub.streamManager.stream.streamId}
                   />
                 </div>
+              ))}
+            </div>
+            <div
+              className={isChatOrFeedback ? "col-3" : null}
+              style={Object.assign(
+                {},
+                { maxHeight: "100%" },
+                isChatOrFeedback ? null : { display: "none" }
               )}
-            {this.state.subscribers.map((sub, i) => (
-              <div
-                key={i}
-                className="OT_root OT_publisher custom-class p-2"
-                id="remoteUsers"
-              >
-                <StreamComponent
-                  user={sub}
-                  streamId={sub.streamManager.stream.streamId}
-                />
-              </div>
-            ))}
-          </div>
-          {(this.state.feedbackDisplay !== "none") |
-            (this.state.chatDisplay !== "none") && (
-            <div className="col-3">
+            >
               {/* 피드백 영역 */}
               {localUser !== undefined &&
                 localUser.getStreamManager() !== undefined && (
@@ -565,7 +561,7 @@ class VideoRoomComponent extends Component {
                 localUser.getStreamManager() !== undefined && (
                   <div
                     className="OT_root OT_publisher custom-class"
-                    style={chatDisplay}
+                    style={{ ...chatDisplay, height: "100%" }}
                   >
                     <ChatComponent
                       user={localUser}
@@ -576,9 +572,8 @@ class VideoRoomComponent extends Component {
                   </div>
                 )}
             </div>
-          )}
+          </div>
         </div>
-
         {/* 툴바 영역 */}
         <ToolbarComponent
           sessionId={mySessionId}
@@ -599,7 +594,7 @@ class VideoRoomComponent extends Component {
           showDialog={this.state.showExtensionDialog}
           cancelClicked={this.closeDialogExtension}
         />
-      </div>
+      </>
     );
   }
 

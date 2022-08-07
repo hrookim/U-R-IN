@@ -59,7 +59,7 @@ const MainPage = () => {
   };
 
   useEffect(() => {
-    dispatch(getMemberId());
+    dispatch(getMemberId(navigate));
     dispatch(getStudyList([page - 1, checked, keyword]));
   }, [page, checked, keyword]);
 
