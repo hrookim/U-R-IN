@@ -24,7 +24,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static com.dongpop.urin.domain.study.repository.StudyStatus.*;
+import static com.dongpop.urin.domain.study.repository.StudyStatus.RECRUITING;
+import static com.dongpop.urin.domain.study.repository.StudyStatus.TERMINATED;
 import static com.dongpop.urin.global.error.errorcode.StudyErrorCode.*;
 
 
