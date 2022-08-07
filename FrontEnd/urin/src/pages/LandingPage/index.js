@@ -1,43 +1,81 @@
 import React from "react";
 import Button from "@mui/material/Button";
 
-import NavComponent from "../../components/Navbar";
-
 import "../../assets/DesignSystem.css";
+import "./index.css";
 
 const LandingPage = () => {
   const onClick = () => {
     window.location.href = process.env.REACT_APP_SOCIAL_LOGIN_URL;
   };
 
+  const btnSX = {
+    background: "linear-gradient( to left, #0037FA, #02BDFF )",
+    borderRadius: "20px",
+    width: "100px",
+  };
+
   return (
     <div>
-      <p className="font-80 font-xl">면접을 위한 새로운 경험</p>
-      <p className="font-80 font-xl">IMG(오픈비두 완성되면 그 화면 캡쳐)</p>
-      <p className="font-40 font-sm">
-        UR IN은 비대면 시대에 맞춰 AI를 활용하여 면접을 준비할 수 있도록 돕는
-        화상 면접 스터디 솔루션입니다. UR IN은 비대면 시대에 맞춰 AI를 활용하여
-        면접을 준비할 수 있도록 돕는 화상 면접 스터디 솔루션입니다.
-      </p>
+      <div>
+        <img src="/img/logo_img.png" alt="hello" className="title-logo" />
+      </div>
+      <div className="landingpage-body">
+        <p className="font-70 font-xl centered main-text">
+          면접스터디를 위한 새로운 솔루션
+        </p>
+        <span className="font-30 font-sm main-text2">
+          UR IN은 면접스터디를 찾아 헤메는 취준생 여러분을 위해 제공되는 최상의
+          면접스터디 플랫폼입니다. 이 서비스는 면접스터디의 효율을 극대화시켜줄
+          화상 서비스부터 AI 레포트까지 제공합니다.
+        </span>
+        {/* 카카오로그인 버튼 */}
+        <div className="centered">
+          <div>
+            <Button
+              onClick={onClick}
+              type="button"
+              variant="contained"
+              className="font-50 font-sm btn-text-shadow"
+              sx={btnSX}
+            >
+              시작하기
+            </Button>
+          </div>
 
-      {/* 카카오로그인 버튼 */}
-      <Button
-        onClick={onClick}
-        type="button"
-        variant="contained"
-        className="bgcolor-main btn-hover btn-radius font-50 font-sm btn-text-shadow"
-      >
-        시작하기
-      </Button>
+          <img src="/img/landingpage-img4.png" alt="img4" className="img4" />
 
-      <p className="font-80 font-lg">면접을 위한 새로운 경험</p>
-      <p className="font-80 font-lg">
-        IMG(태블릿, 모바일 등 반응형 화면 캐러셀)
-      </p>
-      <p className="font-40 font-md">
-        UR IN은 비대면 시대에 맞춰 AI를 활용하여 면접을 준비할 수 있도록 돕는
-        화상 면접 스터디 솔루션입니다.
-      </p>
+          <div className="img-group">
+            <img
+              className="img1"
+              src="/img/landingpage-img1.png"
+              alt="landingpage-img1"
+            />
+            <img
+              className="img2"
+              src="/img/landingpage-img2.png"
+              alt="landingpage-img2"
+            />
+            <img
+              className="img3"
+              src="/img/landingpage-img3.png"
+              alt="landingpage-img3"
+            />
+            <p className="font-60 font-xl">
+              취업으로 가는 길, 새로운 경험을 해보세요!
+            </p>
+            <Button
+              onClick={onClick}
+              type="button"
+              variant="contained"
+              className="font-50 font-sm btn-text-shadow"
+              sx={btnSX}
+            >
+              시작하기
+            </Button>
+          </div>
+        </div>
+      </div>
     </div>
   );
 };

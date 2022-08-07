@@ -137,7 +137,6 @@ const NavComponent = () => {
           </Container>
         </Navbar>
       ) : null}
-      ;
     </div>
   );
 };
