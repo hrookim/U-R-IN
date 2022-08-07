@@ -10,28 +10,33 @@ import {
 
 // study
 // 스터디 상세 보기
-export const getStudy = createAsyncThunk("GET_STUDY", async (studyId) => {
-  try {
-    console.log("스터디 가져오는 중");
-    const response = await axios.get(
-      `${process.env.REACT_APP_BACK_BASE_URL}studies/${studyId}`,
-      {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-        },
-      }
-    );
-    return response.data;
-  } catch (err) {
-    console.log(err);
-    return isRejectedWithValue(err.response.data);
+export const getStudy = createAsyncThunk(
+  "GET_STUDY",
+  async ({ studyId, navigate }) => {
+    try {
+      console.log("스터디 가져오는 중");
+      const response = await axios.get(
+        `${process.env.REACT_APP_BACK_BASE_URL}studies/${studyId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+          },
+        }
+      );
+      return response.data;
+    } catch (err) {
+      alert("스터디를 가져올 수 없습니다!");
+      navigate("/");
+      console.log(err);
+      return isRejectedWithValue(err.response.data);
+    }
   }
-});
+);
 
 // 스터디 생성
 export const createStudy = createAsyncThunk(
   "CREATE_STUDY",
-  async ({ form }) => {
+  async ({ form, navigate }) => {
     try {
       const response = await axios.post(
         `${process.env.REACT_APP_BACK_BASE_URL}studies/`,
@@ -43,9 +48,12 @@ export const createStudy = createAsyncThunk(
         }
       );
       const { studyId } = response.data;
+      alert("스터디 생성 완료했습니다!");
+      navigate(`/study/${studyId}`);
       return response.data;
     } catch (err) {
       console.log(err);
+      alert("오류입니다!");
       return isRejectedWithValue(err.response.data);
     }
   }
@@ -54,7 +62,7 @@ export const createStudy = createAsyncThunk(
 // 스터디 정보 수정
 export const updateStudy = createAsyncThunk(
   "UPDATE_STUDY",
-  async ({ studyId, form }) => {
+  async ({ studyId, form, navigate }) => {
     try {
       const response = await axios.put(
         `${process.env.REACT_APP_BACK_BASE_URL}studies/${studyId}`,
@@ -65,10 +73,13 @@ export const updateStudy = createAsyncThunk(
           },
         }
       );
-      const newStudyId = response.data.studyId;
+      // const newStudyId = response.data.studyId;
+      alert("스터디 수정 완료했습니다!");
+      navigate(`/study/${studyId}`);
       return response.data;
     } catch (err) {
       console.log(err);
+      alert("오류입니다!");
       return isRejectedWithValue(err.response.data);
     }
   }
@@ -77,17 +88,18 @@ export const updateStudy = createAsyncThunk(
 // 스터디 상태 변경 FIXME: 내가 리더인지 확인 필요 detailHeader -> 수정으로 props 넘기기 / 종료하기만 처리하면 됨!
 export const changeStudyStatus = createAsyncThunk(
   "CHANGE_STUDY_STATUS",
-  async (studyId, status) => {
+  async ({ studyId }) => {
     try {
       const response = await axios.patch(
         `${process.env.REACT_APP_BACK_BASE_URL}studies/${studyId}`,
-        status,
+        { status: "TERMINATED" },
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
           },
         }
       );
+      alert("스터디가 종료되었습니다:)");
       return response.data;
     } catch (err) {
       console.log(err);
@@ -100,8 +112,10 @@ export const changeStudyStatus = createAsyncThunk(
 // 스터디 가입 FIXME: 내가 스터디원인지 확인 필요 detailHeader
 export const joinStudy = createAsyncThunk("JOIN_STUDY", async (studyId) => {
   try {
+    console.log(localStorage.getItem("accessToken"));
     const response = await axios.post(
       `${process.env.REACT_APP_BACK_BASE_URL}studies/${studyId}/participants`,
+      {}, // post 두번째 인자는 payload이므로 비워서 보낸다!
       {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
@@ -116,13 +130,12 @@ export const joinStudy = createAsyncThunk("JOIN_STUDY", async (studyId) => {
 });
 
 // 스터디 참가자 삭제 FIXME: 분기는 백에서 처리하고 있음!
-// TODO: 스스로 나가는 것과 강퇴 구분 필요, 함수를 나눠야 할 수도 있음
 export const leaveStudy = createAsyncThunk(
   "LEAVE_STUDY",
-  async (studyId, participantsId) => {
+  async ({ studyId, participantId }) => {
     try {
       const response = await axios.delete(
-        `${process.env.REACT_APP_BACK_BASE_URL}studies/${studyId}/participants/${participantsId}`,
+        `${process.env.REACT_APP_BACK_BASE_URL}studies/${studyId}/participants/${participantId}`,
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
