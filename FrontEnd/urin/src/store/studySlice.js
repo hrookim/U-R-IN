@@ -135,8 +135,17 @@ export const joinStudy = createAsyncThunk("JOIN_STUDY", async (studyId) => {
 // 스터디 참가자 삭제 FIXME: 분기는 백에서 처리하고 있음!
 export const leaveStudy = createAsyncThunk(
   "LEAVE_STUDY",
-  async ({ studyId, participantId }) => {
+  async ({ studyId }) => {
     try {
+      const res = await axios.get(
+        `${process.env.REACT_APP_BACK_BASE_URL}studies/${studyId}/participants/me`,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+          },
+        }
+      );
+      const { participantId } = res.data;
       const response = await axios.delete(
         `${process.env.REACT_APP_BACK_BASE_URL}studies/${studyId}/participants/${participantId}`,
         {
