@@ -3,16 +3,18 @@ package com.dongpop.urin.domain.study.repository;
 import com.dongpop.urin.domain.common.entity.BaseTimeEntity;
 import com.dongpop.urin.domain.member.repository.Member;
 import com.dongpop.urin.domain.participant.repository.Participant;
-import com.dongpop.urin.global.error.errorcode.StudyErrorCode;
 import com.dongpop.urin.global.error.exception.CustomException;
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.dongpop.urin.global.error.errorcode.StudyErrorCode.*;
+import static com.dongpop.urin.global.error.errorcode.StudyErrorCode.IMPOSSIBLE_SET_EXPIRATION_DATE_BEFORE_TODAY;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
