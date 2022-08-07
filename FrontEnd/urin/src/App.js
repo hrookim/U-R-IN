@@ -16,6 +16,8 @@ import Meeting from "./pages/Meeting";
 import PrivateRoute from "./components/PrivateRoute/PrivateRoute";
 import PublicRoute from "./components/PublicRoute/PublicRoute";
 import NavComponent from "./components/Navbar";
+import Footer from "./components/Footer";
+import NotFound from "./pages/NotFound";
 
 const App = () => {
   const [privateAccess, setPrivateAccess] = useState(false);
@@ -85,7 +87,9 @@ const App = () => {
         />
         <Route path="/login" element={<Login />} />
         <Route path="/logout" element={<Logout />} />
+        <Route path="*" element={<NotFound />} />
       </Routes>
+      <Footer />
     </Router>
   );
 };

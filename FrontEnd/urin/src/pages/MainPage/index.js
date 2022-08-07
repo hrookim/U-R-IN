@@ -67,7 +67,7 @@ const MainPage = () => {
     if (!mounted.current) {
       mounted.current = true;
     } else {
-      dispatch(checkValidation(memberId));
+      dispatch(checkValidation(memberId, navigate));
     }
   }, [memberId]);
 
@@ -141,7 +141,6 @@ const MainPage = () => {
           onChange={pageChange}
         />
       </Stack>
-      <Footer />
     </div>
   );
 };
