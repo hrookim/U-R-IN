@@ -1,6 +1,7 @@
 package com.dongpop.urin.domain.inquiry.service;
 
 
+import com.dongpop.urin.domain.feed.repository.Feed;
 import com.dongpop.urin.domain.inquiry.dto.request.InquiryDataDto;
 import com.dongpop.urin.domain.inquiry.dto.response.InquiryDetailDto;
 import com.dongpop.urin.domain.inquiry.dto.response.InquiryDto;
@@ -95,7 +96,7 @@ public class InquiryService {
 
     @Transactional
     public void deleteInquiry(Member member, int studyId, int inquiryId) {
-        Inquiry inquiry = checkWriterAuthorizaion(member, inquiryId);
+        Inquiry inquiry = checkWriterAuthorizaion(member, studyId, inquiryId);
         inquiry.deleteInquiry();
     }
     private Inquiry checkWriterAuthorizaion(Member member, int inquiryId) {
@@ -103,6 +104,18 @@ public class InquiryService {
                 .orElseThrow(() -> new CustomException(NO_SUCH_ELEMENTS));
 
         if (member.getId() != inquiry.getWriter().getId()) {
+            throw new CustomException(DO_NOT_HAVE_AUTHORIZATION);
+        }
+        return inquiry;
+    }
+
+    private Inquiry checkWriterAuthorizaion(Member member, int studyId, int feedId) {
+        Inquiry inquiry = inquiryRepository.findById(feedId)
+                .orElseThrow(() -> new CustomException(NO_SUCH_ELEMENTS));
+        Study study = studyRepository.findById(studyId)
+                .orElseThrow(() -> new CustomException(STUDY_DOES_NOT_EXIST));
+
+        if (!(member.getId() == inquiry.getWriter().getId() || member.getId() == study.getStudyLeader().getId())) {
             throw new CustomException(DO_NOT_HAVE_AUTHORIZATION);
         }
         return inquiry;
