@@ -6,7 +6,7 @@ import styled from "styled-components";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSquareXmark } from "@fortawesome/free-solid-svg-icons";
 import { Avatar } from "@mui/material";
-import { getInquiry, deleteInquiry } from "../../store/inquirySlice";
+import { deleteInquiry } from "../../store/inquirySlice";
 
 const StyledXbutton = styled.span`
   color: red;
@@ -34,16 +34,15 @@ const InquiryChildCommentItem = ({
     <div>
       <Avatar>{childListItem.writer[0]}</Avatar>
       <p>{childListItem.writer}</p>
-      <p>
+      <div>
         {childListItem.contents}
-        {/* 로그인한 사용자와 작성자가 일치하면 삭제버튼 보이는 로직 추가 */}
-        {isLeader ||
-          (currentMemberId == childListItem.writerId && (
+        {!childListItem.isDeleted &&
+          (isLeader || currentMemberId == childListItem.writerId) && (
             <StyledXbutton onClick={onClickDelete}>
               <FontAwesomeIcon icon={faSquareXmark} />
             </StyledXbutton>
-          ))}
-      </p>
+          )}
+      </div>
       <hr />
     </div>
   );
