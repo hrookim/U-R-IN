@@ -14,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -23,6 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static com.dongpop.urin.domain.study.repository.StudyStatus.*;
 import static com.dongpop.urin.global.error.errorcode.StudyErrorCode.*;
 
 
@@ -33,6 +35,19 @@ public class StudyService {
 
     private final StudyRepository studyRepository;
     private final ParticipantRepository participantRepository;
+
+    @Transactional
+    @Scheduled(cron = "0 0 0 * * *")
+    public void checkTerminatedStudy() {
+        log.info("[Check Terminated Study]");
+        studyRepository.findAllByActive().forEach((study) -> {
+            if (study.getExpirationDate().isBefore(LocalDate.now())) {
+                log.info("Terminated Study : studyId = {}, ExpirationDate = {}, today = {}",
+                        study.getId(), study.getExpirationDate(), LocalDate.now());
+                study.updateStatus(TERMINATED);
+            }
+        });
+    }
 
     /**
      * 스터디 summary 리스트 (검색, 페이징)
@@ -104,7 +119,7 @@ public class StudyService {
                 .notice(studyData.getNotice())
                 .expirationDate(expirationDate)
                 .memberCapacity(studyData.getMemberCapacity())
-                .status(StudyStatus.RECRUITING)
+                .status(RECRUITING)
                 .build());
 
         participantRepository.save(Participant.builder()
@@ -131,7 +146,7 @@ public class StudyService {
         if (study.getParticipants().size() > studyData.getMemberCapacity()) {
             throw new CustomException(IMPOSSIBLE_SET_MEMBER_CAPACITY);
         }
-        if (study.getStatus().equals(StudyStatus.TERMINATED)) {
+        if (study.getStatus().equals(TERMINATED)) {
             throw new CustomException(CAN_NOT_EDITING_TERMINATED_STUDY);
         }
 
@@ -148,7 +163,7 @@ public class StudyService {
         Study study = studyRepository.findById(studyId)
                 .orElseThrow(() -> new CustomException(STUDY_DOES_NOT_EXIST));
 
-        if (status.name().equals(StudyStatus.TERMINATED.name()) &&
+        if (status.name().equals(TERMINATED.name()) &&
                 study.getStudyLeader().getId() != member.getId()) {
             throw new CustomException(POSSIBLE_ONLY_LEADER);
         }
