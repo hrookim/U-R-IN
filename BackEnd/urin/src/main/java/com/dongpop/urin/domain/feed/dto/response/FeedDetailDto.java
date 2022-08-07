@@ -13,7 +13,7 @@ public class FeedDetailDto {
     private int feedId;
     private String contents;
     private String createdAt;
-    private boolean isDeleted;
+    private Boolean isDeleted;
 
     private int writerId;
     private String writer;
