@@ -1,5 +1,6 @@
 package com.dongpop.urin.oauth.filter;
 
+import com.dongpop.urin.oauth.model.MemberPrincipal;
 import com.dongpop.urin.oauth.service.CustomUserDetailsService;
 import com.dongpop.urin.oauth.token.TokenService;
 import lombok.RequiredArgsConstructor;
@@ -29,11 +30,14 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+        log.info("Request URI = {}", request.getRequestURI());
         String accessToken = getAccessTokenInRequestHeader(request);
         log.info("Request Access-Token = {}", accessToken);
         if (StringUtils.hasText(accessToken) && tokenService.validateToken(accessToken)) {
             Integer id = tokenService.getId(accessToken);
             UserDetails userDetails = customUserDetailsService.loadMemberById(id);
+            MemberPrincipal memberPrincipal = (MemberPrincipal) userDetails;
+            log.info("Request Member name = {}", memberPrincipal.getMember().getMemberName());
             UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
             authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
             SecurityContextHolder.getContext().setAuthentication(authentication);
