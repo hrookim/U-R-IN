@@ -52,6 +52,9 @@ export const createStudy = createAsyncThunk(
       navigate(`/study/${studyId}`);
       return response.data;
     } catch (err) {
+      console.log(
+        "-==============================================================================i;"
+      );
       console.log(err);
       alert("오류입니다!");
       return isRejectedWithValue(err.response.data);

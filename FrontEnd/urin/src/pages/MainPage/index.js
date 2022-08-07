@@ -72,44 +72,77 @@ const MainPage = () => {
   }, [memberId]);
 
   return (
-    <div>
+    <div className="main-page">
       <div className="header">
-        <div>
-          <form className="searchbar-form">
-            <input
-              className="searchbar"
-              type="text"
-              title="Search"
-              onChange={inputwordChange}
-            />
-            <Button type="submit" className="btn" onClick={keywordChange}>
-              <SearchIcon className="btn-icon" />
-            </Button>
-          </form>
-          <FormControlLabel
-            label="모집 중인 스터디만 보기"
-            control={
-              <Checkbox
-                checked={checked}
-                onChange={checkedChange}
-                inputProps={{ "aria-label": "controlled" }}
+        <Grid container>
+          <Grid item xs={12} md={6} className="header-grid-1">
+            <form className="searchbar-form">
+              <input
+                className="searchbar"
+                type="text"
+                title="Search"
+                onChange={inputwordChange}
               />
-            }
-          />
-        </div>
-        <div>
-          <Button variant="outlined" onClick={toStudyCreation}>
-            스터디 만들기
-          </Button>
-        </div>
+              <Button type="submit" className="btn" onClick={keywordChange}>
+                <SearchIcon className="btn-icon" sx={{ color: "#0037FA" }} />
+              </Button>
+            </form>
+            <FormControlLabel
+              label="모집 중인 스터디만 보기"
+              control={
+                <Checkbox
+                  checked={checked}
+                  onChange={checkedChange}
+                  inputProps={{ "aria-label": "controlled" }}
+                  sx={{
+                    color: "#0037FA",
+                    "&.Mui-checked": { color: "#0037FA" },
+                  }}
+                />
+              }
+            />
+          </Grid>
+          <Grid item xs={12} md={6} className="header-grid-2">
+            <div>
+              <Button
+                variant="outlined"
+                sx={{
+                  color: "#0037FA",
+                  borderColor: "#0037FA",
+                  "&:hover": {
+                    backgroundColor: "#0037FA",
+                    color: "rgb(255,255,255)",
+                  },
+                }}
+                onClick={toStudyCreation}
+              >
+                스터디 만들기
+              </Button>
+            </div>
+          </Grid>
+        </Grid>
       </div>
-      <Grid container spacing={2}>
+
+      <Grid container spacing={2} className="card-grid">
         {studies.studyList.map((item) => (
-          <Grid item xs={12} sm={6} md={4} lg={3} key={item.id}>
+          <Grid
+            item
+            xs={12}
+            sm={6}
+            md={4}
+            lg={3}
+            xl={3}
+            key={item.id}
+            className="card-item"
+          >
             <Card
               key={item.id}
               className="card"
-              sx={{ border: "none", boxShadow: "1", borderRadius: "20px" }}
+              sx={{
+                border: "none",
+                borderRadius: "20px",
+                maxWidth: "500px",
+              }}
             >
               <Link to={`/study/${item.id}`} className="card-link">
                 <CardActionArea>
@@ -117,7 +150,7 @@ const MainPage = () => {
                     className="card-img"
                     component="img"
                     height="140"
-                    image={`/img/study_img${item.title.length}.png`}
+                    image={`/img/study_img${item.title.length % 10}.png`}
                     alt="green iguana"
                   />
                   <CardContent>
