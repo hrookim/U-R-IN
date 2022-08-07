@@ -8,6 +8,7 @@ import org.springframework.http.HttpStatus;
 @AllArgsConstructor
 public enum InquiryErrorCode implements ErrorCode{
     DIFFRENT_STUDY(HttpStatus.BAD_REQUEST, "It's a different study."),
+    PARENT_INQUIRY_IS_NOT_EXIST(HttpStatus.BAD_REQUEST, "Parent inquiry is not exist."),
             ;
 
     private final HttpStatus httpStatus;
