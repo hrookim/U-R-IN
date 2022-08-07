@@ -54,6 +54,13 @@ public class StudyRepositoryImpl implements StudyRepositoryCustom {
         return PageableExecutionUtils.getPage(contents, pageable, countQuery::fetchOne);
     }
 
+    @Override
+    public List<Study> findAllByActive() {
+        return queryFactory.selectFrom(study)
+                .where(statusNotInTerminated())
+                .fetch();
+    }
+
     private BooleanExpression keywordLike(String keyword) {
         return StringUtils.hasText(keyword) ? study.title.contains(keyword) : null;
     }
