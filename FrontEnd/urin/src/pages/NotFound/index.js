@@ -1,14 +1,13 @@
 import React, { useRef, useEffect, useState } from "react";
-import "./index.css";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 
 import { checkValidation } from "../../store/checkValidationSlice";
 import { getMemberId } from "../../store/memberSlice";
 import "../../assets/DesignSystem.css";
+import "./index.css";
 
 const NotFound = () => {
-  console.log("======================================최상단");
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -31,7 +30,6 @@ const NotFound = () => {
   useEffect(() => {
     const countdown = setInterval(() => {
       setSecond(second - 1);
-      console.log("남은 시간", second);
     }, 1000);
     setTimeout(() => clearInterval(countdown), 2900);
   }, [second]);
@@ -40,12 +38,13 @@ const NotFound = () => {
 
   return (
     <div className="not-found">
-      <p className="font-60 font-xl">
-        {console.log(second, "여기는 리턴문 안")}
-        {second}초 뒤에 메인페이지로 전환됩니다.
-      </p>
+      <div className="countdown-div">
+        <p className="font-60 font-xl countdown-p">
+          {second}초 뒤에 메인페이지로 전환됩니다.
+        </p>
+      </div>
 
-      <img src="/img/not_found_img.png" alt="Not Found" />
+      <img src="/img/not_found_img.png" alt="Not Found" className="img-404" />
     </div>
   );
 };

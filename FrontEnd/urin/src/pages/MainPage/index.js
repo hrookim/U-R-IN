@@ -117,7 +117,7 @@ const MainPage = () => {
                     className="card-img"
                     component="img"
                     height="140"
-                    image={`/img/study_img${item.title.length}.png`}
+                    image={`/img/study_img${item.title.length % 10}.png`}
                     alt="green iguana"
                   />
                   <CardContent>

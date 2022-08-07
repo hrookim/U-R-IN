@@ -10,7 +10,6 @@ export const checkValidation = createAsyncThunk(
   "CHECK_VALIDATION",
   async (memberId, navigate) => {
     try {
-      console.log("-------", memberId);
       if (memberId === undefined) {
         console.log("잘못된 요청입니다.");
         localStorage.clear();

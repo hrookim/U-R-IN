@@ -1,14 +1,18 @@
 .not-found {
   display: flex;
   justify-content: center;
-  position: relative;
+  flex-direction: column;
 }
 
-.not-found > p {
-  position: absolute;
-  text-align: center;
-  margin: 30 auto 0 auto 0;
+.countdown-div {
+  margin: 50px auto 0 auto;
 }
-img {
+
+.countdown-p {
+  display: flex;
+  justify-content: center;
+}
+
+.img-404 {
   margin: 0 auto 0 auto;
 }
