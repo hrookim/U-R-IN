@@ -7,3 +7,7 @@ spring:
 logging.level:
   org.hibernate.SQL: trace
   org.hibernate.type: trace
+
+logging:
+  level:
+    root: debug
