@@ -119,6 +119,7 @@ const StudyUpdateForm = () => {
               multiline
               rows={10}
               onChange={onChange}
+              required
             />
           </Grid>
           <Grid item>

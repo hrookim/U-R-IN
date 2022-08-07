@@ -62,7 +62,7 @@ export const updateInquiry = createAsyncThunk(
     try {
       const response = await axios.put(
         `${process.env.REACT_APP_BACK_BASE_URL}studies/${studyId}/inquiry/${inquiryId}`,
-        form,
+        { contents: form },
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
