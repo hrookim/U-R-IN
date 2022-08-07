@@ -10,8 +10,6 @@ import com.dongpop.urin.domain.inquiry.repository.InquiryRepository;
 import com.dongpop.urin.domain.member.repository.Member;
 import com.dongpop.urin.domain.study.repository.Study;
 import com.dongpop.urin.domain.study.repository.StudyRepository;
-import com.dongpop.urin.global.error.errorcode.CommonErrorCode;
-import com.dongpop.urin.global.error.errorcode.StudyErrorCode;
 import com.dongpop.urin.global.error.exception.CustomException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -22,11 +20,11 @@ import javax.transaction.Transactional;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
-import static com.dongpop.urin.global.error.errorcode.CommonErrorCode.*;
-import static com.dongpop.urin.global.error.errorcode.StudyErrorCode.*;
+import static com.dongpop.urin.global.error.errorcode.CommonErrorCode.DO_NOT_HAVE_AUTHORIZATION;
+import static com.dongpop.urin.global.error.errorcode.CommonErrorCode.NO_SUCH_ELEMENTS;
+import static com.dongpop.urin.global.error.errorcode.StudyErrorCode.STUDY_DOES_NOT_EXIST;
 
 @RequiredArgsConstructor
 @Service
@@ -95,7 +93,7 @@ public class InquiryService {
 
     @Transactional
     public void deleteInquiry(Member member, int studyId, int inquiryId) {
-        Inquiry inquiry = checkWriterAuthorizaion(member, inquiryId);
+        Inquiry inquiry = checkWriterAuthorizaion(member, studyId, inquiryId);
         inquiry.deleteInquiry();
     }
     private Inquiry checkWriterAuthorizaion(Member member, int inquiryId) {
@@ -103,6 +101,18 @@ public class InquiryService {
                 .orElseThrow(() -> new CustomException(NO_SUCH_ELEMENTS));
 
         if (member.getId() != inquiry.getWriter().getId()) {
+            throw new CustomException(DO_NOT_HAVE_AUTHORIZATION);
+        }
+        return inquiry;
+    }
+
+    private Inquiry checkWriterAuthorizaion(Member member, int studyId, int feedId) {
+        Inquiry inquiry = inquiryRepository.findById(feedId)
+                .orElseThrow(() -> new CustomException(NO_SUCH_ELEMENTS));
+        Study study = studyRepository.findById(studyId)
+                .orElseThrow(() -> new CustomException(STUDY_DOES_NOT_EXIST));
+
+        if (!(member.getId() == inquiry.getWriter().getId() || member.getId() == study.getStudyLeader().getId())) {
             throw new CustomException(DO_NOT_HAVE_AUTHORIZATION);
         }
         return inquiry;

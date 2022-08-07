@@ -33,8 +33,6 @@ public class StudyController {
     @GetMapping
     public ResponseEntity<StudyListDto> getStudyList(@PageableDefault(size=24) Pageable pageable,
                                                      String keyword, Boolean isRecruiting) {
-        log.info("[StudyList Parameters] : pageable = {}, keyword = {}, isRecruiting = {}",
-                pageable, keyword, isRecruiting);
         return ResponseEntity.ok()
                 .body(studyService.getStudyList(pageable, keyword, isRecruiting));
     }
@@ -48,10 +46,7 @@ public class StudyController {
     @PostMapping
     public ResponseEntity<StudyIdDto> generateStudy(@Validated @RequestBody StudyDataDto studyData,
                                                     @AuthenticationPrincipal MemberPrincipal memberPrincipal) {
-        log.info("[REQUEST] >>>>> Create Study / studyData : {}", studyData);
         Member member = memberPrincipal.getMember();
-        log.info("memberId = {}, memberNickName = {}", member.getId(), member.getNickname());
-        log.info("[Binding Generate Study Data] : studyDataDto = {}", studyData);
         StudyIdDto studyIdDto = studyService.generateStudy(studyData, member);
         URI location = URI.create(ROOTURI + studyIdDto.getStudyId());
 
@@ -90,8 +85,6 @@ public class StudyController {
     @PatchMapping("/{studyId}")
     public ResponseEntity<StudyStatusDto> changeStudyStatus(@PathVariable int studyId, @Validated @RequestBody StudyStateDto status,
                                                             @AuthenticationPrincipal MemberPrincipal memberPrincipal) {
-        //TODO: Enum binding test
-        log.info("[REQUEST] >>>>> Change Study Status / StudyState : {}", status.getStatus().name());
         Member member = memberPrincipal.getMember();
         return ResponseEntity.ok()
                 .body(studyService.changeStudyStatus(member, studyId, status.getStatus()));
