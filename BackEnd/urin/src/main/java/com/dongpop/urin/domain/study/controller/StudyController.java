@@ -3,10 +3,7 @@ package com.dongpop.urin.domain.study.controller;
 import com.dongpop.urin.domain.member.entity.Member;
 import com.dongpop.urin.domain.study.dto.request.StudyDataDto;
 import com.dongpop.urin.domain.study.dto.request.StudyStateDto;
-import com.dongpop.urin.domain.study.dto.response.StudyDetailDto;
-import com.dongpop.urin.domain.study.dto.response.StudyIdDto;
-import com.dongpop.urin.domain.study.dto.response.StudyListDto;
-import com.dongpop.urin.domain.study.dto.response.StudyStatusDto;
+import com.dongpop.urin.domain.study.dto.response.*;
 import com.dongpop.urin.domain.study.service.StudyService;
 import com.dongpop.urin.oauth.model.MemberPrincipal;
 import lombok.RequiredArgsConstructor;
@@ -40,6 +37,12 @@ public class StudyController {
     public ResponseEntity<StudyDetailDto> getStudyDetail(@PathVariable int studyId) {
         return ResponseEntity.ok()
                 .body(studyService.getStudyDetail(studyId));
+    }
+
+    @GetMapping("/me")
+    public ResponseEntity<?> getMyStudies(@AuthenticationPrincipal MemberPrincipal memberPrincipal) {
+        StudyMyListDto studyMyListDto = studyService.getMyStudy(memberPrincipal.getMember());
+        return ResponseEntity.ok().body(studyMyListDto);
     }
 
     @PostMapping
