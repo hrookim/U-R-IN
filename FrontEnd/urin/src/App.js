@@ -23,6 +23,7 @@ import PublicRoute from "./components/PublicRoute/PublicRoute";
 import NavComponent from "./components/Navbar";
 import Footer from "./components/Footer";
 import NotFound from "./pages/NotFound";
+import MyPage from "./pages/MyPage";
 
 const App = () => {
   const [privateAccess, setPrivateAccess] = useState(false);
@@ -43,6 +44,15 @@ const App = () => {
             <PrivateRoute
               authenticated={privateAccess}
               component={<MainPage />}
+            />
+          }
+        />
+        <Route
+          path="/mypage"
+          element={
+            <PrivateRoute
+              authenticated={privateAccess}
+              component={<MyPage />}
             />
           }
         />
