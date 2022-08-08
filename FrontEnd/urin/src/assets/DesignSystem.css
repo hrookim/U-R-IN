@@ -1,0 +1,186 @@
+/* Font System */
+@font-face {
+  font-family: "Pretendard-Thin";
+  src: url("./fonts/Pretendard-Thin.ttf");
+}
+
+@font-face {
+  font-family: "Pretendard-ExtraLight";
+  src: url("./fonts/Pretendard-ExtraLight.ttf");
+}
+
+@font-face {
+  font-family: "Pretendard-Light";
+  src: url("./fonts/Pretendard-Light.ttf");
+}
+
+@font-face {
+  font-family: "Pretendard-Regular";
+  src: url("./fonts/Pretendard-Regular.ttf");
+}
+
+@font-face {
+  font-family: "Pretendard-Medium";
+  src: url("./fonts/Pretendard-Medium.ttf");
+}
+
+@font-face {
+  font-family: "Pretendard-SemiBold";
+  src: url("./fonts/Pretendard-SemiBold.ttf");
+}
+
+@font-face {
+  font-family: "Pretendard-Bold";
+  src: url("./fonts/Pretendard-Bold.ttf");
+}
+
+@font-face {
+  font-family: "Pretendard-ExtraBold";
+  src: url("./fonts/Pretendard-ExtraBold.ttf");
+}
+
+@font-face {
+  font-family: "Pretendard-Black";
+  src: url("./fonts/Pretendard-Black.ttf");
+}
+
+
+/* Font Family */
+
+.font-10 {
+  font-family: "Pretendard-Thin";
+}
+
+.font-20 {
+  font-family: "Pretendard-ExtraLight";
+}
+
+.font-30 {
+  font-family: "Pretendard-Light";
+}
+
+.font-40 {
+  font-family: "Pretendard-Regular";
+}
+
+.font-50 {
+  font-family: "Pretendard-Medium";
+}
+
+.font-60 {
+  font-family: "Pretendard-SemiBold";
+}
+
+.font-70 {
+  font-family: "Pretendard-Bold";
+}
+
+.font-80 {
+  font-family: "Pretendard-ExtraBold";
+}
+
+.font-90 {
+  font-family: "Pretendard-Black";
+}
+
+
+/* Font Size */
+.font-xxs {
+  font-size: 12px;
+}
+
+.font-xs {
+  font-size: 14px;
+}
+
+.font-sm {
+  font-size: 16px;
+
+}
+
+.font-md {
+  font-size: 19px;
+
+}
+
+.font-lg {
+  font-size: 32px;
+
+}
+
+.font-xl {
+  font-size: 48px;
+
+}
+
+.font-xxl {
+  font-size: 72px;
+
+}
+
+
+/* Color System */
+
+.color-main {
+  color: #0037FA;
+}
+
+.color-sub {
+  color: #02BDFF;
+}
+
+.color-third {
+  color: #01208F;
+}
+
+.color-accent {
+  color: #FFB802;
+}
+
+.color-deemphasis {
+  color: #d3d3d3; 
+}
+
+.color-disabled {
+  color: #4d4d4d;
+}
+
+/* Background Color System */
+
+.bgcolor-main {
+  background-color: #0037FA;
+}
+
+.bgcolor-sub {
+  background-color: #02BDFF;
+}
+
+.bgcolor-third {
+  background-color: #01208F;
+}
+
+.bgcolor-accent {
+  background-color: #FFB802;
+}
+
+.bgcolor-deemphasis {
+  background-color: #d3d3d3; 
+}
+
+.bgcolor-disabled {
+  background-color: #4d4d4d;
+}
+
+/* Button */
+
+.btn-radius {
+  border-radius: 20px;
+}
+
+.btn-hover:hover {
+  background-color: #FFB802;
+}
+
+.btn-text-shadow {
+  text-shadow: 0px 0px 5px rgba(0, 0, 0, 0.4);
+}
