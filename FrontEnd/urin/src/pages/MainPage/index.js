@@ -70,20 +70,25 @@ const MainPage = () => {
 
   return (
     <div className="main-page">
+      <div className="top-header">
+        <span className="font-70 search-font">
+          당신에게 맞는 스터디를 검색해보세요!
+        </span>
+        <form className="searchbar-form">
+          <input
+            className="searchbar"
+            type="text"
+            title="Search"
+            onChange={inputwordChange}
+          />
+          <Button type="submit" className="search-btn" onClick={keywordChange}>
+            <SearchIcon className="btn-icon" sx={{ color: "#7d7d7d" }} />
+          </Button>
+        </form>
+      </div>
       <div className="header">
         <Grid container>
           <Grid item xs={12} md={6} className="header-grid-1">
-            <form className="searchbar-form">
-              <input
-                className="searchbar"
-                type="text"
-                title="Search"
-                onChange={inputwordChange}
-              />
-              <Button type="submit" className="btn" onClick={keywordChange}>
-                <SearchIcon className="btn-icon" sx={{ color: "#0037FA" }} />
-              </Button>
-            </form>
             <FormControlLabel
               label="모집 중인 스터디만 보기"
               control={
@@ -139,6 +144,7 @@ const MainPage = () => {
                 border: "none",
                 borderRadius: "20px",
                 maxWidth: "500px",
+                boxShadow: 0,
               }}
             >
               <Link to={`/study/${item.id}`} className="card-link">
@@ -150,12 +156,30 @@ const MainPage = () => {
                     image={`/img/study_img${item.title.length % 10}.png`}
                     alt="green iguana"
                   />
-                  <CardContent>
+                  <CardContent
+                    className="card-content"
+                    sx={{ padding: "18px 4px 0 4px" }}
+                  >
                     <p className="font-70 font-md card-title">{item.title}</p>
-                    <p className="font-30 font-xs card-status">
-                      {item.status}&nbsp;&nbsp;&nbsp;&nbsp;{item.currentMember}{" "}
-                      / {item.memberCapacity}
-                    </p>
+                    {item.status === "RECRUITING" ? (
+                      <div className="card-status">
+                        <span className="font-50 font-xs card-status-recruiting">
+                          {item.status}&nbsp;&nbsp;&nbsp;&nbsp;
+                        </span>
+                        <span className="font-30 font-xs">
+                          {item.currentMember}/{item.memberCapacity}
+                        </span>
+                      </div>
+                    ) : (
+                      <div className="card-status">
+                        <span className="font-50 font-xs card-status-completed">
+                          {item.status}&nbsp;&nbsp;&nbsp;&nbsp;
+                        </span>
+                        <span className="font-30 font-xs">
+                          {item.currentMember}/{item.memberCapacity}
+                        </span>
+                      </div>
+                    )}
                   </CardContent>
                 </CardActionArea>
               </Link>
