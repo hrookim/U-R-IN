@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import { useParams } from "react-router-dom";
-import { getInquiry, createInquiry } from "../../store/inquirySlice";
+import { createInquiry } from "../../store/inquirySlice";
 
 const InquiryCommentInput = ({ parentId, setIsInputSubmitted }) => {
   const { studyId } = useParams();
@@ -30,7 +30,6 @@ const InquiryCommentInput = ({ parentId, setIsInputSubmitted }) => {
           제출
         </button>
       </div>
-      <hr />
     </div>
   );
 };

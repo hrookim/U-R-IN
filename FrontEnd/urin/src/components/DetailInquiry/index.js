@@ -9,12 +9,11 @@ import DetailInquiryListItem from "../DetailInquiryListItem";
 import { getInquiry } from "../../store/inquirySlice";
 
 const DetailInquiry = ({ study, isLeader, isParticipant }) => {
-  const [isCommentDeleted, setIsCommentDeleted] = useState(false);
-  const [isInputSubmitted, setIsInputSubmitted] = useState(false);
-
   const dispatch = useDispatch();
   const { studyId } = useParams();
   const inquiry = useSelector((state) => state.inquiry);
+  const [isCommentDeleted, setIsCommentDeleted] = useState(false);
+  const [isInputSubmitted, setIsInputSubmitted] = useState(false);
 
   useEffect(() => {
     dispatch(getInquiry(studyId));

@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useDispatch } from "react-redux";
-import { createInquiry, getInquiry } from "../../store/inquirySlice";
+import { createInquiry } from "../../store/inquirySlice";
 
 const DetailInquiryInput = ({ studyId, setIsInputSubmitted }) => {
   const dispatch = useDispatch();
@@ -27,7 +27,6 @@ const DetailInquiryInput = ({ studyId, setIsInputSubmitted }) => {
           제출
         </button>
       </div>
-      <hr />
     </div>
   );
 };
