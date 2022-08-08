@@ -50,7 +50,7 @@ const StudyDetail = () => {
   }, [memberId]);
 
   return (
-    <>
+    <div className="main-page">
       <DetailHeader
         study={study}
         isLeader={isLeader}
@@ -64,7 +64,7 @@ const StudyDetail = () => {
         isParticipant={isParticipant}
         setIsChanged={setIsChanged}
       />
-    </>
+    </div>
   );
 };
 
