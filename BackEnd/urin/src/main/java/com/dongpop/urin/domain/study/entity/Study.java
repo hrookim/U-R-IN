@@ -35,8 +35,16 @@ public class Study extends BaseTimeEntity {
     private List<Participant> participants = new ArrayList<>();
 
     private LocalDate expirationDate;
+
     private Boolean isOnair;
     private String sessionId;
+
+    @PrePersist
+    public void prePersist() {
+        if (getIsOnair() == null) {
+            this.changeOnairStatus(false);
+        }
+    }
 
     @Builder
     public Study(String title, String notice, StudyStatus status, int memberCapacity, LocalDate expirationDate, Boolean isOnair) {

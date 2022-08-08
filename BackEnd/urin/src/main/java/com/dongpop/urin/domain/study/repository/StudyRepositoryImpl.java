@@ -16,7 +16,7 @@ import org.springframework.util.StringUtils;
 import javax.persistence.EntityManager;
 import java.util.List;
 
-import static com.dongpop.urin.domain.study.repository.QStudy.study;
+import static com.dongpop.urin.domain.study.entity.QStudy.study;
 import static com.dongpop.urin.domain.study.entity.StudyStatus.RECRUITING;
 import static com.dongpop.urin.domain.study.entity.StudyStatus.TERMINATED;
 

@@ -1,14 +1,13 @@
-package com.dongpop.urin.domain.feedback.entity;
+package com.dongpop.urin.domain.feedbackcontent.entity;
 
 import com.dongpop.urin.domain.feedback.entity.Feedback;
-import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
 @Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor
 @Entity
 @Table(name = "feedback_contents")
 public class FeedbackContent {
@@ -19,11 +18,26 @@ public class FeedbackContent {
     @JoinColumn(name = "feedback_id")
     private Feedback feedback;
 
+    private int number;
     @Column(nullable = false)
     private String question;
     @Column(nullable = false)
     private String answer;
 
     @Enumerated(EnumType.STRING)
-    private FeedbackType type;
+    private FeedbackContentType type;
+
+    public void updateContentData(int number, String question, String answer, FeedbackContentType type) {
+        this.number = number;
+        this.question = question;
+        this.answer = answer;
+        this.type = type;
+    }
+
+    public void setFeedback(Feedback feedback) {
+        this.feedback = feedback;
+        if (feedback != null) {
+            feedback.getFeedbackContents().add(this);
+        }
+    }
 }

@@ -2,10 +2,10 @@ package com.dongpop.urin.domain.meeting.entity;
 
 import com.dongpop.urin.domain.study.entity.Study;
 import lombok.AccessLevel;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -14,6 +14,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "meetings")
 @Entity
+@EntityListeners(AuditingEntityListener.class)
 public class Meeting {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;

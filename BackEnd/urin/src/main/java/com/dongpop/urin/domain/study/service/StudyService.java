@@ -102,7 +102,7 @@ public class StudyService {
                 .status(study.getStatus())
                 .expirationDate(study.getExpirationDate())
                 .dDay(dDay)
-                .isOnair(study.isOnair())
+                .isOnair(study.getIsOnair())
                 .participants(dtos)
                 .build();
     }
