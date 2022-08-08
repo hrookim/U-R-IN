@@ -1,0 +1,6 @@
+.dt-container {
+  box-sizing: border-box;
+  border: 1px solid #4d4d4d;
+  margin-top: 20px;
+  border-radius: 10px;
+}

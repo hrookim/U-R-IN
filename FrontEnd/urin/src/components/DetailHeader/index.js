@@ -1,7 +1,8 @@
 import React from "react";
+import "./index.css";
 import { useDispatch } from "react-redux";
 import "../../assets/DesignSystem.css";
-import Button from "@mui/material/Button";
+import SettingsIcon from "@mui/icons-material/Settings";
 import { Link, useParams } from "react-router-dom";
 import {
   changeStudyStatus,
@@ -20,10 +21,13 @@ const DetailHeader = ({
   const { studyId } = useParams();
 
   const onClickTerminate = () => {
-    dispatch(changeStudyStatus({ studyId })).then(() => {
-      setIsChanged(true);
-      setInterval(() => setIsChanged(false), 100);
-    });
+    const confirmAnswer = window.confirm("스터디를 종료하시겠습니까?");
+    if (confirmAnswer) {
+      dispatch(changeStudyStatus({ studyId })).then(() => {
+        setIsChanged(true);
+        setInterval(() => setIsChanged(false), 100);
+      });
+    }
   };
   const onClickJoin = () => {
     dispatch(joinStudy(studyId)).then(() => {
@@ -32,66 +36,116 @@ const DetailHeader = ({
     });
   };
   const onClickLeave = () => {
-    const participantId = currentMemberId;
-    dispatch(leaveStudy({ studyId, participantId })).then(() => {
-      setIsChanged(true);
-      setInterval(() => setIsChanged(false), 100);
-    });
+    const confirmAnswer = window.confirm("스터디를 탈퇴하시겠습니까?");
+    if (confirmAnswer) {
+      const participantId = currentMemberId;
+      dispatch(leaveStudy({ studyId, participantId })).then(() => {
+        setIsChanged(true);
+        setInterval(() => setIsChanged(false), 100);
+      });
+    }
   };
   return (
     <div>
-      {isLeader && (
-        <Button
-          component={Link}
-          to={`/study/${studyId}/edit`}
-          className="font-40"
-        >
-          방 정보 수정하기
-        </Button>
-      )}
-      <div className="font-lg font-60">{study.title}</div>
-      <div className="font-40">{study.status}</div>
-      {study.dday === -1 ? (
-        <div />
-      ) : (
-        <div className="font-40">{`D-${study.dday}`}</div>
-      )}
+      <div className="dh-container">
+        <div className="dh-container-item">
+          <div className="font-xl font-70">{study.title}</div>
+        </div>
+        <div className="dh-container-item">
+          {study.status === "TERMINATED" && (
+            <div className="font-40 dh-tag">종료</div>
+          )}
+          {study.status === "COMPLETED" && (
+            <div className="font-40 dh-tag">모집 완료</div>
+          )}
+          {study.status === "RECRUITING" && (
+            <div className="font-40 dh-tag">모집 중</div>
+          )}
 
-      {isLeader ? (
-        <div className="font-40">
-          {study.status !== "TERMINATED" && (
-            <div>
-              {!study.onair ? (
-                <Button variant="contained">미팅 시작하기</Button>
-              ) : (
-                <Button variant="contained" disabled>
-                  미팅 중
-                </Button>
-              )}
-              <Button onClick={onClickTerminate}>스터디 종료하기</Button>
-            </div>
+          {study.dday > 0 && (
+            <div className="font-40 dh-tag">{`D-${study.dday}`}</div>
+          )}
+          {study.dday === 0 && <div className="font-40 dh-tag">D-day</div>}
+          {isLeader && (
+            <Link to={`/study/${studyId}/edit`} className="dh-setting-icon">
+              <SettingsIcon color="action" sx={{ fontSize: 30 }} />
+            </Link>
           )}
         </div>
-      ) : (
-        <div className="font-40">
-          {isParticipant ? (
-            <div className="font-40">
-              {study.onair ? (
-                <Button variant="contained">미팅 입장하기</Button>
-              ) : (
-                <Button variant="contained" disabled>
-                  미팅 입장하기
-                </Button>
-              )}
-              <Button onClick={onClickLeave}>스터디 나가기</Button>
-            </div>
-          ) : (
-            <Button variant="contained" onClick={onClickJoin}>
-              스터디 참여하기
-            </Button>
-          )}
-        </div>
-      )}
+        {study.status !== "TERMINATED" && (
+          <div className="dh-container-item">
+            {isLeader ? (
+              <div className="font-40">
+                {study.status !== "TERMINATED" && (
+                  <div>
+                    {study.isOnair ? (
+                      <button
+                        type="button"
+                        className="dh-meeting-button font-50 font-md"
+                        disabled
+                      >
+                        미팅 중
+                      </button>
+                    ) : (
+                      <button
+                        type="button"
+                        className="dh-meeting-button font-50 font-md"
+                      >
+                        미팅 시작하기
+                      </button>
+                    )}
+                    <button
+                      type="button"
+                      className="dh-study-button font-50 font-md"
+                      onClick={onClickTerminate}
+                    >
+                      스터디 종료하기
+                    </button>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <div className="font-40">
+                {isParticipant ? (
+                  <div className="font-40">
+                    {study.isOnair ? (
+                      <button
+                        type="button"
+                        className="dh-meeting-button font-50 font-md"
+                      >
+                        미팅 입장하기
+                      </button>
+                    ) : (
+                      <button
+                        type="button"
+                        className="dh-meeting-button font-50 font-md"
+                        disabled
+                      >
+                        미팅 입장하기
+                      </button>
+                    )}
+                    <button
+                      type="button"
+                      className="dh-study-button font-50 font-md"
+                      onClick={onClickLeave}
+                    >
+                      스터디 나가기
+                    </button>
+                  </div>
+                ) : (
+                  <button
+                    type="button"
+                    className="dh-study-button font-50 font-md"
+                    onClick={onClickJoin}
+                  >
+                    스터디 참여하기
+                  </button>
+                )}
+              </div>
+            )}
+          </div>
+        )}
+      </div>
     </div>
   );
 };
