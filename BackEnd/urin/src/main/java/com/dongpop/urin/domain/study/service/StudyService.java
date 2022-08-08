@@ -172,4 +172,28 @@ public class StudyService {
         study.updateStatus(status);
         return new StudyStatusDto(studyId, status.name());
     }
+
+    public StudyMyListDto getMyStudy(Member member) {
+        List<Participant> myParticipantList = participantRepository.findAllByMember(member);
+
+        List<StudySummaryDto> currentStudyList = new ArrayList<>();
+        List<StudySummaryDto> terminatedStudyList = new ArrayList<>();
+        myParticipantList.forEach((participant -> {
+            Study study = participant.getStudy();
+            StudySummaryDto studySummaryDto = StudySummaryDto.builder()
+                    .id(study.getId())
+                    .title(study.getTitle())
+                    .memberCapacity(study.getMemberCapacity())
+                    .currentMember(study.getParticipants().size())
+                    .status(study.getStatus()).build();
+
+            if (TERMINATED.equals(study.getStatus())) {
+                terminatedStudyList.add(studySummaryDto);
+            } else {
+                currentStudyList.add(studySummaryDto);
+            }
+        }));
+
+        return new StudyMyListDto(currentStudyList, terminatedStudyList);
+    }
 }
