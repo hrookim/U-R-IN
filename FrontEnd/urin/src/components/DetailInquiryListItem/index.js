@@ -12,14 +12,15 @@ const StyledDiv = styled.div`
 
 const DetailInquiryListItem = ({
   inquiryListItem,
+  isLeader,
   setIsCommentDeleted,
   setIsInputSubmitted,
 }) => {
-  // console.log("inquiryListItem: ", inquiryListItem);
   return (
     <StyledDiv>
       <InquiryParentCommentItem
         parentItem={inquiryListItem.parent}
+        isLeader={isLeader}
         setIsCommentDeleted={setIsCommentDeleted}
       />
       <hr />
@@ -27,6 +28,7 @@ const DetailInquiryListItem = ({
         {inquiryListItem.children.map((childListItem) => (
           <InquiryChildCommentItem
             key={childListItem.inquiryId}
+            isLeader={isLeader}
             childListItem={childListItem}
             setIsCommentDeleted={setIsCommentDeleted}
           />
