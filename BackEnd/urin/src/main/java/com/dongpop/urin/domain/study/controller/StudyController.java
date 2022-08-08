@@ -1,83 +1,73 @@
 package com.dongpop.urin.domain.study.controller;
 
+import com.dongpop.urin.domain.member.repository.Member;
 import com.dongpop.urin.domain.study.dto.request.StudyDataDto;
-import com.dongpop.urin.domain.study.dto.request.StudyStatusRequestDto;
+import com.dongpop.urin.domain.study.dto.request.StudyStateDto;
 import com.dongpop.urin.domain.study.dto.response.StudyDetailDto;
 import com.dongpop.urin.domain.study.dto.response.StudyIdDto;
 import com.dongpop.urin.domain.study.dto.response.StudyListDto;
 import com.dongpop.urin.domain.study.dto.response.StudyStatusDto;
+import com.dongpop.urin.domain.study.service.StudyService;
+import com.dongpop.urin.oauth.model.MemberPrincipal;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.URI;
 
-
+@Slf4j
+@RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/v1/studies")
 public class StudyController {
 
-    @GetMapping
-    public ResponseEntity<StudyListDto> getStudyList(Pageable pageable, String keyword) {
-        ResponseEntity<StudyListDto> response = ResponseEntity
-                .ok()
-                .body(new StudyListDto());
+    private static final String ROOTURI = "/api/v1/studies/";
+    private final StudyService studyService;
 
-        return response;
+    @GetMapping
+    public ResponseEntity<StudyListDto> getStudyList(@PageableDefault(size=24) Pageable pageable,
+                                                     String keyword, Boolean isRecruiting) {
+        return ResponseEntity.ok()
+                .body(studyService.getStudyList(pageable, keyword, isRecruiting));
     }
 
     @GetMapping("/{studyId}")
     public ResponseEntity<StudyDetailDto> getStudyDetail(@PathVariable int studyId) {
-        ResponseEntity<StudyDetailDto> response = ResponseEntity
-                .ok()
-                .body(new StudyDetailDto());
-
-        return response;
-
+        return ResponseEntity.ok()
+                .body(studyService.getStudyDetail(studyId));
     }
 
     @PostMapping
-    public ResponseEntity<StudyIdDto> generateStudy(StudyDataDto studyData) {
-        ResponseEntity<StudyIdDto> response = ResponseEntity
-                .ok()
-                .body(new StudyIdDto());
+    public ResponseEntity<StudyIdDto> generateStudy(@Validated @RequestBody StudyDataDto studyData,
+                                                    @AuthenticationPrincipal MemberPrincipal memberPrincipal) {
+        Member member = memberPrincipal.getMember();
+        StudyIdDto studyIdDto = studyService.generateStudy(studyData, member);
+        URI location = URI.create(ROOTURI + studyIdDto.getStudyId());
 
-        return response;
+        return ResponseEntity.created(location)
+                .body(studyIdDto);
     }
 
     @PutMapping("/{studyId}")
-    public ResponseEntity<StudyIdDto> editStudy(@PathVariable int studyId, StudyDataDto studyData) {
-        ResponseEntity<StudyIdDto> response = ResponseEntity
-                .ok()
-                .body(new StudyIdDto());
-
-        return response;
-    }
-
-    @PostMapping("/{studyId}/participants")
-    public ResponseEntity<StudyIdDto> joinStudy() {
-        ResponseEntity<StudyIdDto> response = ResponseEntity
-                .ok()
-                .body(new StudyIdDto());
-
-        return response;
-    }
-
-    @DeleteMapping("/{studyId}/participants/{participantsId}")
-    public ResponseEntity<?> removeStudyMember(@PathVariable int studyId, @PathVariable int participantsId) {
-
-        return new ResponseEntity<>(HttpStatus.OK);
+    public ResponseEntity<StudyIdDto> editStudy(@PathVariable int studyId, @Validated @RequestBody StudyDataDto studyData,
+                                                @AuthenticationPrincipal MemberPrincipal memberPrincipal) {
+        log.info("[REQUEST] >>>>> METHOD {} / studyData : {}", studyData);
+        Member member = memberPrincipal.getMember();
+        return ResponseEntity.ok()
+                .body(studyService.editStudy(member, studyId, studyData));
     }
 
     @PatchMapping("/{studyId}")
-    public ResponseEntity<StudyStatusDto> changeStudyStatus(StudyStatusRequestDto studyStatus) {
-        ResponseEntity<StudyStatusDto> response = ResponseEntity
-                .ok()
-                .body(new StudyStatusDto());
-
-        return response;
+    public ResponseEntity<StudyStatusDto> changeStudyStatus(@PathVariable int studyId, @Validated @RequestBody StudyStateDto status,
+                                                            @AuthenticationPrincipal MemberPrincipal memberPrincipal) {
+        Member member = memberPrincipal.getMember();
+        return ResponseEntity.ok()
+                .body(studyService.changeStudyStatus(member, studyId, status.getStatus()));
     }
-
-
 
 }

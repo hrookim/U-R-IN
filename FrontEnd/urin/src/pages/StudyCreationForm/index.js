@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import moment from "moment";
 import {
   Button,
@@ -7,25 +7,32 @@ import {
   Checkbox,
   FormControlLabel,
 } from "@mui/material";
+import NumberPicker from "react-widgets/NumberPicker";
 import DatePicker from "react-datepicker";
 import { ko } from "date-fns/esm/locale";
 import "react-datepicker/dist/react-datepicker.css";
-import { useDispatch } from "react-redux";
+import "react-widgets/styles.css";
+import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { createStudy } from "../../store/studySlice";
+import { checkValidation } from "../../store/checkValidationSlice";
+import { getMemberId } from "../../store/memberSlice";
 
 const StudyCreationForm = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
+  const memberId = useSelector((state) => state.member.id);
+  const mounted = useRef(false);
   const [form, setForm] = useState({
     title: "",
     notice: "",
     expirationDate: "",
-    memberCapacity: "",
+    memberCapacity: 2,
   });
   const [formDate, setFormDate] = useState(new Date());
   const [disable, setDisable] = useState(false);
+  const [errorStatement, setErrorStatement] = useState("");
 
   useEffect(() => {
     if (disable) {
@@ -51,12 +58,21 @@ const StudyCreationForm = () => {
   };
 
   const onSubmit = (e) => {
-    alert("스터디 생성이 완료되었습니다:)");
     e.preventDefault();
-    dispatch(createStudy({ form, navigate })).then((res) => {
-      navigate(`/study/${res.payload.studyId}`);
-    });
+    dispatch(createStudy({ form, navigate }));
   };
+
+  useEffect(() => {
+    dispatch(getMemberId(navigate));
+  }, []);
+
+  useEffect(() => {
+    if (!mounted.current) {
+      mounted.current = true;
+    } else {
+      dispatch(checkValidation(undefined, navigate));
+    }
+  }, [memberId]);
 
   return (
     <div>
@@ -65,12 +81,19 @@ const StudyCreationForm = () => {
           <h1>스터디 생성 창입니다!</h1>
           <Grid item>
             <TextField
+              autoFocus
+              required
               id="title"
               name="title"
               label="Title"
               type="text"
+              error={form.title.length < 3 || form.title.length > 50}
+              helperText={
+                form.title.length < 3 || form.title.length > 50
+                  ? "3~50자 스터디명을 입력하세요"
+                  : ""
+              }
               onChange={onChange}
-              required
             />
           </Grid>
           <Grid item>
@@ -115,14 +138,22 @@ const StudyCreationForm = () => {
           </Grid>
 
           <Grid item>
-            <TextField
-              id="memberCapacity"
+            <NumberPicker
+              min={2}
+              max={4}
+              defaultValue={2}
               name="memberCapacity"
-              label="Member Capacity"
-              type="number"
-              onChange={onChange}
-              required
+              onChange={(value) => {
+                if (!value) {
+                  setErrorStatement("2~4명 입력해주세요");
+                }
+                setForm({
+                  ...form,
+                  memberCapacity: value,
+                });
+              }}
             />
+            <small>{errorStatement}</small>{" "}
           </Grid>
 
           <Grid item>

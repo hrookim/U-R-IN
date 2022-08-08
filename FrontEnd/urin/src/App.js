@@ -1,6 +1,11 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Route,
+  Routes,
+  Navigate,
+} from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 
 import LandingPage from "./pages/LandingPage";
@@ -16,6 +21,8 @@ import Meeting from "./pages/Meeting";
 import PrivateRoute from "./components/PrivateRoute/PrivateRoute";
 import PublicRoute from "./components/PublicRoute/PublicRoute";
 import NavComponent from "./components/Navbar";
+import Footer from "./components/Footer";
+import NotFound from "./pages/NotFound";
 
 const App = () => {
   const [privateAccess, setPrivateAccess] = useState(false);
@@ -85,7 +92,10 @@ const App = () => {
         />
         <Route path="/login" element={<Login />} />
         <Route path="/logout" element={<Logout />} />
+        <Route path="/notfound" element={<NotFound />} />
+        <Route path="*" element={<Navigate to="/notfound" />} />
       </Routes>
+      <Footer />
     </Router>
   );
 };
