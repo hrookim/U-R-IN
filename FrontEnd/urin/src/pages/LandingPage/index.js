@@ -1,10 +1,14 @@
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import Button from "@mui/material/Button";
 
 import "../../assets/DesignSystem.css";
 import "./index.css";
+import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 const LandingPage = () => {
+  gsap.registerPlugin(ScrollTrigger);
+
   const onClick = () => {
     window.location.href = process.env.REACT_APP_SOCIAL_LOGIN_URL;
   };
@@ -15,8 +19,28 @@ const LandingPage = () => {
     width: "100px",
   };
 
+  const ref = useRef(null);
+  useEffect(() => {
+    const element = ref.current;
+    gsap.fromTo(
+      element.querySelector(".test"),
+      {
+        opacity: 0,
+      },
+      {
+        opacity: 1,
+        scrollTrigger: {
+          trigger: element.querySelector(".test"),
+          start: "top top",
+          end: "bottom center",
+          markers: true,
+          scrub: true,
+        },
+      }
+    );
+  });
   return (
-    <div>
+    <div ref={ref}>
       <div>
         <img src="/img/logo_img.png" alt="hello" className="title-logo" />
       </div>
@@ -45,9 +69,9 @@ const LandingPage = () => {
 
           <img src="/img/landingpage-img4.png" alt="img4" className="img4" />
 
-          <div className="img-group">
+          <div className="img-group mother">
             <img
-              className="img1"
+              className="img1 test"
               src="/img/landingpage-img1.png"
               alt="landingpage-img1"
             />
