@@ -18,8 +18,8 @@ const InquiryChildCommentItem = ({
   setIsCommentDeleted,
 }) => {
   const dispatch = useDispatch();
-  const currentMemberId = useSelector((state) => state.member.id);
   const { studyId } = useParams();
+  const currentMemberId = useSelector((state) => state.member.id);
   const [form, setForm] = useState(childListItem.contents);
   const [isEditing, setIsEditing] = useState(false);
 
