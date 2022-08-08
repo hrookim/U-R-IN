@@ -1,9 +1,11 @@
 package com.dongpop.urin.domain.participant.repository;
 
+import com.dongpop.urin.domain.member.repository.Member;
 import com.dongpop.urin.domain.study.repository.Study;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface ParticipantRepository extends JpaRepository<Participant, Integer> {
@@ -11,4 +13,6 @@ public interface ParticipantRepository extends JpaRepository<Participant, Intege
             " where p.study.id = :studyId" +
             " AND p.isLeader IS TRUE")
     Optional<Participant> findLeader(int studyId);
+
+    List<Participant> findAllByMember(Member member);
 }
