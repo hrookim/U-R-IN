@@ -1,5 +1,6 @@
 package com.dongpop.urin.domain.study.repository;
 
+import com.dongpop.urin.domain.study.entity.Study;
 import com.querydsl.core.types.Order;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.BooleanExpression;
@@ -16,8 +17,8 @@ import javax.persistence.EntityManager;
 import java.util.List;
 
 import static com.dongpop.urin.domain.study.repository.QStudy.study;
-import static com.dongpop.urin.domain.study.repository.StudyStatus.RECRUITING;
-import static com.dongpop.urin.domain.study.repository.StudyStatus.TERMINATED;
+import static com.dongpop.urin.domain.study.entity.StudyStatus.RECRUITING;
+import static com.dongpop.urin.domain.study.entity.StudyStatus.TERMINATED;
 
 public class StudyRepositoryImpl implements StudyRepositoryCustom {
 

@@ -1,6 +1,6 @@
-package com.dongpop.urin.domain.meeting.repository;
+package com.dongpop.urin.domain.meeting.entity;
 
-import com.dongpop.urin.domain.study.repository.Study;
+import com.dongpop.urin.domain.study.entity.Study;
 import lombok.Getter;
 import org.springframework.data.annotation.CreatedDate;
 

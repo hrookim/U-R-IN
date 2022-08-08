@@ -1,6 +1,6 @@
 package com.dongpop.urin.domain.participant.repository;
 
-import com.dongpop.urin.domain.study.repository.Study;
+import com.dongpop.urin.domain.participant.entity.Participant;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 

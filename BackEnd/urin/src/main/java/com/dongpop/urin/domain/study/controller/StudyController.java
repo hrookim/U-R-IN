@@ -1,6 +1,6 @@
 package com.dongpop.urin.domain.study.controller;
 
-import com.dongpop.urin.domain.member.repository.Member;
+import com.dongpop.urin.domain.member.entity.Member;
 import com.dongpop.urin.domain.study.dto.request.StudyDataDto;
 import com.dongpop.urin.domain.study.dto.request.StudyStateDto;
 import com.dongpop.urin.domain.study.dto.response.StudyDetailDto;

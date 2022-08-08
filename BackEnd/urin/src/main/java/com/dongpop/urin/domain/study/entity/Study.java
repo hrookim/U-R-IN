@@ -1,8 +1,8 @@
-package com.dongpop.urin.domain.study.repository;
+package com.dongpop.urin.domain.study.entity;
 
 import com.dongpop.urin.domain.common.entity.BaseTimeEntity;
-import com.dongpop.urin.domain.member.repository.Member;
-import com.dongpop.urin.domain.participant.repository.Participant;
+import com.dongpop.urin.domain.member.entity.Member;
+import com.dongpop.urin.domain.participant.entity.Participant;
 import com.dongpop.urin.global.error.exception.CustomException;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -35,10 +35,11 @@ public class Study extends BaseTimeEntity {
     private List<Participant> participants = new ArrayList<>();
 
     private LocalDate expirationDate;
-    private boolean isOnair;
+    private Boolean isOnair;
+    private String sessionId;
 
     @Builder
-    public Study(String title, String notice, StudyStatus status, int memberCapacity, LocalDate expirationDate, boolean isOnair) {
+    public Study(String title, String notice, StudyStatus status, int memberCapacity, LocalDate expirationDate, Boolean isOnair) {
         this.title = title;
         this.notice = notice;
         this.status = status;
@@ -75,7 +76,16 @@ public class Study extends BaseTimeEntity {
         this.status = status;
     }
 
-    public void changeOnairStatus() {
-        isOnair = !isOnair;
+    public void saveSessionId(String sessionId) {
+        this.sessionId = sessionId;
+    }
+
+    public void changeOnairStatus(Boolean isConnected) {
+        isOnair = isConnected;
+    }
+
+    public void closeMeeting() {
+        isOnair = false;
+        sessionId = "";
     }
 }

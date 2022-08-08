@@ -1,6 +1,6 @@
 package com.dongpop.urin.domain.participant.controller;
 
-import com.dongpop.urin.domain.member.repository.Member;
+import com.dongpop.urin.domain.member.entity.Member;
 import com.dongpop.urin.domain.participant.dto.response.ParticipantIdDto;
 import com.dongpop.urin.domain.participant.dto.response.ParticipantJoinDto;
 import com.dongpop.urin.domain.participant.service.ParticipantService;

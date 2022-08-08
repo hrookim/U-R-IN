@@ -1,5 +1,6 @@
 package com.dongpop.urin.domain.study.repository;
 
+import com.dongpop.urin.domain.study.entity.Study;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 
