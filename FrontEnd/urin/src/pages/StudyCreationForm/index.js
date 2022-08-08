@@ -19,8 +19,8 @@ import { checkValidation } from "../../store/checkValidationSlice";
 import { getMemberId } from "../../store/memberSlice";
 
 const StudyCreationForm = () => {
-  const dispatch = useDispatch();
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const memberId = useSelector((state) => state.member.id);
   const mounted = useRef(false);
@@ -67,10 +67,10 @@ const StudyCreationForm = () => {
   }, []);
 
   useEffect(() => {
-    if (!mounted.current) {
+    if (!mounted.current && !memberId) {
       mounted.current = true;
     } else {
-      dispatch(checkValidation(undefined, navigate));
+      dispatch(checkValidation(memberId, navigate));
     }
   }, [memberId]);
 

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import moment from "moment";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams, useNavigate, Link } from "react-router-dom";
@@ -15,11 +15,17 @@ import { ko } from "date-fns/esm/locale";
 import "react-datepicker/dist/react-datepicker.css";
 import "react-widgets/styles.css";
 import { getStudy, updateStudy } from "../../store/studySlice";
+import { getMemberId } from "../../store/memberSlice";
+import { checkValidation } from "../../store/checkValidationSlice";
 
 const StudyUpdateForm = () => {
-  const { studyId } = useParams();
-  const dispatch = useDispatch();
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  const memberId = useSelector((state) => state.member.id);
+  const mounted = useRef(false);
+  const { studyId } = useParams();
+
   const study = useSelector((state) => state.study);
   const [form, setForm] = useState({
     title: "",
@@ -85,6 +91,18 @@ const StudyUpdateForm = () => {
     e.preventDefault();
     dispatch(updateStudy({ studyId, form, navigate }));
   };
+
+  useEffect(() => {
+    dispatch(getMemberId(navigate));
+  }, []);
+
+  useEffect(() => {
+    if (!mounted.current && !memberId) {
+      mounted.current = true;
+    } else {
+      dispatch(checkValidation(memberId, navigate));
+    }
+  }, [memberId]);
 
   return (
     <div>

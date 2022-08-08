@@ -4,7 +4,6 @@ import React, { useEffect, useRef } from "react";
 import "./index.css";
 import { useNavigate, Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-
 import SearchIcon from "@mui/icons-material/Search";
 import {
   Button,
@@ -18,7 +17,6 @@ import {
   Pagination,
   Stack,
 } from "@mui/material";
-import Footer from "../../components/Footer";
 import { getStudyList } from "../../store/studyListSlice";
 import { checkValidation } from "../../store/checkValidationSlice";
 import { getMemberId } from "../../store/memberSlice";
@@ -34,7 +32,6 @@ const MainPage = () => {
   const [page, setPage] = React.useState(1);
   const [inputword, setInputword] = React.useState("");
   const [keyword, setKeyword] = React.useState("");
-
   const [checked, setChecked] = React.useState(true);
 
   const checkedChange = (e) => {
@@ -64,7 +61,7 @@ const MainPage = () => {
   }, [page, checked, keyword]);
 
   useEffect(() => {
-    if (!mounted.current) {
+    if (!mounted.current && !memberId) {
       mounted.current = true;
     } else {
       dispatch(checkValidation(memberId, navigate));

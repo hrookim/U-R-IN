@@ -20,7 +20,7 @@ const NotFound = () => {
   }, []);
 
   useEffect(() => {
-    if (!mounted.current) {
+    if (!mounted.current && !memberId) {
       mounted.current = true;
     } else {
       dispatch(checkValidation(memberId, navigate));

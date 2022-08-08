@@ -74,7 +74,7 @@ const App = () => {
           }
         />
 
-        {/* <Route path="/mypage/" element={<MyPage />} />
+        {/*
         <Route
           path="/study/:studyId/meeting/:meetingId"
           element={<Meeting />}
