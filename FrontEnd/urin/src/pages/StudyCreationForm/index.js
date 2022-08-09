@@ -13,7 +13,6 @@ import {
   Typography,
   Popper,
   FormControl,
-  InputLabel,
   MenuItem,
   Select,
 } from "@mui/material";
@@ -97,83 +96,71 @@ const StudyCreationForm = () => {
 
   return (
     <div>
-      <div className="study-creation">
+      <div className="study-create">
         <form onSubmit={onSubmit}>
           {/* 전체 컨테이너 */}
-          <Grid
-            className="container"
-            container
-            // alignItems="center"
-
-            direction="column"
-          >
+          <Grid container className="container">
             <img
               src="/img/studyCreation.png"
               alt="bannerImg"
-              className="datail-wrap-img"
+              className="create-wrap-img"
             />
-            <div className="detail-wrap">
-              <div item xs={12} className="detail-wrap-text">
-                <h2>스터디 만들기</h2>
-                <div>
-                  여러분과 함께 면접을 준비할 분들이 기다리고 계십니다! 바로
-                  스터디를 만들어보세요!
-                </div>
-              </div>
-            </div>
             {/* 스터디 이름 */}
-            <Grid tem xs={12}>
+            <Grid xs={12} className="create-grid-title">
               <h5 bold>스터디 이름</h5>
-              <div>
-                준비 중인 기업명이나 면접의 종류 등을 포함하면 더 많은 분들이
-                쉽게 찾을 수 있어요!
+              <div className="create-grid-contents-title">
+                &nbsp;준비 중인 기업명이나 면접의 종류 등을 포함하면 더 많은
+                분들이 쉽게 찾을 수 있어요!
               </div>
             </Grid>
-            <FormControl className="title" fullWidth sx={{ m: 1 }}>
-              <TextField
-                fullwidth
-                autoFocus
-                required
-                InputLabelId="title"
-                id="title"
-                name="title"
-                type="text"
-                label="스터디 이름"
-                error={form.title.length < 3 || form.title.length > 50}
-                helperText={
-                  form.title.length < 3 || form.title.length > 50
-                    ? "3~50자 스터디명을 입력하세요"
-                    : ""
-                }
-                onChange={onChange}
-              />
-            </FormControl>
+            <Grid tem xs={12} className="create-grid-contents">
+              <FormControl className="title" fullWidth sx={{ m: 1 }}>
+                <TextField
+                  fullwidth
+                  autoFocus
+                  required
+                  id="title"
+                  name="title"
+                  type="text"
+                  label="스터디 이름"
+                  error={form.title.length < 3 || form.title.length > 50}
+                  helperText={
+                    form.title.length < 3 || form.title.length > 50
+                      ? "3~50자 스터디명을 입력하세요"
+                      : ""
+                  }
+                  onChange={onChange}
+                />
+              </FormControl>
+            </Grid>
             {/* D-Day */}
-            <Grid>
-              <div>
-                <div>
-                  <h5>D-Day</h5>
-                  <div>스터디 마감일을 설정해주세요!</div>
-                  <InputLabel id="expired-date">종료일</InputLabel>
-                  <DatePicker
-                    className="expired"
-                    disabled={disable}
-                    inputLabelId="expired-date"
-                    locale={ko}
-                    dateFormat="yyyy년 MM월 dd일"
-                    minDate={moment().toDate()}
-                    selected={formDate}
-                    onChange={(date) => {
-                      setFormDate(date);
-                      setForm({
-                        ...form,
-                        expirationDate: moment(date).format("YYYY-MM-DD"),
-                      });
-                    }}
-                    required
-                  />
+            <Grid item container tem xs={6} className="create-grid-contents">
+              <Grid xs={12} className="create-grid-contents">
+                <h5>D-Day</h5>
+                <div className="create-grid-contents-title">
+                  &nbsp;스터디 마감일을 설정해주세요!
                 </div>
+              </Grid>
+              <Grid item className="create-grid-contents">
+                <DatePicker
+                  className="expired"
+                  disabled={disable}
+                  locale={ko}
+                  dateFormat="yyyy년 MM월 dd일"
+                  minDate={moment().toDate()}
+                  selected={formDate}
+                  onChange={(date) => {
+                    setFormDate(date);
+                    setForm({
+                      ...form,
+                      expirationDate: moment(date).format("YYYY-MM-DD"),
+                    });
+                  }}
+                  required
+                />
+              </Grid>
 
+              <Grid item className="create-grid-contents-expired">
                 <Popper open={open} anchorEl={anchorEl} transition>
                   {({ TransitionProps }) => (
                     <Fade {...TransitionProps} timeout={350}>
@@ -197,15 +184,19 @@ const StudyCreationForm = () => {
                     />
                   }
                 />
-              </div>
+              </Grid>
+            </Grid>
+            <Grid item tem xs={6} className="create-grid-contents">
               {/* 모집 인원 */}
-              <div>
+              <Grid className="create-grid-contents">
                 <h5>모집 인원</h5>
-                <div>나를 포함한 스터디 최대 인원을 설정할 수 있어요!</div>
-                <InputLabel id="select-label">인원수</InputLabel>
+                <div className="create-grid-contents-title">
+                  &nbsp;나를 포함한 스터디 최대 인원을 설정할 수 있어요!
+                </div>
+              </Grid>
+              <Grid className="create-grid-contents">
                 <Select
                   className="capacity"
-                  inputLabelId="select-label"
                   id="select"
                   name="memberCapacity"
                   defaultValue={2}
@@ -224,28 +215,36 @@ const StudyCreationForm = () => {
                   <MenuItem value={4}>4명</MenuItem>
                 </Select>
                 <small>{errorStatement}</small>{" "}
-              </div>
+              </Grid>
             </Grid>
 
             {/* 공지사항 */}
-            <h5>공지사항</h5>
-            <Grid>스터디원들이 알아야 할 사항들을 미리 정해주세요!</Grid>
-            <FormControl className="notice" fullWidth sx={{ m: 1 }}>
-              <TextField
-                // style={{ width: "400px", margin: "5px" }}
-                type="text"
-                label="공지"
-                name="notice"
-                variant="outlined"
-                multiline
-                rows={15}
-                onChange={onChange}
-                required
-                defaultValue="공지를 입력하세요"
-              />
-            </FormControl>
+            <Grid tem xs={12}>
+              <Grid className="create-grid-contents">
+                <h5>공지사항</h5>
+                <div className="create-grid-contents-title">
+                  &nbsp;스터디원들이 알아야 할 사항들을 미리 정해주세요!
+                </div>
+              </Grid>
+              <Grid className="create-grid-contents">
+                <FormControl className="notice" fullWidth sx={{ m: 1 }}>
+                  <TextField
+                    // style={{ width: "400px", margin: "5px" }}
+                    type="text"
+                    label="공지"
+                    name="notice"
+                    variant="outlined"
+                    multiline
+                    rows={15}
+                    onChange={onChange}
+                    required
+                    defaultValue="공지를 입력하세요"
+                  />
+                </FormControl>
+              </Grid>
+            </Grid>
 
-            <Grid item>
+            <Grid className="create-grid-contents">
               <Button
                 variant="contained"
                 color="primary"
