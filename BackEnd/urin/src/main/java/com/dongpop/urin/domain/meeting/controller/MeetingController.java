@@ -36,4 +36,11 @@ public class MeetingController {
 
         return ResponseEntity.ok().body(meetingIdDto);
     }
+
+    @PutMapping("{studyId}/meeting/{meetingId}")
+    public ResponseEntity<?> endMeeting(@PathVariable int studyId, @PathVariable int meetingId,
+                                                      @AuthenticationPrincipal MemberPrincipal memberPrincipal) {
+        meetingService.endMeeting(studyId, meetingId, memberPrincipal.getMember());
+        return ResponseEntity.ok().build();
+    }
 }

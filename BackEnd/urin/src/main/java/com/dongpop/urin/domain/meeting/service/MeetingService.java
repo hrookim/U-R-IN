@@ -6,8 +6,6 @@ import com.dongpop.urin.domain.meeting.repository.MeetingRepository;
 import com.dongpop.urin.domain.member.entity.Member;
 import com.dongpop.urin.domain.study.entity.Study;
 import com.dongpop.urin.domain.study.repository.StudyRepository;
-import com.dongpop.urin.global.error.errorcode.MeetingErrorCode;
-import com.dongpop.urin.global.error.errorcode.StudyErrorCode;
 import com.dongpop.urin.global.error.exception.CustomException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -46,14 +44,32 @@ public class MeetingService {
 
     @Transactional
     public MeetingIdDto createMeeting(int studyId, Member member, Boolean isConnected) {
+        //TODO: 저장된 Meeting sessing도 비교하는 로직 추가, inOnair일 때는 생성 불가
         Study study = getStudy(studyId);
         if (!isStudyLeader(member, study)) {
-            throw new CustomException(MEETING_CREATE_ONLY_POSSIBLE_STUDY_LEADER);
+            throw new CustomException(ONLY_POSSIBLE_STUDY_LEADER);
         }
 
         study.changeOnairStatus(isConnected);
         int meetingId = isConnected ? meetingRepository.save(new Meeting(study)).getId() : 0;
         return new MeetingIdDto(meetingId);
+    }
+
+    @Transactional
+    public void endMeeting(int studyId, int meetingId, Member member) {
+        Study study = getStudy(studyId);
+        Meeting meeting = meetingRepository.findById(meetingId)
+                .orElseThrow(() -> new CustomException(MEETING_IS_NOT_EXIST));
+
+        if (study.getId() != meeting.getStudy().getId()) {
+            throw new CustomException(MEETING_IS_NOT_PART_OF_STUDY);
+        }
+        if (study.getStudyLeader().getId() != member.getId()) {
+            throw new CustomException(ONLY_POSSIBLE_STUDY_LEADER);
+        }
+
+        study.closeMeeting();
+        meeting.closeMeeting();
     }
 
     private Study getStudy(int studyId) {
@@ -65,4 +81,6 @@ public class MeetingService {
     private boolean isStudyLeader(Member member, Study study) {
         return study.getStudyLeader().getId() == member.getId();
     }
+
+
 }

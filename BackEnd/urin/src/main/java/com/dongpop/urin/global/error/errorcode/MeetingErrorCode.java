@@ -9,7 +9,8 @@ import org.springframework.http.HttpStatus;
 public enum MeetingErrorCode implements ErrorCode {
     MEETING_IS_NOT_EXIST(HttpStatus.NOT_FOUND, "Meeting is not exist."),
     SESSIONID_IS_NOT_EXIST(HttpStatus.BAD_REQUEST, "SessionId is not exist. Maybe meeting is not onair."),
-    MEETING_CREATE_ONLY_POSSIBLE_STUDY_LEADER(HttpStatus.FORBIDDEN, "Only Study Leader can create meeting."),
+    ONLY_POSSIBLE_STUDY_LEADER(HttpStatus.FORBIDDEN, "Only Study Leader can do it."),
+    MEETING_IS_NOT_PART_OF_STUDY(HttpStatus.BAD_REQUEST, "The meeting is not part of a study.");
             ;
 
     private final HttpStatus httpStatus;

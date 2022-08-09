@@ -32,4 +32,8 @@ public class Meeting {
     public Meeting(Study study) {
         this.study = study;
     }
+
+    public void closeMeeting() {
+        endedAt = LocalDateTime.now();
+    }
 }
