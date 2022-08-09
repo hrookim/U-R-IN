@@ -9,6 +9,7 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 
 import javax.persistence.EntityManager;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static com.dongpop.urin.domain.participant.entity.QParticipant.*;
 import static com.dongpop.urin.domain.study.entity.StudyStatus.*;
@@ -26,7 +27,7 @@ public class ParticipantRepositoryImpl implements ParticipantRepositoryCustom {
         return queryFactory.selectFrom(participant)
                 .where(participant.study.status.notIn(TERMINATED))
                 .orderBy(participant.study.id.asc())
-                .fetch();
+                .fetch().stream().distinct().collect(Collectors.toList());
     }
 
     @Override
@@ -34,6 +35,6 @@ public class ParticipantRepositoryImpl implements ParticipantRepositoryCustom {
         return queryFactory.selectFrom(participant)
                 .where(participant.study.status.eq(TERMINATED))
                 .orderBy(participant.study.updatedAt.asc())
-                .fetch();
+                .fetch().stream().distinct().collect(Collectors.toList());
     }
 }

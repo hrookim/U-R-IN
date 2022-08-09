@@ -69,8 +69,17 @@ public class FeedbackService {
         List<FeedbackDataDto> feedbackDataList = feedbackSetDataDto.getFeedbackList();
         Collections.sort(feedbackDataList, ((o1, o2) -> o1.getNumber() - o2.getNumber()));
 
+        setInputDataNumber(feedbackDataList);
+
         createOrUpdateContents(feedback, type, feedbackDataList);
         deleteRemainContents(feedback, type, feedbackDataList);
+    }
+
+    private void setInputDataNumber(List<FeedbackDataDto> feedbackDataList) {
+        int size = feedbackDataList.size();
+        for (int i = 1; i <= size; i++) {
+            feedbackDataList.get(i).setNumber(i);
+        }
     }
 
     private void createOrUpdateContents(Feedback feedback, FeedbackContentType type, List<FeedbackDataDto> feedbackDataList) {
