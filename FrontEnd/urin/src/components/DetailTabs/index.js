@@ -1,6 +1,8 @@
 import React, { useState } from "react";
-
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faLock } from "@fortawesome/free-solid-svg-icons";
 import { Tab, Tabs } from "@mui/material";
+import "./index.css";
 
 import DetailInfo from "../DetailInfo";
 import DetailInquiry from "../DetailInquiry";
@@ -14,12 +16,15 @@ const DetailTabs = ({ study, isLeader, isParticipant, setIsChanged }) => {
   };
 
   return (
-    <div>
-      <Tabs onChange={handleChange} value={value}>
+    <div className="dt-container">
+      <Tabs onChange={handleChange} value={value} centered fill>
         <Tab label="정보" />
-        <Tab label="질의응답" />
-        {/* TODO: 스터디원이 아니면 피드는 비활성화되어 클릭되지 않는다. 피드옆에 자물쇠표시 있으면 좋을듯 */}
-        {isParticipant ? <Tab label="피드" /> : <Tab label="피드" disabled />}
+        <Tab label="QnA" />
+        {isParticipant ? (
+          <Tab label="피드" />
+        ) : (
+          <Tab label="피드" icon={<FontAwesomeIcon icon={faLock} />} disabled />
+        )}
       </Tabs>
 
       {value === 0 && (

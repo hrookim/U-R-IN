@@ -20,19 +20,16 @@ import DatePicker from "react-datepicker";
 import { ko } from "date-fns/esm/locale";
 import "react-datepicker/dist/react-datepicker.css";
 import "react-widgets/styles.css";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { createStudy } from "../../store/studySlice";
-import { checkValidation } from "../../store/checkValidationSlice";
+import CheckValidation from "../../components/CheckValidation";
 import { getMemberId } from "../../store/memberSlice";
 import "./index.css";
 
 const StudyCreationForm = () => {
-  const dispatch = useDispatch();
   const navigate = useNavigate();
-
-  const memberId = useSelector((state) => state.member.id);
-  const mounted = useRef(false);
+  const dispatch = useDispatch();
 
   const [form, setForm] = useState({
     title: "",
@@ -70,32 +67,20 @@ const StudyCreationForm = () => {
     });
     console.log(form);
   };
-
-  const onSubmit = (e) => {
-    e.preventDefault();
-    dispatch(createStudy({ form, navigate }));
-  };
-
-  useEffect(() => {
-    dispatch(getMemberId(navigate));
-  }, []);
-
-  useEffect(() => {
-    if (!mounted.current) {
-      mounted.current = true;
-    } else {
-      dispatch(checkValidation(undefined, navigate));
-    }
-  }, [memberId]);
-
   // popper 관련 함수
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
     setOpen((prev) => !prev);
   };
 
+  const onSubmit = (e) => {
+    e.preventDefault();
+    dispatch(createStudy({ form, navigate }));
+  };
+
   return (
     <div>
+      <CheckValidation />
       <div className="study-create">
         <form onSubmit={onSubmit}>
           {/* 전체 컨테이너 */}

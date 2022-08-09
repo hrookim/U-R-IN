@@ -23,12 +23,15 @@ import { ko } from "date-fns/esm/locale";
 import "react-datepicker/dist/react-datepicker.css";
 import "react-widgets/styles.css";
 import { getStudy, updateStudy } from "../../store/studySlice";
+import CheckValidation from "../../components/CheckValidation";
 import "./index.css";
 
 const StudyUpdateForm = () => {
-  const { studyId } = useParams();
-  const dispatch = useDispatch();
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  const { studyId } = useParams();
+
   const study = useSelector((state) => state.study);
   const [form, setForm] = useState({
     title: "",

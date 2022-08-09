@@ -5,9 +5,8 @@ import {
   isRejectedWithValue,
 } from "@reduxjs/toolkit";
 
-// 피드 리스트 불러오기
 export const getFeed = createAsyncThunk("GET_FEED", async (studyId) => {
-  console.log("피드 가져오는 중");
+  console.log("===axios FEED 불러오기===");
   const response = await axios.get(
     `${process.env.REACT_APP_BACK_BASE_URL}studies/${studyId}/feeds`,
     {
@@ -19,14 +18,26 @@ export const getFeed = createAsyncThunk("GET_FEED", async (studyId) => {
   return response.data;
 });
 
-// 피드 생성하기 FIXME: 생성 후 새로 store에 추가를 해야함, 댓글형성도 같이 이뤄짐
 export const createFeed = createAsyncThunk(
   "CREATE_FEED",
-  async (studyId, form) => {
+  async ({ studyId, form, parentId }) => {
     try {
+      console.log("===axios FEED 생성===", parentId, form);
+      if (parentId) {
+        const response = await axios.post(
+          `${process.env.REACT_APP_BACK_BASE_URL}studies/${studyId}/feeds`,
+          { parent: parentId, contents: form },
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+            },
+          }
+        );
+        return response.data;
+      }
       const response = await axios.post(
         `${process.env.REACT_APP_BACK_BASE_URL}studies/${studyId}/feeds`,
-        form,
+        { parent: parentId, contents: form },
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
@@ -35,20 +46,21 @@ export const createFeed = createAsyncThunk(
       );
       return response.data;
     } catch (err) {
+      alert("오류입니다!");
       console.log(err);
       return isRejectedWithValue(err.response.data);
     }
   }
 );
 
-// 피드 수정하기 FIXME: feedId를 잡아야 한다!
 export const updateFeed = createAsyncThunk(
   "UPDATE_FEED",
   async ({ studyId, feedId, form }) => {
+    console.log("===axios FEED 수정===", feedId, form);
     try {
       const response = await axios.put(
         `${process.env.REACT_APP_BACK_BASE_URL}studies/${studyId}/feeds/${feedId}`,
-        form,
+        { contents: form },
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
@@ -63,11 +75,11 @@ export const updateFeed = createAsyncThunk(
   }
 );
 
-// 피드 삭제하기 FIXME: 작성자와 방장만 삭제 가능한가?
 export const deleteFeed = createAsyncThunk(
   "DELETE_FEED",
   async ({ studyId, feedId }) => {
     try {
+      console.log("===axios FEED 삭제===");
       const response = await axios.delete(
         `${process.env.REACT_APP_BACK_BASE_URL}studies/${studyId}/feeds/${feedId}`,
         {
@@ -93,7 +105,7 @@ const feedSlice = createSlice({
           {
             contents: "string",
             createdAt: "string",
-            deleted: true,
+            isDeleted: true,
             feedId: 0,
             writer: "string",
             writerId: 0,
@@ -102,7 +114,7 @@ const feedSlice = createSlice({
         parent: {
           contents: "string",
           createdAt: "string",
-          deleted: true,
+          isDeleted: true,
           feedId: 0,
           writer: "string",
           writerId: 0,
@@ -114,9 +126,6 @@ const feedSlice = createSlice({
   reducers: {},
   extraReducers: {
     [getFeed.fulfilled]: (state, { payload }) => payload,
-    // [createFeed.fulfilled]: (state, { payload }) => payload,
-    // [updateFeed.fulfilled]: (state, { payload }) => payload,
-    // [deleteFeed.fulfilled]: (state, { payload }) => payload,
   },
 });
 

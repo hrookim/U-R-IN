@@ -1,10 +1,14 @@
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import Button from "@mui/material/Button";
 
 import "../../assets/DesignSystem.css";
 import "./index.css";
+import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 const LandingPage = () => {
+  gsap.registerPlugin(ScrollTrigger);
+
   const onClick = () => {
     window.location.href = process.env.REACT_APP_SOCIAL_LOGIN_URL;
   };
@@ -15,8 +19,85 @@ const LandingPage = () => {
     width: "100px",
   };
 
+  const ref = useRef(null);
+  useEffect(() => {
+    const element = ref.current;
+    gsap.fromTo(
+      element.querySelector(".img1"),
+      {
+        x: "-50vw",
+        opacity: 0,
+      },
+      {
+        x: 0,
+        opacity: 1,
+        scrollTrigger: {
+          trigger: element.querySelector(".img-group"),
+          start: "top center",
+          end: "bottom bottom",
+          markers: true,
+          scrub: 5,
+        },
+      }
+    );
+    gsap.fromTo(
+      element.querySelector(".img2"),
+      {
+        x: "50vw",
+        opacity: 0,
+      },
+      {
+        x: 0,
+        opacity: 1,
+        scrollTrigger: {
+          trigger: element.querySelector(".img-group"),
+          start: "top center",
+          end: "bottom bottom",
+          markers: true,
+          scrub: 2,
+        },
+      }
+    );
+    gsap.fromTo(
+      element.querySelector(".img3"),
+      {
+        x: "50vw",
+        opacity: 0,
+      },
+      {
+        x: 0,
+        opacity: 1,
+        scrollTrigger: {
+          trigger: element.querySelector(".img-group"),
+          start: "top top",
+          end: "bottom bottom",
+          markers: true,
+          scrub: 2,
+          duration: 5,
+        },
+      }
+    );
+    gsap.fromTo(
+      element.querySelector(".img-text"),
+      {
+        x: "-50vw",
+        opacity: 0,
+      },
+      {
+        x: 0,
+        opacity: 1,
+        scrollTrigger: {
+          trigger: element.querySelector(".img-group"),
+          start: "top top",
+          end: "bottom bottom",
+          markers: true,
+          scrub: 2,
+        },
+      }
+    );
+  });
   return (
-    <div>
+    <div ref={ref}>
       <div>
         <img src="/img/logo_img.png" alt="hello" className="title-logo" />
       </div>
@@ -47,7 +128,7 @@ const LandingPage = () => {
 
           <div className="img-group">
             <img
-              className="img1"
+              className="img1 test"
               src="/img/landingpage-img1.png"
               alt="landingpage-img1"
             />
@@ -61,18 +142,41 @@ const LandingPage = () => {
               src="/img/landingpage-img3.png"
               alt="landingpage-img3"
             />
-            <p className="font-60 font-xl">
-              취업으로 가는 길, 새로운 경험을 해보세요!
-            </p>
-            <Button
-              onClick={onClick}
-              type="button"
-              variant="contained"
-              className="font-50 font-sm btn-text-shadow"
-              sx={btnSX}
-            >
-              시작하기
-            </Button>
+            <div className="img-text">
+              <p className="font-60 font-xl">
+                취업으로 가는 길, 새로운 경험을 해보세요!
+              </p>
+              <Button
+                onClick={onClick}
+                type="button"
+                variant="contained"
+                className="font-50 font-sm btn-text-shadow"
+                sx={btnSX}
+              >
+                시작하기
+              </Button>
+            </div>
+          </div>
+          <div className="img-group2">
+            <img
+              className="img5"
+              src="/img/landingpage-img5.png"
+              alt="landingpage-img5"
+            />
+            <div className="img-text">
+              <p className="font-60 font-xl">
+                여러분에게 필요한 스터디원을 찾아보세요.
+              </p>
+              <Button
+                onClick={onClick}
+                type="button"
+                variant="contained"
+                className="font-50 font-sm btn-text-shadow"
+                sx={btnSX}
+              >
+                시작하기
+              </Button>
+            </div>
           </div>
         </div>
       </div>

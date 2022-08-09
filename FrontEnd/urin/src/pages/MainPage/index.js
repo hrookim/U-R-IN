@@ -4,7 +4,6 @@ import React, { useEffect, useRef } from "react";
 import "./index.css";
 import { useNavigate, Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-
 import SearchIcon from "@mui/icons-material/Search";
 import {
   Button,
@@ -18,10 +17,8 @@ import {
   Pagination,
   Stack,
 } from "@mui/material";
-import Footer from "../../components/Footer";
 import { getStudyList } from "../../store/studyListSlice";
-import { checkValidation } from "../../store/checkValidationSlice";
-import { getMemberId } from "../../store/memberSlice";
+import CheckValidation from "../../components/CheckValidation";
 
 const MainPage = () => {
   const navigate = useNavigate();
@@ -34,7 +31,6 @@ const MainPage = () => {
   const [page, setPage] = React.useState(1);
   const [inputword, setInputword] = React.useState("");
   const [keyword, setKeyword] = React.useState("");
-
   const [checked, setChecked] = React.useState(true);
 
   const checkedChange = (e) => {
@@ -59,34 +55,44 @@ const MainPage = () => {
   };
 
   useEffect(() => {
-    dispatch(getMemberId(navigate));
     dispatch(getStudyList([page - 1, checked, keyword]));
   }, [page, checked, keyword]);
 
-  useEffect(() => {
-    if (!mounted.current) {
-      mounted.current = true;
-    } else {
-      dispatch(checkValidation(memberId, navigate));
-    }
-  }, [memberId]);
+  // useEffect(() => {
+  //   dispatch(getMemberId(navigate));
+  //   dispatch(getStudyList([page - 1, checked, keyword]));
+  // }, [page, checked, keyword]);
+
+  // useEffect(() => {
+  //   if (!mounted.current && !memberId) {
+  //     mounted.current = true;
+  //   } else {
+  //     dispatch(checkValidation(memberId, navigate));
+  //   }
+  // }, [memberId]);
 
   return (
     <div className="main-page">
+      <CheckValidation />
+      <div className="top-header">
+        <span className="font-70 search-font">
+          당신에게 맞는 스터디를 검색해보세요!
+        </span>
+        <form className="searchbar-form">
+          <input
+            className="searchbar"
+            type="text"
+            title="Search"
+            onChange={inputwordChange}
+          />
+          <Button type="submit" className="search-btn" onClick={keywordChange}>
+            <SearchIcon className="btn-icon" sx={{ color: "#7d7d7d" }} />
+          </Button>
+        </form>
+      </div>
       <div className="header">
         <Grid container>
           <Grid item xs={12} md={6} className="header-grid-1">
-            <form className="searchbar-form">
-              <input
-                className="searchbar"
-                type="text"
-                title="Search"
-                onChange={inputwordChange}
-              />
-              <Button type="submit" className="btn" onClick={keywordChange}>
-                <SearchIcon className="btn-icon" sx={{ color: "#0037FA" }} />
-              </Button>
-            </form>
             <FormControlLabel
               label="모집 중인 스터디만 보기"
               control={
@@ -142,6 +148,7 @@ const MainPage = () => {
                 border: "none",
                 borderRadius: "20px",
                 maxWidth: "500px",
+                boxShadow: 0,
               }}
             >
               <Link to={`/study/${item.id}`} className="card-link">
@@ -153,12 +160,30 @@ const MainPage = () => {
                     image={`/img/study_img${item.title.length % 10}.png`}
                     alt="green iguana"
                   />
-                  <CardContent>
+                  <CardContent
+                    className="card-content"
+                    sx={{ padding: "18px 4px 0 4px" }}
+                  >
                     <p className="font-70 font-md card-title">{item.title}</p>
-                    <p className="font-30 font-xs card-status">
-                      {item.status}&nbsp;&nbsp;&nbsp;&nbsp;{item.currentMember}{" "}
-                      / {item.memberCapacity}
-                    </p>
+                    {item.status === "RECRUITING" ? (
+                      <div className="card-status">
+                        <span className="font-50 font-xs card-status-recruiting">
+                          {item.status}&nbsp;&nbsp;&nbsp;&nbsp;
+                        </span>
+                        <span className="font-30 font-xs">
+                          {item.currentMember}/{item.memberCapacity}
+                        </span>
+                      </div>
+                    ) : (
+                      <div className="card-status">
+                        <span className="font-50 font-xs card-status-completed">
+                          {item.status}&nbsp;&nbsp;&nbsp;&nbsp;
+                        </span>
+                        <span className="font-30 font-xs">
+                          {item.currentMember}/{item.memberCapacity}
+                        </span>
+                      </div>
+                    )}
                   </CardContent>
                 </CardActionArea>
               </Link>
