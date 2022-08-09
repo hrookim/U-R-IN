@@ -5,10 +5,11 @@ import com.dongpop.urin.domain.participant.dto.response.ParticipantDto;
 import com.dongpop.urin.domain.participant.entity.Participant;
 import com.dongpop.urin.domain.participant.repository.ParticipantRepository;
 import com.dongpop.urin.domain.study.dto.request.StudyDataDto;
+import com.dongpop.urin.domain.study.dto.request.StudyMyDto;
 import com.dongpop.urin.domain.study.dto.response.*;
 import com.dongpop.urin.domain.study.entity.Study;
-import com.dongpop.urin.domain.study.repository.StudyRepository;
 import com.dongpop.urin.domain.study.entity.StudyStatus;
+import com.dongpop.urin.domain.study.repository.StudyRepository;
 import com.dongpop.urin.global.error.exception.CustomException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -33,6 +34,8 @@ import static com.dongpop.urin.global.error.errorcode.StudyErrorCode.*;
 @RequiredArgsConstructor
 @Service
 public class StudyService {
+
+    private static final int MY_STUDY_DEFAULT_SIZE = 4;
 
     private final StudyRepository studyRepository;
     private final ParticipantRepository participantRepository;
@@ -173,12 +176,20 @@ public class StudyService {
         return new StudyStatusDto(studyId, status.name());
     }
 
-    public StudyMyListDto getMyStudy(Member member) {
-        List<Participant> myParticipantList = participantRepository.findAllByMember(member);
+    public StudyMyListDto getMyStudy(StudyMyDto studyMyDto, Member member) {
+        List<Participant> myCurrentStudyParticipants = participantRepository.findMyCurrentStudyParticipants(member);
+        List<Participant> myTerminatedStudyParticipants = participantRepository.findMyTerminatedStudyParticipants(member);
 
-        List<StudySummaryDto> currentStudyList = new ArrayList<>();
-        List<StudySummaryDto> terminatedStudyList = new ArrayList<>();
-        myParticipantList.forEach((participant -> {
+        List<StudySummaryDto> currentStudyList = makeResponseList(myCurrentStudyParticipants, studyMyDto.getCurrentAll());
+        List<StudySummaryDto> terminatedStudyList = makeResponseList(myTerminatedStudyParticipants, studyMyDto.getTerminatedAll());
+
+        return new StudyMyListDto(currentStudyList, terminatedStudyList);
+    }
+
+    private List<StudySummaryDto> makeResponseList(List<Participant> myStudyParticipants, boolean allFlag) {
+        List<StudySummaryDto> studyResponseList = new ArrayList<>();
+
+        for (Participant participant : myStudyParticipants) {
             Study study = participant.getStudy();
             StudySummaryDto studySummaryDto = StudySummaryDto.builder()
                     .id(study.getId())
@@ -187,13 +198,11 @@ public class StudyService {
                     .currentMember(study.getParticipants().size())
                     .status(study.getStatus()).build();
 
-            if (TERMINATED.equals(study.getStatus())) {
-                terminatedStudyList.add(studySummaryDto);
-            } else {
-                currentStudyList.add(studySummaryDto);
+            studyResponseList.add(studySummaryDto);
+            if (!allFlag && studyResponseList.size() >= MY_STUDY_DEFAULT_SIZE) {
+                break;
             }
-        }));
-
-        return new StudyMyListDto(currentStudyList, terminatedStudyList);
+        }
+        return studyResponseList;
     }
 }

@@ -2,6 +2,7 @@ package com.dongpop.urin.domain.study.controller;
 
 import com.dongpop.urin.domain.member.entity.Member;
 import com.dongpop.urin.domain.study.dto.request.StudyDataDto;
+import com.dongpop.urin.domain.study.dto.request.StudyMyDto;
 import com.dongpop.urin.domain.study.dto.request.StudyStateDto;
 import com.dongpop.urin.domain.study.dto.response.*;
 import com.dongpop.urin.domain.study.service.StudyService;
@@ -40,8 +41,9 @@ public class StudyController {
     }
 
     @GetMapping("/me")
-    public ResponseEntity<?> getMyStudies(@AuthenticationPrincipal MemberPrincipal memberPrincipal) {
-        StudyMyListDto studyMyListDto = studyService.getMyStudy(memberPrincipal.getMember());
+    public ResponseEntity<?> getMyStudies(@Validated StudyMyDto studyMyDto,
+                                          @AuthenticationPrincipal MemberPrincipal memberPrincipal) {
+        StudyMyListDto studyMyListDto = studyService.getMyStudy(studyMyDto, memberPrincipal.getMember());
         return ResponseEntity.ok().body(studyMyListDto);
     }
 
