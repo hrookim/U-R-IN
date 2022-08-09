@@ -186,12 +186,12 @@ const StudyCreationForm = () => {
                   name="memberCapacity"
                   defaultValue={2}
                   onChange={(value) => {
-                    if (!value) {
+                    if (!value.target.value) {
                       setErrorStatement("2~4명 입력해주세요");
                     }
                     setForm({
                       ...form,
-                      memberCapacity: value,
+                      memberCapacity: value.target.value,
                     });
                   }}
                 >
