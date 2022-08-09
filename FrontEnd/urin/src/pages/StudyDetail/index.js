@@ -1,18 +1,17 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams, useNavigate } from "react-router-dom";
 import DetailHeader from "../../components/DetailHeader";
 import DetailTabs from "../../components/DetailTabs";
 import { getStudy } from "../../store/studySlice";
 import { getMemberId } from "../../store/memberSlice";
-import { checkValidation } from "../../store/checkValidationSlice";
+import CheckValidation from "../../components/CheckValidation";
 
 const StudyDetail = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
   const memberId = useSelector((state) => state.member.id);
-  const mounted = useRef(false);
   // console.log("디테일 부르는중");
   const [isChanged, setIsChanged] = useState(false);
   const { studyId } = useParams();
@@ -37,20 +36,9 @@ const StudyDetail = () => {
   );
   const isLeader = checkLeader.includes(true);
 
-  useEffect(() => {
-    dispatch(getMemberId(navigate));
-  }, []);
-
-  useEffect(() => {
-    if (!mounted.current && !memberId) {
-      mounted.current = true;
-    } else {
-      dispatch(checkValidation(memberId, navigate));
-    }
-  }, [memberId]);
-
   return (
     <div className="main-page">
+      <CheckValidation />
       <DetailHeader
         study={study}
         isLeader={isLeader}

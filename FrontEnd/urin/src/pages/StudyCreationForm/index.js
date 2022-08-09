@@ -12,18 +12,15 @@ import DatePicker from "react-datepicker";
 import { ko } from "date-fns/esm/locale";
 import "react-datepicker/dist/react-datepicker.css";
 import "react-widgets/styles.css";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { createStudy } from "../../store/studySlice";
-import { checkValidation } from "../../store/checkValidationSlice";
-import { getMemberId } from "../../store/memberSlice";
+import CheckValidation from "../../components/CheckValidation";
 
 const StudyCreationForm = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const memberId = useSelector((state) => state.member.id);
-  const mounted = useRef(false);
   const [form, setForm] = useState({
     title: "",
     notice: "",
@@ -62,20 +59,9 @@ const StudyCreationForm = () => {
     dispatch(createStudy({ form, navigate }));
   };
 
-  useEffect(() => {
-    dispatch(getMemberId(navigate));
-  }, []);
-
-  useEffect(() => {
-    if (!mounted.current && !memberId) {
-      mounted.current = true;
-    } else {
-      dispatch(checkValidation(memberId, navigate));
-    }
-  }, [memberId]);
-
   return (
     <div>
+      <CheckValidation />
       <form onSubmit={onSubmit}>
         <Grid container alignItems="center" justify="center" direction="column">
           <h1>스터디 생성 창입니다!</h1>

@@ -18,8 +18,7 @@ import {
   Stack,
 } from "@mui/material";
 import { getStudyList } from "../../store/studyListSlice";
-import { checkValidation } from "../../store/checkValidationSlice";
-import { getMemberId } from "../../store/memberSlice";
+import CheckValidation from "../../components/CheckValidation";
 
 const MainPage = () => {
   const navigate = useNavigate();
@@ -56,20 +55,25 @@ const MainPage = () => {
   };
 
   useEffect(() => {
-    dispatch(getMemberId(navigate));
     dispatch(getStudyList([page - 1, checked, keyword]));
   }, [page, checked, keyword]);
 
-  useEffect(() => {
-    if (!mounted.current && !memberId) {
-      mounted.current = true;
-    } else {
-      dispatch(checkValidation(memberId, navigate));
-    }
-  }, [memberId]);
+  // useEffect(() => {
+  //   dispatch(getMemberId(navigate));
+  //   dispatch(getStudyList([page - 1, checked, keyword]));
+  // }, [page, checked, keyword]);
+
+  // useEffect(() => {
+  //   if (!mounted.current && !memberId) {
+  //     mounted.current = true;
+  //   } else {
+  //     dispatch(checkValidation(memberId, navigate));
+  //   }
+  // }, [memberId]);
 
   return (
     <div className="main-page">
+      <CheckValidation />
       <div className="top-header">
         <span className="font-70 search-font">
           당신에게 맞는 스터디를 검색해보세요!

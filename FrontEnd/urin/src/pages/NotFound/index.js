@@ -1,31 +1,14 @@
-import React, { useRef, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
 
-import { checkValidation } from "../../store/checkValidationSlice";
-import { getMemberId } from "../../store/memberSlice";
 import "../../assets/DesignSystem.css";
 import "./index.css";
+import CheckValidation from "../../components/CheckValidation";
 
 const NotFound = () => {
   const navigate = useNavigate();
-  const dispatch = useDispatch();
 
   const [second, setSecond] = useState(3);
-  const memberId = useSelector((state) => state.member.id);
-  const mounted = useRef(false);
-
-  useEffect(() => {
-    dispatch(getMemberId(navigate));
-  }, []);
-
-  useEffect(() => {
-    if (!mounted.current && !memberId) {
-      mounted.current = true;
-    } else {
-      dispatch(checkValidation(memberId, navigate));
-    }
-  }, [memberId]);
 
   useEffect(() => {
     const countdown = setInterval(() => {
@@ -38,6 +21,7 @@ const NotFound = () => {
 
   return (
     <div className="not-found">
+      <CheckValidation />
       <div className="countdown-div">
         <p className="font-60 font-xl countdown-p">
           {second}초 뒤에 메인페이지로 전환됩니다.

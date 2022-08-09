@@ -24,7 +24,7 @@ export const checkValidation = createAsyncThunk(
             },
           }
         );
-        console.log(response.data);
+        console.log(response.data, "-----");
         return response.data;
       }
       return { message: "잘못된 요청입니다." };
