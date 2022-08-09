@@ -25,16 +25,16 @@ public class ParticipantRepositoryImpl implements ParticipantRepositoryCustom {
     @Override
     public List<Participant> findMyCurrentStudyParticipants(Member member) {
         return queryFactory.selectFrom(participant)
-                .where(participant.study.status.notIn(TERMINATED))
+                .where(participant.study.status.notIn(TERMINATED), participant.member.eq(member))
                 .orderBy(participant.study.id.asc())
-                .fetch().stream().distinct().collect(Collectors.toList());
+                .fetch();
     }
 
     @Override
     public List<Participant> findMyTerminatedStudyParticipants(Member member) {
         return queryFactory.selectFrom(participant)
-                .where(participant.study.status.eq(TERMINATED))
+                .where(participant.study.status.eq(TERMINATED), participant.member.eq(member))
                 .orderBy(participant.study.updatedAt.asc())
-                .fetch().stream().distinct().collect(Collectors.toList());
+                .fetch();
     }
 }
