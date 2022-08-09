@@ -61,7 +61,6 @@ public class StudyController {
     @PutMapping("/{studyId}")
     public ResponseEntity<StudyIdDto> editStudy(@PathVariable int studyId, @Validated @RequestBody StudyDataDto studyData,
                                                 @AuthenticationPrincipal MemberPrincipal memberPrincipal) {
-        log.info("[REQUEST] >>>>> METHOD {} / studyData : {}", studyData);
         Member member = memberPrincipal.getMember();
         return ResponseEntity.ok()
                 .body(studyService.editStudy(member, studyId, studyData));
