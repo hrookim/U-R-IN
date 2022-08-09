@@ -1,10 +1,8 @@
 package com.dongpop.urin.domain.study.dto.response;
 
-import com.dongpop.urin.domain.study.repository.StudyStatus;
+import com.dongpop.urin.domain.study.entity.StudyStatus;
 import lombok.Builder;
 import lombok.Data;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
 
 @Builder
 @Data

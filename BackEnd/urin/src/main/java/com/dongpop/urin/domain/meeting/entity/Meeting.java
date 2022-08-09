@@ -1,17 +1,21 @@
-package com.dongpop.urin.domain.meeting.repository;
+package com.dongpop.urin.domain.meeting.entity;
 
-import com.dongpop.urin.domain.study.repository.Study;
+import com.dongpop.urin.domain.study.entity.Study;
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "meetings")
 @Entity
+@EntityListeners(AuditingEntityListener.class)
 public class Meeting {
-
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
@@ -24,4 +28,12 @@ public class Meeting {
     private LocalDateTime createdDate;
 
     private LocalDateTime endedAt;
+
+    public Meeting(Study study) {
+        this.study = study;
+    }
+
+    public void closeMeeting() {
+        endedAt = LocalDateTime.now();
+    }
 }

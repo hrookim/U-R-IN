@@ -1,12 +1,10 @@
 package com.dongpop.urin.domain.study.controller;
 
-import com.dongpop.urin.domain.member.repository.Member;
+import com.dongpop.urin.domain.member.entity.Member;
 import com.dongpop.urin.domain.study.dto.request.StudyDataDto;
+import com.dongpop.urin.domain.study.dto.request.StudyMyDto;
 import com.dongpop.urin.domain.study.dto.request.StudyStateDto;
-import com.dongpop.urin.domain.study.dto.response.StudyDetailDto;
-import com.dongpop.urin.domain.study.dto.response.StudyIdDto;
-import com.dongpop.urin.domain.study.dto.response.StudyListDto;
-import com.dongpop.urin.domain.study.dto.response.StudyStatusDto;
+import com.dongpop.urin.domain.study.dto.response.*;
 import com.dongpop.urin.domain.study.service.StudyService;
 import com.dongpop.urin.oauth.model.MemberPrincipal;
 import lombok.RequiredArgsConstructor;
@@ -42,6 +40,13 @@ public class StudyController {
                 .body(studyService.getStudyDetail(studyId));
     }
 
+    @GetMapping("/me")
+    public ResponseEntity<?> getMyStudies(@Validated StudyMyDto studyMyDto,
+                                          @AuthenticationPrincipal MemberPrincipal memberPrincipal) {
+        StudyMyListDto studyMyListDto = studyService.getMyStudy(studyMyDto, memberPrincipal.getMember());
+        return ResponseEntity.ok().body(studyMyListDto);
+    }
+
     @PostMapping
     public ResponseEntity<StudyIdDto> generateStudy(@Validated @RequestBody StudyDataDto studyData,
                                                     @AuthenticationPrincipal MemberPrincipal memberPrincipal) {
@@ -56,7 +61,6 @@ public class StudyController {
     @PutMapping("/{studyId}")
     public ResponseEntity<StudyIdDto> editStudy(@PathVariable int studyId, @Validated @RequestBody StudyDataDto studyData,
                                                 @AuthenticationPrincipal MemberPrincipal memberPrincipal) {
-        log.info("[REQUEST] >>>>> METHOD {} / studyData : {}", studyData);
         Member member = memberPrincipal.getMember();
         return ResponseEntity.ok()
                 .body(studyService.editStudy(member, studyId, studyData));

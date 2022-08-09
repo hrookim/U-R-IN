@@ -1,8 +1,8 @@
-package com.dongpop.urin.domain.inquiry.repository;
+package com.dongpop.urin.domain.feed.entity;
 
 import com.dongpop.urin.domain.common.entity.BaseTimeEntity;
-import com.dongpop.urin.domain.member.repository.Member;
-import com.dongpop.urin.domain.study.repository.Study;
+import com.dongpop.urin.domain.member.entity.Member;
+import com.dongpop.urin.domain.study.entity.Study;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -15,10 +15,9 @@ import java.util.List;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
-@Table(name = "inquiries")
-public class Inquiry extends BaseTimeEntity {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+@Table(name = "feeds")
+public class Feed extends BaseTimeEntity {
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -31,33 +30,33 @@ public class Inquiry extends BaseTimeEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "parent_id")
-    private Inquiry parent;
+    private Feed parent;
 
     @OneToMany(mappedBy = "parent")
-    private List<Inquiry> children = new ArrayList<>();
+    private List<Feed> children = new ArrayList<>();
 
     private String contents;
     private boolean isDeleted;
 
     @Builder
-    public Inquiry(Member writer, Study study, String contents) {
+    public Feed(Member writer, Study study, String contents) {
         this.writer = writer;
         this.study = study;
         this.contents = contents;
     }
 
-    public void addParentInquiry(Inquiry parent) {
+    public void addParentFeed(Feed parent) {
         if (parent != null) {
             parent.getChildren().add(this);
         }
         this.parent = parent;
     }
 
-    public void updateInquiryData(String contents) {
+    public void updateFeedData(String contents) {
         this.contents = contents;
     }
 
-    public void deleteInquiry() {
+    public void deleteFeed() {
         this.isDeleted = true;
     }
 }
