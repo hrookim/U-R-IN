@@ -8,11 +8,10 @@ import org.springframework.data.jpa.repository.Query;
 import java.util.List;
 import java.util.Optional;
 
-public interface ParticipantRepository extends JpaRepository<Participant, Integer> {
+public interface ParticipantRepository extends JpaRepository<Participant, Integer>, ParticipantRepositoryCustom {
     @Query("SELECT p FROM Participant p" +
             " where p.study.id = :studyId" +
             " AND p.isLeader IS TRUE")
     Optional<Participant> findLeader(int studyId);
 
-    List<Participant> findAllByMember(Member member);
 }
