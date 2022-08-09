@@ -1,8 +1,8 @@
-package com.dongpop.urin.domain.participant.repository;
+package com.dongpop.urin.domain.participant.entity;
 
 import com.dongpop.urin.domain.common.entity.BaseTimeEntity;
-import com.dongpop.urin.domain.member.repository.Member;
-import com.dongpop.urin.domain.study.repository.Study;
+import com.dongpop.urin.domain.member.entity.Member;
+import com.dongpop.urin.domain.study.entity.Study;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
