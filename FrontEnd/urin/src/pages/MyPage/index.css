@@ -1,0 +1,30 @@
+.my-page{
+  margin: 0 auto 0 auto;
+  max-width: 1200px;
+}
+
+.my-page-header {
+  display: flex;
+  align-items: center;
+  margin: 40px 0 40px 0;
+}
+
+.medal-icon {
+  margin: 0 0 0 5px;
+}
+
+.my-page-member {
+  margin: 0 0 0 20px;
+}
+
+.member-name {
+  display: flex;
+  align-items: center;
+  margin: 0 0 0 0;
+}
+
+.member-info {
+  display: flex;
+  align-items: center;
+  margin: 5px 0 0 0;
+}

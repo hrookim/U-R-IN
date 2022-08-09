@@ -5,13 +5,17 @@ import DetailHeader from "../../components/DetailHeader";
 import DetailTabs from "../../components/DetailTabs";
 import { getStudy } from "../../store/studySlice";
 import { getMemberId } from "../../store/memberSlice";
+import CheckValidation from "../../components/CheckValidation";
 
 const StudyDetail = () => {
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  const memberId = useSelector((state) => state.member.id);
   // console.log("디테일 부르는중");
   const [isChanged, setIsChanged] = useState(false);
   const { studyId } = useParams();
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
+
   const study = useSelector((state) => state.study);
   const currentMemberId = useSelector((state) => state.member.id);
   useEffect(() => {
@@ -33,7 +37,8 @@ const StudyDetail = () => {
   const isLeader = checkLeader.includes(true);
 
   return (
-    <>
+    <div className="main-page">
+      <CheckValidation />
       <DetailHeader
         study={study}
         isLeader={isLeader}
@@ -47,7 +52,7 @@ const StudyDetail = () => {
         isParticipant={isParticipant}
         setIsChanged={setIsChanged}
       />
-    </>
+    </div>
   );
 };
 

@@ -18,7 +18,6 @@ export const getInquiry = createAsyncThunk("GET_INQUIRY", async (studyId) => {
   return response.data;
 });
 
-// 인콰이어리 생성하기 FIXME: 생성 후 새로 store에 추가를 해야함, 댓글형성도 같이 이뤄짐
 export const createInquiry = createAsyncThunk(
   "CREATE_INQUIRY",
   async ({ studyId, form, parentId }) => {
@@ -27,19 +26,18 @@ export const createInquiry = createAsyncThunk(
       if (parentId) {
         const response = await axios.post(
           `${process.env.REACT_APP_BACK_BASE_URL}studies/${studyId}/inquiry`,
-          { parent: parentId, contents: form }, // FIXME: API 수정 후 입력필요
+          { parent: parentId, contents: form },
           {
             headers: {
               Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
             },
           }
         );
-        getInquiry(studyId);
         return response.data;
       }
       const response = await axios.post(
         `${process.env.REACT_APP_BACK_BASE_URL}studies/${studyId}/inquiry`,
-        { parent: 0, contents: form }, // FIXME: API 수정 후 입력필요
+        { parent: 0, contents: form },
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
@@ -55,7 +53,6 @@ export const createInquiry = createAsyncThunk(
   }
 );
 
-// 인콰이어리 수정하기 FIXME: feedId를 잡아야 한다!
 export const updateInquiry = createAsyncThunk(
   "UPDATE_INQUIRY",
   async ({ studyId, inquiryId, form }) => {
@@ -77,12 +74,11 @@ export const updateInquiry = createAsyncThunk(
   }
 );
 
-// 인콰이어리 삭제하기 FIXME:
 export const deleteInquiry = createAsyncThunk(
   "DELETE_INQUIRY",
   async ({ studyId, inquiryId }) => {
-    console.log("===axios INQUIERY 삭제===");
     try {
+      console.log("===axios INQUIERY 삭제===");
       const response = await axios.delete(
         `${process.env.REACT_APP_BACK_BASE_URL}studies/${studyId}/inquiry/${inquiryId}`,
         {
@@ -108,7 +104,7 @@ const inquirySlice = createSlice({
           {
             contents: "string",
             createdAt: "string",
-            deleted: true,
+            isDeleted: true,
             inquiryId: 0,
             writer: "string",
             writerId: 0,
@@ -117,7 +113,7 @@ const inquirySlice = createSlice({
         parent: {
           contents: "string",
           createdAt: "string",
-          deleted: true,
+          isDeleted: true,
           inquiryId: 0,
           writer: "string",
           writerId: 0,
@@ -133,57 +129,3 @@ const inquirySlice = createSlice({
 });
 
 export default inquirySlice.reducer;
-
-// const data = {
-//     totalPages: 1,
-//     inquiryList: [
-//       {
-//         parent: {
-//           inquiryId: 3,
-//           contents: "스터디 방식이 어떻게 되나요?",
-//           writerId: 2,
-//           writer: "삼성가고싶당",
-//           createdAt: "2022-07-27 10:00:00",
-//           isDeleted: false,
-//         },
-//         children: [
-//           {
-//             inquiryId: 4,
-//             contents: "주 1회 진행 예정입니다.",
-//             writerId: 1,
-//             writer: "삼성바라기",
-//             createdAt: "2022-07-27 10:10:00",
-//             isDeleted: false,
-//           },
-//           {
-//             inquiryId: 5,
-//             contents: "좋습니다. 고민해보겠습니다.",
-//             writerId: 2,
-//             writer: "삼성가고싶당",
-//             createdAt: "2022-07-27 10:20:00",
-//             isDeleted: false,
-//           },
-//         ],
-//       },
-//       {
-//         parent: {
-//           inquiryId: 1,
-//           contents: "안녕하세요?",
-//           writerId: 2,
-//           writer: "삼성가고싶당",
-//           createdAt: "2022-07-27 09:00:00",
-//           isDeleted: false,
-//         },
-//         children: [
-//           {
-//             inquiryId: 2,
-//             contents: "안녕하세요",
-//             writerId: 1,
-//             writer: "삼성바라기",
-//             createdAt: "2022-07-27 09:10:00",
-//             isDeleted: false,
-//           },
-//         ],
-//       },
-//     ],
-//   };

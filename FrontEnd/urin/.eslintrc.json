@@ -29,6 +29,7 @@
         "react/jsx-filename-extension": 0,
         "react/jsx-one-expression-per-line": 0,
         "react-hooks/exhaustive-deps": 0,
+        "react/self-closing-comp": "off",
         "no-unused-vars": 1,
         "eqeqeq": "off",
         "import/no-unresolved": "off"

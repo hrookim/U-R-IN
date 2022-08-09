@@ -125,6 +125,7 @@ export const joinStudy = createAsyncThunk("JOIN_STUDY", async (studyId) => {
         },
       }
     );
+    alert("스터디 가입이 완료되었습니다!");
     return response.data;
   } catch (err) {
     console.log(err);
