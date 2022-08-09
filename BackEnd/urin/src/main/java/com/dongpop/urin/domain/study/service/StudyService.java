@@ -180,10 +180,17 @@ public class StudyService {
         List<Participant> myCurrentStudyParticipants = participantRepository.findMyCurrentStudyParticipants(member);
         List<Participant> myTerminatedStudyParticipants = participantRepository.findMyTerminatedStudyParticipants(member);
 
+        int totalCurrentStudies = myCurrentStudyParticipants.size();
+        int totalTerminatedStudies = myTerminatedStudyParticipants.size();
+
         List<StudySummaryDto> currentStudyList = makeResponseList(myCurrentStudyParticipants, studyMyDto.getCurrentAll());
         List<StudySummaryDto> terminatedStudyList = makeResponseList(myTerminatedStudyParticipants, studyMyDto.getTerminatedAll());
 
-        return new StudyMyListDto(currentStudyList, terminatedStudyList);
+        return StudyMyListDto.builder()
+                .totalCurrentStudies(totalCurrentStudies)
+                .totalTerminatedStudies(totalTerminatedStudies)
+                .currentStudyList(currentStudyList)
+                .terminatedStudyList(terminatedStudyList).build();
     }
 
     private List<StudySummaryDto> makeResponseList(List<Participant> myStudyParticipants, boolean allFlag) {
