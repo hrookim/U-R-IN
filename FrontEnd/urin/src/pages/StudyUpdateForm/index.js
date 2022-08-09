@@ -1,3 +1,5 @@
+/* eslint-disable react/jsx-props-no-spreading */
+
 import React, { useState, useEffect } from "react";
 import moment from "moment";
 import { useDispatch, useSelector } from "react-redux";
@@ -8,8 +10,15 @@ import {
   TextField,
   Checkbox,
   FormControlLabel,
+  Paper,
+  Fade,
+  Typography,
+  Popper,
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Select,
 } from "@mui/material";
-import NumberPicker from "react-widgets/NumberPicker";
 import DatePicker from "react-datepicker";
 import { ko } from "date-fns/esm/locale";
 import "react-datepicker/dist/react-datepicker.css";
@@ -30,6 +39,10 @@ const StudyUpdateForm = () => {
   const [formDate, setFormDate] = useState(new Date());
   const [disable, setDisable] = useState(false);
   const [errorStatement, setErrorStatement] = useState("");
+
+  // popper관련
+  const [anchorEl, setAnchorEl] = React.useState(null);
+  const [open, setOpen] = React.useState(false);
 
   useEffect(() => {
     if (disable) {
@@ -86,12 +99,37 @@ const StudyUpdateForm = () => {
     dispatch(updateStudy({ studyId, form, navigate }));
   };
 
+  // popper 관련 함수
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
+    setOpen((prev) => !prev);
+  };
+
   return (
     <div>
       <form onSubmit={onSubmit}>
-        <Grid container alignItems="center" justify="center" direction="column">
-          <h1>스터디 수정 창입니다!</h1>
-          <Grid item>
+        <Grid
+          className="study-update"
+          container
+          alignItems="center"
+          justify="center"
+          direction="column"
+        >
+          <img
+            src="/img/studyUpdate.png"
+            alt="bannerImg"
+            className="datail-wrap-img"
+          />
+
+          {/* 스터디 이름 */}
+          <Grid tem xs={12}>
+            <h5 bold>스터디 이름</h5>
+            <div>
+              준비 중인 기업명이나 면접의 종류 등을 포함하면 더 많은 분들이 쉽게
+              찾을 수 있어요!
+            </div>
+          </Grid>
+          <FormControl className="title" fullWidth sx={{ m: 1 }}>
             <TextField
               value={form.title}
               autoFocus
@@ -107,8 +145,89 @@ const StudyUpdateForm = () => {
               }
               onChange={onChange}
             />
-          </Grid>
+          </FormControl>
+
           <Grid item>
+            <div>
+              <div>
+                <h5>D-Day</h5>
+                <div>스터디 마감일을 설정해주세요!</div>
+                <InputLabel id="expired-date">종료일</InputLabel>
+                <DatePicker
+                  disabled={disable}
+                  locale={ko}
+                  inputLabelId="expired-date"
+                  dateFormat="yyyy/MM/dd"
+                  minDate={moment().toDate()}
+                  selected={formDate}
+                  onChange={(date) => {
+                    setFormDate(date);
+                    setForm({
+                      ...form,
+                      expirationDate: moment(date).format("YYYY-MM-DD"),
+                    });
+                  }}
+                  required
+                />
+              </div>
+
+              <Popper open={open} anchorEl={anchorEl} transition>
+                {({ TransitionProps }) => (
+                  <Fade {...TransitionProps} timeout={350}>
+                    <Paper>
+                      <Typography sx={{ p: 2 }}>
+                        &apos;종료일 없음&apos;으로 설정할 경우 한달 간 미활성
+                        시 자동으로 스터디가 종료돼요!
+                      </Typography>
+                    </Paper>
+                  </Fade>
+                )}
+              </Popper>
+              <FormControlLabel
+                label="종료일 없음"
+                control={
+                  <Checkbox
+                    checked={disable}
+                    onClick={handleClick}
+                    onChange={() => {
+                      setDisable(!disable);
+                    }}
+                  />
+                }
+              />
+            </div>
+            {/* 모집 인원 */}
+            <div>
+              <h5>모집 인원</h5>
+              <div>나를 포함한 스터디 최대 인원을 설정할 수 있어요!</div>
+              <InputLabel id="select-label">인원수</InputLabel>
+              <Select
+                className="capacity"
+                inputLabelId="select-label"
+                id="select"
+                name="memberCapacity"
+                defaultValue={2}
+                onChange={(value) => {
+                  if (!value) {
+                    setErrorStatement("2~4명 입력해주세요");
+                  }
+                  setForm({
+                    ...form,
+                    memberCapacity: value,
+                  });
+                }}
+              >
+                <MenuItem value={2}>2명</MenuItem>
+                <MenuItem value={3}>3명</MenuItem>
+                <MenuItem value={4}>4명</MenuItem>
+              </Select>
+              <small>{errorStatement}</small>{" "}
+            </div>
+          </Grid>
+          {/* 공지사항 */}
+          <h5>공지사항</h5>
+          <Grid>스터디원들이 알아야 할 사항들을 미리 정해주세요!</Grid>
+          <FormControl className="notice" fullWidth sx={{ m: 1 }}>
             <TextField
               value={form.notice}
               style={{ width: "400px", margin: "5px" }}
@@ -121,54 +240,7 @@ const StudyUpdateForm = () => {
               onChange={onChange}
               required
             />
-          </Grid>
-          <Grid item>
-            <DatePicker
-              disabled={disable}
-              locale={ko}
-              dateFormat="yyyy/MM/dd"
-              minDate={moment().toDate()}
-              selected={formDate}
-              onChange={(date) => {
-                setFormDate(date);
-                setForm({
-                  ...form,
-                  expirationDate: moment(date).format("YYYY-MM-DD"),
-                });
-              }}
-              required
-            />
-            <FormControlLabel
-              label="종료일 없음"
-              control={
-                <Checkbox
-                  checked={disable}
-                  onChange={() => {
-                    setDisable(!disable);
-                  }}
-                />
-              }
-            />
-          </Grid>
-
-          <Grid item>
-            <NumberPicker
-              min={2}
-              max={4}
-              value={form.memberCapacity}
-              name="memberCapacity"
-              onChange={(value) => {
-                if (!value) {
-                  setErrorStatement("2~4명 입력해주세요");
-                }
-                setForm({
-                  ...form,
-                  memberCapacity: value,
-                });
-              }}
-            />
-            <small>{errorStatement}</small>{" "}
-          </Grid>
+          </FormControl>
 
           <Grid item>
             <Button
