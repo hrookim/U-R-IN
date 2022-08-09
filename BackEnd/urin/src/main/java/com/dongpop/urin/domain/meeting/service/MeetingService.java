@@ -1,5 +1,6 @@
 package com.dongpop.urin.domain.meeting.service;
 
+import com.dongpop.urin.domain.meeting.dto.request.MeetingCreateDto;
 import com.dongpop.urin.domain.meeting.dto.response.MeetingIdDto;
 import com.dongpop.urin.domain.meeting.entity.Meeting;
 import com.dongpop.urin.domain.meeting.repository.MeetingRepository;
@@ -43,15 +44,21 @@ public class MeetingService {
     }
 
     @Transactional
-    public MeetingIdDto createMeeting(int studyId, Member member, Boolean isConnected) {
-        //TODO: 저장된 Meeting sessing도 비교하는 로직 추가, inOnair일 때는 생성 불가
+    public MeetingIdDto createMeeting(int studyId, Member member, MeetingCreateDto meetingCreateDto) {
         Study study = getStudy(studyId);
         if (!isStudyLeader(member, study)) {
             throw new CustomException(ONLY_POSSIBLE_STUDY_LEADER);
         }
+        if (!meetingCreateDto.getSessionId().equals(study.getSessionId())) {
+            throw new CustomException(SESSIONID_IS_NOT_VALID);
+        }
+        if (study.getIsOnair()) {
+            throw new CustomException(MEETING_IS_ALREADY_ONAIR);
+        }
 
-        study.changeOnairStatus(isConnected);
-        int meetingId = isConnected ? meetingRepository.save(new Meeting(study)).getId() : 0;
+        study.changeOnairStatus(meetingCreateDto.getIsConnected());
+        int meetingId = meetingCreateDto.getIsConnected() ?
+                meetingRepository.save(new Meeting(study)).getId() : 0;
         return new MeetingIdDto(meetingId);
     }
 

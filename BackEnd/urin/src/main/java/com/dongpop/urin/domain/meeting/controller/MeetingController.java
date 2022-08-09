@@ -1,6 +1,6 @@
 package com.dongpop.urin.domain.meeting.controller;
 
-import com.dongpop.urin.domain.meeting.dto.request.MeetingConnectedDto;
+import com.dongpop.urin.domain.meeting.dto.request.MeetingCreateDto;
 import com.dongpop.urin.domain.meeting.dto.response.MeetingIdDto;
 import com.dongpop.urin.domain.meeting.dto.response.MeetingSessionIdDto;
 import com.dongpop.urin.domain.meeting.service.MeetingService;
@@ -29,10 +29,10 @@ public class MeetingController {
 
     @PostMapping("{studyId}/meeting")
     public ResponseEntity<MeetingIdDto> createMeeting(@PathVariable int studyId,
-                                           @RequestBody @Validated MeetingConnectedDto meetingConnectedDto,
+                                           @RequestBody @Validated MeetingCreateDto meetingCreateDto,
                                             @AuthenticationPrincipal MemberPrincipal memberPrincipal) {
         Member member = memberPrincipal.getMember();
-        MeetingIdDto meetingIdDto = meetingService.createMeeting(studyId, member, meetingConnectedDto.getIsConnected());
+        MeetingIdDto meetingIdDto = meetingService.createMeeting(studyId, member, meetingCreateDto);
 
         return ResponseEntity.ok().body(meetingIdDto);
     }
