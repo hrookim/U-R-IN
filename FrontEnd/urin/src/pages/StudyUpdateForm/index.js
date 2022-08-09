@@ -110,6 +110,7 @@ const StudyUpdateForm = () => {
 
   return (
     <div>
+      <CheckValidation />
       <div className="study-update">
         <form onSubmit={onSubmit}>
           {/* 전체 컨테이너 */}
