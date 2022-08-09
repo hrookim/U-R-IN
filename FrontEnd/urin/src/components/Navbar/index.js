@@ -53,8 +53,8 @@ const NavComponent = () => {
                   <Link className="nav-link font-50 font-md" to="/">
                     스터디 찾기
                   </Link>
-                  <Link className="nav-link font-50 font-md" to="/">
-                    리포트 보기
+                  <Link className="nav-link font-50 font-md" to="/mypage">
+                    마이페이지
                   </Link>
                 </Nav>
               </Navbar.Collapse>

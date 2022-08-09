@@ -6,6 +6,7 @@ import inquiryReducer from "./inquirySlice";
 import feedReducer from "./feedSlice";
 import memberReducer from "./memberSlice";
 import checkValidationReducer from "./checkValidationSlice";
+import myPageReducer from "./myPageSlice";
 
 const rootReducer = combineReducers({
   validation: checkValidationReducer,
@@ -14,6 +15,7 @@ const rootReducer = combineReducers({
   studies: studyListReducer,
   inquiry: inquiryReducer,
   feed: feedReducer,
+  mypage: myPageReducer,
 });
 
 export default configureStore({
