@@ -1,0 +1,26 @@
+package com.dongpop.urin.domain.feedback.dto.request;
+
+import lombok.Builder;
+import lombok.Getter;
+import lombok.ToString;
+
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
+import javax.validation.constraints.Size;
+
+@ToString
+@Getter
+@Builder
+public class FeedbackDataDto {
+    @Positive
+    private int number;
+    @NotBlank
+    @NotNull
+    @Size(min=1, max=50, message = "1자 이상 50자 이하로 입력해주세요.")
+    private String question;
+    @NotBlank
+    @NotNull
+    @Size(min=1, max=50, message = "1자 이상 50자 이하로 입력해주세요.")
+    private String answer;
+}

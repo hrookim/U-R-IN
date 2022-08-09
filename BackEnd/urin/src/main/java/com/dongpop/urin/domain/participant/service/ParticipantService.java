@@ -1,13 +1,13 @@
 package com.dongpop.urin.domain.participant.service;
 
-import com.dongpop.urin.domain.member.repository.Member;
+import com.dongpop.urin.domain.member.entity.Member;
 import com.dongpop.urin.domain.participant.dto.response.ParticipantIdDto;
 import com.dongpop.urin.domain.participant.dto.response.ParticipantJoinDto;
-import com.dongpop.urin.domain.participant.repository.Participant;
+import com.dongpop.urin.domain.participant.entity.Participant;
 import com.dongpop.urin.domain.participant.repository.ParticipantRepository;
-import com.dongpop.urin.domain.study.repository.Study;
+import com.dongpop.urin.domain.study.entity.Study;
 import com.dongpop.urin.domain.study.repository.StudyRepository;
-import com.dongpop.urin.domain.study.repository.StudyStatus;
+import com.dongpop.urin.domain.study.entity.StudyStatus;
 import com.dongpop.urin.global.error.exception.CustomException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

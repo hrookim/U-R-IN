@@ -1,6 +1,6 @@
 package com.dongpop.urin.oauth.token;
 
-import com.dongpop.urin.domain.member.repository.Member;
+import com.dongpop.urin.domain.member.entity.Member;
 import com.dongpop.urin.domain.member.repository.MemberRepository;
 import io.jsonwebtoken.*;
 import lombok.RequiredArgsConstructor;

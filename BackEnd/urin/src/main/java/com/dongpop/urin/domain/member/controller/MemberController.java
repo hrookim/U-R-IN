@@ -2,7 +2,7 @@ package com.dongpop.urin.domain.member.controller;
 
 import com.dongpop.urin.domain.member.dto.response.MemberInfoDto;
 import com.dongpop.urin.domain.member.dto.response.MemberValidDto;
-import com.dongpop.urin.domain.member.repository.Member;
+import com.dongpop.urin.domain.member.entity.Member;
 import com.dongpop.urin.domain.member.service.MemberService;
 import com.dongpop.urin.oauth.model.MemberPrincipal;
 import lombok.RequiredArgsConstructor;
