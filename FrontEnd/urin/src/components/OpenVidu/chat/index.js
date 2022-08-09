@@ -17,7 +17,6 @@ export default class ChatComponent extends Component {
 
     this.handleChange = this.handleChange.bind(this);
     this.handlePressKey = this.handlePressKey.bind(this);
-    this.close = this.close.bind(this);
     this.sendMessage = this.sendMessage.bind(this);
   }
 
@@ -85,14 +84,9 @@ export default class ChatComponent extends Component {
     }, 20);
   }
 
-  close() {
-    this.props.close(undefined);
-  }
-
   render() {
-    const styleChat = { display: this.props.chatDisplay };
     return (
-      <div id="chatComponent" style={styleChat}>
+      <div id="chatComponent">
         <div id="chatToolbar">
           <span>
             {this.props.user.getStreamManager().stream.session.sessionId} - CHAT
