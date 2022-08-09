@@ -1,16 +1,14 @@
 package com.dongpop.urin.domain.feedback.dto.request;
 
 import lombok.Builder;
-import lombok.Getter;
-import lombok.ToString;
+import lombok.Data;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.Size;
 
-@ToString
-@Getter
+@Data
 @Builder
 public class FeedbackDataDto {
     @Positive
