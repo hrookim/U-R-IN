@@ -1,5 +1,6 @@
 /* eslint-disable */
 import React, { Component } from "react";
+import { connect } from "react-redux";
 import axios from "axios";
 import { OpenVidu } from "openvidu-browser";
 
@@ -24,6 +25,8 @@ class VideoRoomComponent extends Component {
     let sessionName = this.props.sessionName
       ? this.props.sessionName
       : "SessionA";
+    // TODO: userName 나중에 바꾸기
+    // let userName = "OpenVidu_User" + this.props.member.id;
     let userName = this.props.user
       ? this.props.user
       : "OpenVidu_User" + Math.floor(Math.random() * 100);
@@ -35,9 +38,9 @@ class VideoRoomComponent extends Component {
       session: undefined,
       localUser: undefined,
       subscribers: [],
-      chatDisplay: "none",
       feedbackDisplay: "none",
       currentVideoDevice: undefined,
+      interviewee: "",
     };
 
     this.joinSession = this.joinSession.bind(this);
@@ -45,18 +48,17 @@ class VideoRoomComponent extends Component {
     this.onbeforeunload = this.onbeforeunload.bind(this);
     this.camStatusChanged = this.camStatusChanged.bind(this);
     this.micStatusChanged = this.micStatusChanged.bind(this);
-    this.toggleFullscreen = this.toggleFullscreen.bind(this);
-    this.switchCamera = this.switchCamera.bind(this);
     this.screenShare = this.screenShare.bind(this);
     this.stopScreenShare = this.stopScreenShare.bind(this);
     this.closeDialogExtension = this.closeDialogExtension.bind(this);
-    this.toggleChat = this.toggleChat.bind(this);
     this.toggleFeedback = this.toggleFeedback.bind(this);
     this.checkNotification = this.checkNotification.bind(this);
+    this.interviewChanged = this.interviewChanged.bind(this);
     // this.updateLayout = this.updateLayout.bind(this);
     // this.checkSize = this.checkSize.bind(this);
   }
 
+  // 마운트 관련 행동
   componentDidMount() {
     window.addEventListener("beforeunload", this.onbeforeunload);
     this.joinSession();
@@ -71,6 +73,7 @@ class VideoRoomComponent extends Component {
     this.leaveSession();
   }
 
+  // Method 리스트
   joinSession() {
     this.OV = new OpenVidu();
 
@@ -168,6 +171,7 @@ class VideoRoomComponent extends Component {
     localUser.setScreenShareActive(false);
     localUser.setStreamManager(publisher);
     this.subscribeToUserChanged();
+    this.subscribeToInterviewChanged();
     this.subscribeToStreamDestroyed();
     this.sendSignalUserChanged({
       isScreenShareActive: localUser.isScreenShareActive(),
@@ -224,6 +228,14 @@ class VideoRoomComponent extends Component {
       this.props.leaveSession();
     }
   }
+
+  // 버튼을 클릭했을때 오는 면접자 변경
+  interviewChanged(interviewee) {
+    console.log(interviewee);
+    this.setState({ interviewee: interviewee });
+    this.sendSignalInterviewChanged({ interviewee: interviewee });
+  }
+
   camStatusChanged() {
     localUser.setVideoActive(!localUser.isVideoActive());
     localUser.getStreamManager().publishVideo(localUser.isVideoActive());
@@ -287,6 +299,20 @@ class VideoRoomComponent extends Component {
     });
   }
 
+  //
+  subscribeToInterviewChanged() {
+    this.state.session.on("signal:interviewChanged", (event) => {
+      let remoteUsers = this.state.subscribers;
+      remoteUsers.forEach((user) => {
+        if (user.getConnectionId() === event.from.connectionId) {
+          const data = JSON.parse(event.data);
+          console.log("EVENTO REMOTE: ", data);
+          this.setState(data);
+        }
+      });
+    });
+  }
+
   subscribeToUserChanged() {
     this.state.session.on("signal:userChanged", (event) => {
       let remoteUsers = this.state.subscribers;
@@ -317,83 +343,20 @@ class VideoRoomComponent extends Component {
     });
   }
 
+  sendSignalInterviewChanged(data) {
+    const signalOptions = {
+      data: JSON.stringify(data),
+      type: "interviewChanged",
+    };
+    this.state.session.signal(signalOptions);
+  }
+
   sendSignalUserChanged(data) {
     const signalOptions = {
       data: JSON.stringify(data),
       type: "userChanged",
     };
     this.state.session.signal(signalOptions);
-  }
-
-  toggleFullscreen() {
-    const document = window.document;
-    const fs = document.getElementById("container");
-    if (
-      !document.fullscreenElement &&
-      !document.mozFullScreenElement &&
-      !document.webkitFullscreenElement &&
-      !document.msFullscreenElement
-    ) {
-      if (fs.requestFullscreen) {
-        fs.requestFullscreen();
-      } else if (fs.msRequestFullscreen) {
-        fs.msRequestFullscreen();
-      } else if (fs.mozRequestFullScreen) {
-        fs.mozRequestFullScreen();
-      } else if (fs.webkitRequestFullscreen) {
-        fs.webkitRequestFullscreen();
-      }
-    } else {
-      if (document.exitFullscreen) {
-        document.exitFullscreen();
-      } else if (document.msExitFullscreen) {
-        document.msExitFullscreen();
-      } else if (document.mozCancelFullScreen) {
-        document.mozCancelFullScreen();
-      } else if (document.webkitExitFullscreen) {
-        document.webkitExitFullscreen();
-      }
-    }
-  }
-
-  async switchCamera() {
-    try {
-      const devices = await this.OV.getDevices();
-      var videoDevices = devices.filter(
-        (device) => device.kind === "videoinput"
-      );
-
-      if (videoDevices && videoDevices.length > 1) {
-        var newVideoDevice = videoDevices.filter(
-          (device) => device.deviceId !== this.state.currentVideoDevice.deviceId
-        );
-
-        if (newVideoDevice.length > 0) {
-          // Creating a new publisher with specific videoSource
-          // In mobile devices the default and first camera is the front one
-          var newPublisher = this.OV.initPublisher(undefined, {
-            audioSource: undefined,
-            videoSource: newVideoDevice[0].deviceId,
-            publishAudio: localUser.isAudioActive(),
-            publishVideo: localUser.isVideoActive(),
-            mirror: true,
-          });
-
-          //newPublisher.once("accessAllowed", () => {
-          await this.state.session.unpublish(
-            this.state.localUser.getStreamManager()
-          );
-          await this.state.session.publish(newPublisher);
-          this.state.localUser.setStreamManager(newPublisher);
-          this.setState({
-            currentVideoDevice: newVideoDevice,
-            localUser: localUser,
-          });
-        }
-      }
-    } catch (e) {
-      console.error(e);
-    }
   }
 
   screenShare() {
@@ -467,20 +430,6 @@ class VideoRoomComponent extends Component {
     // this.layout.setLayoutOptions(openviduLayoutOptions);
   }
 
-  toggleChat(property) {
-    let display = property;
-
-    if (display === undefined) {
-      display = this.state.chatDisplay === "none" ? "block" : "none";
-    }
-    if (display === "block") {
-      this.setState({ chatDisplay: display, messageReceived: false });
-    } else {
-      console.log("chat", display);
-      this.setState({ chatDisplay: display });
-    }
-  }
-
   toggleFeedback(property) {
     let displayF = property;
 
@@ -504,47 +453,67 @@ class VideoRoomComponent extends Component {
   render() {
     const mySessionId = this.state.mySessionId;
     const localUser = this.state.localUser;
-    var isChatOrFeedback =
-      (this.state.feedbackDisplay !== "none") |
-      (this.state.chatDisplay !== "none");
-    var chatDisplay = { display: this.state.chatDisplay };
 
     return (
       <>
         <div className="container" id="container" style={{ height: "85vh" }}>
-          {/* 비디오 영역 */}
           <div className="row" style={{ width: "100%" }}>
-            <div className="col d-flex flex-wrap justify-content-center">
-              {localUser !== undefined &&
-                localUser.getStreamManager() !== undefined && (
-                  <div
-                    className="OT_root OT_publisher custom-class p-2"
-                    id="localUser"
-                  >
-                    <StreamComponent user={localUser} />
-                  </div>
-                )}
-              {this.state.subscribers.map((sub, i) => (
-                <div
-                  key={i}
-                  className="OT_root OT_publisher custom-class p-2"
-                  id="remoteUsers"
+            {/* 왼쪽 영역 */}
+            <div className="col-9" style={{ height: "100%" }}>
+              {/* 면접 모드바 */}
+              <div>
+                <button
+                  onClick={() => this.interviewChanged(this.state.myUserName)}
                 >
-                  <StreamComponent
-                    user={sub}
-                    streamId={sub.streamManager.stream.streamId}
-                  />
-                </div>
-              ))}
+                  면접모드
+                </button>
+                <button onClick={() => this.interviewChanged("")}>
+                  일반모드
+                </button>
+
+                {/* 유저목록 */}
+                {/* <ul>
+                  {localUser !== undefined &&
+                    localUser.getStreamManager() !== undefined &&
+                    [this.state.localUser, ...this.state.subscribers].map(
+                      (user, i) => (
+                        <li
+                          key={i}
+                          onClick={() => this.interviewChanged(user.nickname)}
+                        >
+                          {user.nickname}
+                        </li>
+                      )
+                    )}
+                </ul> */}
+              </div>
+
+              {/* 비디오 영역 */}
+              <div
+                className="row justify-content-center mx-auto"
+                style={
+                  !this.state.interviewee
+                    ? { maxHeight: "80%", aspectRatio: "4 / 3" }
+                    : { maxHeight: "65%", aspectRatio: "4 / 3" }
+                }
+              >
+                {localUser !== undefined &&
+                  localUser.getStreamManager() !== undefined &&
+                  [this.state.localUser, ...this.state.subscribers].map(
+                    (user, i) => (
+                      <StreamComponent
+                        key={i}
+                        user={user}
+                        interviewee={this.state.interviewee}
+                        streamId={user.streamManager.stream.streamId}
+                      />
+                    )
+                  )}
+              </div>
             </div>
-            <div
-              className={isChatOrFeedback ? "col-3" : null}
-              style={Object.assign(
-                {},
-                { maxHeight: "100%" },
-                isChatOrFeedback ? null : { display: "none" }
-              )}
-            >
+
+            {/* 오른쪽 영역 */}
+            <div className="col-3" style={{ height: "100%" }}>
               {/* 피드백 영역 */}
               {localUser !== undefined &&
                 localUser.getStreamManager() !== undefined && (
@@ -561,35 +530,30 @@ class VideoRoomComponent extends Component {
                 localUser.getStreamManager() !== undefined && (
                   <div
                     className="OT_root OT_publisher custom-class"
-                    style={{ ...chatDisplay, height: "100%" }}
+                    style={{ height: "100%" }}
                   >
                     <ChatComponent
                       user={localUser}
-                      chatDisplay={this.state.chatDisplay}
-                      close={this.toggleChat}
                       messageReceived={this.checkNotification}
                     />
                   </div>
                 )}
+
+              {/* 툴바 영역 */}
+              <ToolbarComponent
+                sessionId={mySessionId}
+                user={localUser}
+                showNotification={this.state.messageReceived}
+                camStatusChanged={this.camStatusChanged}
+                micStatusChanged={this.micStatusChanged}
+                screenShare={this.screenShare}
+                stopScreenShare={this.stopScreenShare}
+                leaveSession={this.leaveSession}
+                toggleFeedback={this.toggleFeedback}
+              />
             </div>
           </div>
         </div>
-        {/* 툴바 영역 */}
-        <ToolbarComponent
-          sessionId={mySessionId}
-          user={localUser}
-          showNotification={this.state.messageReceived}
-          camStatusChanged={this.camStatusChanged}
-          micStatusChanged={this.micStatusChanged}
-          screenShare={this.screenShare}
-          stopScreenShare={this.stopScreenShare}
-          toggleFullscreen={this.toggleFullscreen}
-          switchCamera={this.switchCamera}
-          leaveSession={this.leaveSession}
-          toggleChat={this.toggleChat}
-          toggleFeedback={this.toggleFeedback}
-        />
-
         <DialogExtensionComponent
           showDialog={this.state.showExtensionDialog}
           cancelClicked={this.closeDialogExtension}
@@ -686,4 +650,15 @@ class VideoRoomComponent extends Component {
     });
   }
 }
-export default VideoRoomComponent;
+
+// redux state => props로 전달
+const mapStateToProps = (state) => ({
+  member: state.member,
+});
+
+const mapDispatchToProps = (dispatch) => ({
+  // TODO: 나중에 dispatch 할 함수들 위치
+  //       feedback CRUD or AI data 서버에 전달하는 함수
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(VideoRoomComponent);

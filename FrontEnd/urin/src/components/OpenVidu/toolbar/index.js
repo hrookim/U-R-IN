@@ -27,10 +27,7 @@ export default class ToolbarComponent extends Component {
     this.micStatusChanged = this.micStatusChanged.bind(this);
     this.screenShare = this.screenShare.bind(this);
     this.stopScreenShare = this.stopScreenShare.bind(this);
-    this.toggleFullscreen = this.toggleFullscreen.bind(this);
-    this.switchCamera = this.switchCamera.bind(this);
     this.leaveSession = this.leaveSession.bind(this);
-    this.toggleChat = this.toggleChat.bind(this);
     this.toggleFeedback = this.toggleFeedback.bind(this);
   }
 
@@ -50,21 +47,8 @@ export default class ToolbarComponent extends Component {
     this.props.stopScreenShare();
   }
 
-  toggleFullscreen() {
-    this.setState({ fullscreen: !this.state.fullscreen });
-    this.props.toggleFullscreen();
-  }
-
-  switchCamera() {
-    this.props.switchCamera();
-  }
-
   leaveSession() {
     this.props.leaveSession();
-  }
-
-  toggleChat() {
-    this.props.toggleChat();
   }
 
   toggleFeedback() {
@@ -130,26 +114,6 @@ export default class ToolbarComponent extends Component {
           )}
 
           <IconButton
-            color="inherit"
-            className="navButton"
-            onClick={this.switchCamera}
-          >
-            <SwitchVideoIcon />
-          </IconButton>
-
-          <IconButton
-            color="inherit"
-            className="navButton"
-            onClick={this.toggleFullscreen}
-          >
-            {localUser !== undefined && this.state.fullscreen ? (
-              <FullscreenExitIcon />
-            ) : (
-              <FullscreenIcon />
-            )}
-          </IconButton>
-
-          <IconButton
             color="secondary"
             className="navButton"
             onClick={this.leaveSession}
@@ -169,11 +133,7 @@ export default class ToolbarComponent extends Component {
             </Tooltip>
           </IconButton>
 
-          <IconButton
-            color="inherit"
-            onClick={this.toggleChat}
-            id="navChatButton"
-          >
+          <IconButton color="inherit" id="navChatButton">
             {this.props.showNotification && <div id="point" className="" />}
             <Tooltip title="Chat">
               <QuestionAnswerIcon />
