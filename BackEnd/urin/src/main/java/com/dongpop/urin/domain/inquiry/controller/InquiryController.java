@@ -8,6 +8,7 @@ import com.dongpop.urin.domain.member.entity.Member;
 import com.dongpop.urin.oauth.model.MemberPrincipal;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
@@ -21,7 +22,7 @@ public class InquiryController {
     private final InquiryService inquiryService;
 
     @GetMapping("/{studyId}/inquiry")
-    public ResponseEntity<InquiryListDto> getStudyInquiries(Pageable pageable, @PathVariable int studyId) {
+    public ResponseEntity<InquiryListDto> getStudyInquiries(@PageableDefault(size=5) Pageable pageable, @PathVariable int studyId) {
         return ResponseEntity.ok()
                 .body(inquiryService.getStudyInquiries(studyId, pageable));
     }
