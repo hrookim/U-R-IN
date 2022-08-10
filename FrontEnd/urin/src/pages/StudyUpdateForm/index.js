@@ -218,13 +218,13 @@ const StudyUpdateForm = () => {
                   id="select"
                   name="memberCapacity"
                   defaultValue={2}
-                  onChange={(value) => {
-                    if (!value) {
+                  onChange={(event) => {
+                    if (!event.target.value) {
                       setErrorStatement("2~4명 입력해주세요");
                     }
                     setForm({
                       ...form,
-                      memberCapacity: value,
+                      memberCapacity: event.target.value,
                     });
                   }}
                 >
