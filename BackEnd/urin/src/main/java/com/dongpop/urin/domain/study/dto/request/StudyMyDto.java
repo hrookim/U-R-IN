@@ -9,5 +9,5 @@ public class StudyMyDto {
     @NotNull
     private Boolean currentAll;
     @NotNull
-    private Boolean terminatedAll;
+    private Boolean pastAll;
 }
