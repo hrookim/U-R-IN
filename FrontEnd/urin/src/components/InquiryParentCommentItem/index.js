@@ -46,6 +46,12 @@ const InquiryParentCommentItem = ({
     });
   };
 
+  const onKeyPress = (event) => {
+    if (event.key == "Enter") {
+      onClickUpdate();
+    }
+  };
+
   return (
     <div>
       <div className="writer-info">
@@ -84,7 +90,29 @@ const InquiryParentCommentItem = ({
         )}
         {isEditing && (
           <div>
-            <input type="text" onChange={onChange} value={form} />
+            <div>
+              <div>
+                <input
+                  onChange={onChange}
+                  onKeyPress={onKeyPress}
+                  value={form}
+                  className="inquiry-parent-input"
+                />
+                {/* <Button
+          onClick={onSubmit}
+          sx={{
+            backgroundColor: "#0037FA",
+            height: "60px",
+            marginLeft: "20px",
+            borderRadius: "10px",
+            "&:hover": { backgroundColor: "#0037FA" },
+          }}
+          variant="contained"
+        >
+          제출
+        </Button> */}
+              </div>
+            </div>{" "}
             <button type="submit" onClick={onClickUpdate}>
               수정
             </button>

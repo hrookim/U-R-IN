@@ -15,7 +15,6 @@ const DetailFeedInput = ({ studyId, setIsInputSubmitted }) => {
   };
 
   const onSubmit = (event) => {
-    event.preventDefault();
     dispatch(createFeed({ studyId, form })).then(() => {
       setIsInputSubmitted(true);
       setInterval(() => setIsInputSubmitted(false), 100);

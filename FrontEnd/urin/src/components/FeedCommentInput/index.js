@@ -16,8 +16,6 @@ const FeedCommentInput = ({ parentId, setIsInputSubmitted }) => {
   };
 
   const onSubmit = (event) => {
-    console.log(parentId);
-
     dispatch(createFeed({ studyId, form, parentId })).then(() => {
       setIsInputSubmitted(true);
       setInterval(() => setIsInputSubmitted(false), 100);

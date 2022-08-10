@@ -121,11 +121,10 @@ const StudyUpdateForm = () => {
             />
             <div className="title-banner-title">
               <p className="font-lg font-70 title-banner-text1">
-                스터디 만들기
+                스터디 정보 수정하기
               </p>
               <p className="font-sm font-30 title-banner-text2">
-                여러분과 함께 면접을 준비할 분들이 기다리고 계십니다! 바로
-                스터디를 만들어보세요!
+                여러분의 면접 스터디에 맞게 더 멋진 스터디로 꾸며보세요.
               </p>
             </div>
           </div>
@@ -184,7 +183,7 @@ const StudyUpdateForm = () => {
                 </div>
                 <Popper open={open} anchorEl={anchorEl} transition>
                   {({ TransitionProps }) => (
-                    <Fade {...TransitionProps} timeout={350}>
+                    <Fade {...TransitionProps} timeout={200}>
                       <Paper>
                         <Typography sx={{ p: 2 }}>
                           종료일 없음으로 설정하면
@@ -203,7 +202,8 @@ const StudyUpdateForm = () => {
                       sx={{
                         "&.Mui-checked": { color: "#0037FA" },
                       }}
-                      onClick={handleClick}
+                      onMouseOver={handleClick}
+                      onMouseLeave={handleClick}
                       onChange={() => {
                         setDisable(!disable);
                       }}
@@ -221,6 +221,7 @@ const StudyUpdateForm = () => {
                 </p>
               </div>
               <Select
+                key={form.memberCapacity}
                 className="capacity"
                 id="select"
                 name="memberCapacity"
