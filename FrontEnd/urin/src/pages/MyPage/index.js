@@ -106,7 +106,7 @@ const MyPage = () => {
               key={item.id}
               className="card"
               sx={{
-                border: "none",
+                borderColor: "#dedede",
                 borderRadius: "20px",
                 maxWidth: "500px",
                 boxShadow: 0,
