@@ -1,54 +1,66 @@
 import React, { useState } from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faLock } from "@fortawesome/free-solid-svg-icons";
-import { Tab, Tabs } from "@mui/material";
-import "./index.css";
+import LockIcon from "@mui/icons-material/Lock";
+import Tab from "react-bootstrap/Tab";
+import Tabs from "react-bootstrap/Tabs";
 
 import DetailInfo from "../DetailInfo";
 import DetailInquiry from "../DetailInquiry";
 import DetailFeed from "../DetailFeed";
 
 const DetailTabs = ({ study, isLeader, isParticipant, setIsChanged }) => {
-  const [value, setValue] = useState(0);
-  const handleChange = (event, newValue) => {
-    event.preventDefault();
-    setValue(newValue);
-  };
+  const [key, setKey] = useState("정보");
 
   return (
     <div className="dt-container">
-      <Tabs onChange={handleChange} value={value} centered fill>
-        <Tab label="정보" />
-        <Tab label="QnA" />
+      <Tabs
+        defaultActiveKey="정보"
+        id="controlled-tab-example"
+        activeKey={key}
+        onSelect={(k) => setKey(k)}
+        className="mb-3"
+        fill
+      >
+        <Tab eventKey="정보" title="정보">
+          <DetailInfo
+            study={study}
+            isLeader={isLeader}
+            isParticipant={isParticipant}
+            setIsChanged={setIsChanged}
+          />
+        </Tab>
+        <Tab eventKey="QnA" title="QnA">
+          <DetailInquiry
+            study={study}
+            isLeader={isLeader}
+            isParticipant={isParticipant}
+          />
+        </Tab>
         {isParticipant ? (
-          <Tab label="피드" />
+          <Tab eventKey="피드" title="피드">
+            <DetailFeed
+              study={study}
+              isLeader={isLeader}
+              isParticipant={isParticipant}
+            />
+          </Tab>
         ) : (
-          <Tab label="피드" icon={<FontAwesomeIcon icon={faLock} />} disabled />
+          <Tab
+            eventKey="피드"
+            title={
+              <span>
+                <LockIcon /> 피드
+              </span>
+            }
+            disabled
+          >
+            <DetailFeed
+              study={study}
+              isLeader={isLeader}
+              isParticipant={isParticipant}
+            />
+          </Tab>
         )}
       </Tabs>
-
-      {value === 0 && (
-        <DetailInfo
-          study={study}
-          isLeader={isLeader}
-          isParticipant={isParticipant}
-          setIsChanged={setIsChanged}
-        />
-      )}
-      {value === 1 && (
-        <DetailInquiry
-          study={study}
-          isLeader={isLeader}
-          isParticipant={isParticipant}
-        />
-      )}
-      {value === 2 && (
-        <DetailFeed
-          study={study}
-          isLeader={isLeader}
-          isParticipant={isParticipant}
-        />
-      )}
     </div>
   );
 };

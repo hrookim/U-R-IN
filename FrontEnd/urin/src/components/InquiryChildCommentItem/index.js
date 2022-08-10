@@ -48,29 +48,42 @@ const InquiryChildCommentItem = ({
 
   return (
     <div>
-      <Avatar>{childListItem.writer[0]}</Avatar>
-      <p>{childListItem.writer}</p>
-      {!isEditing && (
-        <div>
-          {childListItem.contents}
-          {!childListItem.isDeleted && (isLeader || isAuthor) && (
-            <StyledXbutton onClick={onClickDelete}>
-              <FontAwesomeIcon icon={faSquareXmark} />
-            </StyledXbutton>
-          )}
-          {!childListItem.isDeleted && isAuthor && (
-            <Button
-              size="small"
-              variant="outlined"
-              onClick={() => {
-                setIsEditing(true);
-              }}
-            >
-              수정
-            </Button>
-          )}
-        </div>
-      )}
+      <div className="writer-info">
+        <Avatar sx={{ width: "35px", height: "35px" }}>
+          {childListItem.writer[0]}
+        </Avatar>
+        <span className="font-sm font-50">{childListItem.writer}</span>
+      </div>
+      <div className="comment-content">
+        {!isEditing && (
+          <div>
+            <span className="font-sm font-30">{childListItem.contents}</span>
+
+            {!childListItem.isDeleted && isAuthor && (
+              <Button
+                size="small"
+                variant="text"
+                onClick={() => {
+                  setIsEditing(true);
+                }}
+                sx={{ color: "#707070" }}
+              >
+                수정
+              </Button>
+            )}
+            {!childListItem.isDeleted && (isLeader || isAuthor) && (
+              <Button
+                size="small"
+                variant="text"
+                onClick={onClickDelete}
+                sx={{ color: "#ff1900" }}
+              >
+                삭제
+              </Button>
+            )}
+          </div>
+        )}
+      </div>
       {isEditing && (
         <div>
           <input type="text" onChange={onChange} value={form} />

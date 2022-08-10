@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import "./index.css";
 
 import {
@@ -8,14 +8,16 @@ import {
   CardContent,
   CardMedia,
   Grid,
+  IconButton,
 } from "@mui/material";
 
+import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import WorkspacePremiumIcon from "@mui/icons-material/WorkspacePremium";
 import { useNavigate, Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { checkValidation } from "../../store/checkValidationSlice";
 import { getMemberId } from "../../store/memberSlice";
 import { getMyPage } from "../../store/myPageSlice";
+import CheckValidation from "../../components/CheckValidation";
 import "../../assets/DesignSystem.css";
 
 const MyPage = () => {
@@ -26,23 +28,36 @@ const MyPage = () => {
   const memberId = useSelector((state) => state.member.id);
   const myPage = useSelector((state) => state.mypage);
 
+  const [currentAllChecked, setCurrentAllChecked] = useState(false);
+  const [terminatedAllChecked, setTerminatedAllChecked] = useState(false);
+
   const mounted = useRef(false);
 
   useEffect(() => {
-    dispatch(getMemberId(navigate));
-    dispatch(getMyPage());
-  }, []);
+    dispatch(getMyPage([currentAllChecked, terminatedAllChecked]));
+  }, [currentAllChecked, terminatedAllChecked]);
 
-  useEffect(() => {
-    if (!mounted.current && !memberId) {
-      mounted.current = true;
+  const currentCheck = (e) => {
+    if (currentAllChecked) {
+      setCurrentAllChecked(false);
     } else {
-      dispatch(checkValidation(memberId, navigate));
+      setCurrentAllChecked(true);
     }
-  }, [memberId]);
+  };
+
+  const terminatedCheck = (e) => {
+    if (currentAllChecked) {
+      setTerminatedAllChecked(false);
+    } else {
+      setTerminatedAllChecked(true);
+    }
+  };
 
   return (
     <div className="my-page">
+      <p className="font-xl">생각해보니까 나간 스터디는 어떻게 됨???</p>
+      <CheckValidation />
+
       <div className="my-page-header">
         <Avatar
           className="my-page-avatar"
@@ -75,6 +90,7 @@ const MyPage = () => {
           </p>
         </div>
       </div>
+
       <p className="font-80 font-lg">참여 중인 스터디</p>
       <Grid container spacing={2} className="card-grid">
         {myPage.currentStudyList.map((item) => (
@@ -138,6 +154,9 @@ const MyPage = () => {
           </Grid>
         ))}
       </Grid>
+      <IconButton onClick={currentCheck}>
+        <KeyboardArrowDownIcon />
+      </IconButton>
       <p className="font-80 font-lg">지난 스터디</p>
       <Grid container spacing={2} className="card-grid">
         {myPage.terminatedStudyList.map((item) => (
@@ -151,6 +170,7 @@ const MyPage = () => {
             key={item.id}
             className="card-item"
           >
+            {console.log("============", item.id)}
             <Card
               key={item.id}
               className="card"
@@ -201,6 +221,9 @@ const MyPage = () => {
           </Grid>
         ))}
       </Grid>
+      <IconButton onClick={terminatedCheck}>
+        <KeyboardArrowDownIcon />
+      </IconButton>
     </div>
   );
 };

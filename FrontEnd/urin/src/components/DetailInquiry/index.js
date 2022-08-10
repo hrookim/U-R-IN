@@ -7,6 +7,8 @@ import { Pagination } from "@mui/material";
 import DetailInquiryInput from "../DetailInquiryInput";
 import DetailInquiryListItem from "../DetailInquiryListItem";
 import { getInquiry } from "../../store/inquirySlice";
+import "../../assets/DesignSystem.css";
+import "./index.css";
 
 const DetailInquiry = ({ study, isLeader, isParticipant }) => {
   const dispatch = useDispatch();
@@ -21,7 +23,7 @@ const DetailInquiry = ({ study, isLeader, isParticipant }) => {
 
   return (
     <div>
-      <p>궁금한 점을 방장에게 질문해보세요!</p>
+      <p className="font-60 font-md">궁금한 점을 방장에게 질문해보세요!</p>
       <DetailInquiryInput
         studyId={studyId}
         setIsInputSubmitted={setIsInputSubmitted}
@@ -35,7 +37,7 @@ const DetailInquiry = ({ study, isLeader, isParticipant }) => {
           setIsInputSubmitted={setIsInputSubmitted}
         />
       ))}
-      <Pagination count={inquiry.totalPages + 1} />
+      <Pagination count={inquiry.totalPages + 1} className="pagination" />
     </div>
   );
 };

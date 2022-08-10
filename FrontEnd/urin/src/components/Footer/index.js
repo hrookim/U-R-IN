@@ -22,7 +22,7 @@ const Footer = () => {
         <div className="social-media-wrap">
           <div className="footer-logo">
             <Link to="/" className="social-logo">
-              <img src="img/logo_img.png" alt="logo" className="logo-img" />
+              <img src="/img/logo_img.png" alt="logo" className="logo-img" />
             </Link>
           </div>
           <small className="website-rights font-xs font-30">

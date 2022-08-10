@@ -5,16 +5,17 @@ import {
 } from "@reduxjs/toolkit";
 import axios from "axios";
 
-export const getMyPage = createAsyncThunk("GET_MY_PAGE", async () => {
+export const getMyPage = createAsyncThunk("GET_MY_PAGE", async (checked) => {
   try {
     const response = await axios.get(
-      `${process.env.REACT_APP_BACK_BASE_URL}studies/me`,
+      `${process.env.REACT_APP_BACK_BASE_URL}studies/me?currentAll=${checked[0]}&terminatedAll=${checked[1]}`,
       {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
         },
       }
     );
+    console.log(response.data);
     return response.data;
   } catch (err) {
     console.log(err);
