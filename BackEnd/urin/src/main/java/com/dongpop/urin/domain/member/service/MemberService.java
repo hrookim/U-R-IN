@@ -1,6 +1,6 @@
 package com.dongpop.urin.domain.member.service;
 
-import com.dongpop.urin.domain.member.repository.Member;
+import com.dongpop.urin.domain.member.entity.Member;
 import com.dongpop.urin.domain.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

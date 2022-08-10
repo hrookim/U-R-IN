@@ -1,5 +1,6 @@
 package com.dongpop.urin.domain.member.repository;
 
+import com.dongpop.urin.domain.member.entity.Member;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

@@ -4,7 +4,7 @@ import com.dongpop.urin.domain.inquiry.dto.request.InquiryDataDto;
 import com.dongpop.urin.domain.inquiry.dto.request.InquiryUpdateDto;
 import com.dongpop.urin.domain.inquiry.dto.response.InquiryListDto;
 import com.dongpop.urin.domain.inquiry.service.InquiryService;
-import com.dongpop.urin.domain.member.repository.Member;
+import com.dongpop.urin.domain.member.entity.Member;
 import com.dongpop.urin.oauth.model.MemberPrincipal;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;

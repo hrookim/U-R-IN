@@ -1,6 +1,7 @@
 package com.dongpop.urin.domain.inquiry.repository;
 
-import com.dongpop.urin.domain.study.repository.Study;
+import com.dongpop.urin.domain.inquiry.entity.Inquiry;
+import com.dongpop.urin.domain.study.entity.Study;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.EntityGraph;
