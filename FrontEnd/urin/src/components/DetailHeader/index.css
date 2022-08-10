@@ -2,6 +2,7 @@
   display: flex;
   justify-content: center;
   flex-direction: column;
+  margin: 20px 0 60px 0;
 }
 
 .dh-container-item {
@@ -31,7 +32,6 @@
   color: white;
   height: 50px; width: 180px;
   box-sizing: border-box;
-  box-shadow: 0px 3px 5px -1px rgba(0,0,0,0.5);
   text-align: center;
   line-height: 50px;
   border: none;
@@ -42,13 +42,12 @@
 .dh-study-button {
   background-color: white;
   border: 1px solid #0037FA;
+  
   height: 50px; width: 180px;
   box-sizing: border-box;
-  box-shadow: 0px 3px 5px -1px rgba(0,0,0,0.5);
   text-align: center;
   color: #0037FA;
   line-height: 50px;
-  border: none;
   border-radius: 25px;
   margin: 0 10px;
 }
