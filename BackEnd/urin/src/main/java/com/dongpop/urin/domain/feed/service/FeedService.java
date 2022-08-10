@@ -8,8 +8,10 @@ import com.dongpop.urin.domain.feed.dto.response.FeedListDto;
 import com.dongpop.urin.domain.feed.entity.Feed;
 import com.dongpop.urin.domain.feed.repository.FeedRepository;
 import com.dongpop.urin.domain.member.entity.Member;
+import com.dongpop.urin.domain.participant.entity.Participant;
 import com.dongpop.urin.domain.study.entity.Study;
 import com.dongpop.urin.domain.study.repository.StudyRepository;
+import com.dongpop.urin.global.error.errorcode.FeedErrorCode;
 import com.dongpop.urin.global.error.exception.CustomException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -24,6 +26,7 @@ import java.util.stream.Collectors;
 
 import static com.dongpop.urin.global.error.errorcode.CommonErrorCode.DO_NOT_HAVE_AUTHORIZATION;
 import static com.dongpop.urin.global.error.errorcode.CommonErrorCode.NO_SUCH_ELEMENTS;
+import static com.dongpop.urin.global.error.errorcode.FeedErrorCode.*;
 import static com.dongpop.urin.global.error.errorcode.FeedErrorCode.DIFFRENT_STUDY;
 import static com.dongpop.urin.global.error.errorcode.FeedErrorCode.PARENT_FEED_IS_NOT_EXIST;
 import static com.dongpop.urin.global.error.errorcode.StudyErrorCode.STUDY_DOES_NOT_EXIST;
@@ -38,7 +41,10 @@ public class FeedService {
     private final StudyRepository studyRepository;
 
     @Transactional
-    public FeedListDto getStudyFeeds(int studyId, Pageable pageable) {
+    public FeedListDto getStudyFeeds(int studyId, Pageable pageable, Member member) {
+        Study study = getStudy(studyId);
+        checkRegistedMember(study, member);
+
         Page<Feed> feedPage = feedRepository.findAllByStudyIdAndParentIsNull(studyId, pageable);
 
         int totalPages = feedPage.getTotalPages();
@@ -54,8 +60,7 @@ public class FeedService {
                     .isDeleted(f.isDeleted()).build();
 
             List<FeedDetailDto> children = f.getChildren().stream()
-                    .map(c ->
-                            FeedDetailDto.builder()
+                    .map(c -> FeedDetailDto.builder()
                                     .feedId(c.getId())
                                     .contents(c.isDeleted() ? DELETE_MESSAGE : c.getContents())
                                     .writerId(c.getWriter().getId())
@@ -72,8 +77,9 @@ public class FeedService {
 
     @Transactional
     public void writeFeed(Member writer, int studyId, FeedDataDto feedDataDto) {
-        Study study = studyRepository.findById(studyId)
-                .orElseThrow(() -> new CustomException(STUDY_DOES_NOT_EXIST));
+        Study study = getStudy(studyId);
+        checkRegistedMember(study, writer);
+
         Feed newFeed = Feed.builder()
                 .contents(feedDataDto.getContents())
                 .writer(writer)
@@ -102,11 +108,24 @@ public class FeedService {
         feed.deleteFeed();
     }
 
+    private Study getStudy(int studyId) {
+        return studyRepository.findById(studyId)
+                .orElseThrow(() -> new CustomException(STUDY_DOES_NOT_EXIST));
+    }
+
+    private void checkRegistedMember(Study study, Member writer) {
+        for (Participant participant : study.getParticipants()) {
+            if (participant.getMember().getId() == writer.getId() && !participant.getWithdrawal()) {
+                return;
+            }
+        }
+        throw new CustomException(NOT_REGISTED_MEMBER);
+    }
+
     private Feed checkUpdateAuthorizaion(Member member, int studyId, int feedId) {
         Feed feed = feedRepository.findById(feedId)
                 .orElseThrow(() -> new CustomException(NO_SUCH_ELEMENTS));
-        Study study = studyRepository.findById(studyId)
-                .orElseThrow(() -> new CustomException(STUDY_DOES_NOT_EXIST));
+        Study study = getStudy(studyId);
         if (feed.getStudy().getId() != study.getId()) {
             throw new CustomException(DIFFRENT_STUDY);
         }
@@ -120,8 +139,7 @@ public class FeedService {
     private Feed checkDeleteAuthorizaion(Member member, int studyId, int feedId) {
         Feed feed = feedRepository.findById(feedId)
                 .orElseThrow(() -> new CustomException(NO_SUCH_ELEMENTS));
-        Study study = studyRepository.findById(studyId)
-                .orElseThrow(() -> new CustomException(STUDY_DOES_NOT_EXIST));
+        Study study = getStudy(studyId);
         if (feed.getStudy().getId() != studyId) {
             throw new CustomException(DIFFRENT_STUDY);
         }
