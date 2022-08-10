@@ -17,13 +17,13 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/v1/studies")
 public class FeedController {
-
     private final FeedService feedService;
 
     @GetMapping("/{studyId}/feeds")
-    public ResponseEntity<FeedListDto> getStudyFeeds(@PathVariable int studyId, Pageable pageable) {
+    public ResponseEntity<FeedListDto> getStudyFeeds(@PathVariable int studyId, Pageable pageable,
+                                                     @AuthenticationPrincipal MemberPrincipal memberPrincipal) {
         return ResponseEntity.ok()
-                .body(feedService.getStudyFeeds(studyId, pageable));
+                .body(feedService.getStudyFeeds(studyId, pageable, memberPrincipal.getMember()));
     }
 
     @PostMapping("/{studyId}/feeds")
