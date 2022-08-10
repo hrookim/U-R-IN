@@ -3,6 +3,24 @@
         justify-content: center;
 }
 
+.title-banner {
+  position: relative;
+}
+
+.title-banner-text1 {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  text-align: center;
+}
+
+.title-banner-text2 {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  text-align: center;
+}
+
 .create-wrap-img{
     width: 1200px;
 }
@@ -47,5 +65,12 @@
     border-left-style: solid;
 }
 .create-grid-contents-expired {
-    margin-left: 5px;
+    display: flex;
+    align-items: center;
+}
+
+.date-picker {
+  height: 56px;
+  width: 170px;
+
 }

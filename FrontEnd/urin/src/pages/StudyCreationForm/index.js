@@ -26,6 +26,7 @@ import { createStudy } from "../../store/studySlice";
 import CheckValidation from "../../components/CheckValidation";
 import { getMemberId } from "../../store/memberSlice";
 import "./index.css";
+import "../../assets/DesignSystem.css";
 
 const StudyCreationForm = () => {
   const navigate = useNavigate();
@@ -85,21 +86,31 @@ const StudyCreationForm = () => {
         <form onSubmit={onSubmit}>
           {/* 전체 컨테이너 */}
           <Grid container className="container">
-            <img
-              src="/img/studyCreation.png"
-              alt="bannerImg"
-              className="create-wrap-img"
-            />
+            <div className="title-banner">
+              <img
+                src="/img/studyCreation.png"
+                alt="bannerImg"
+                className="create-wrap-img"
+              />
+              <p className="font-lg font-70 title-banner-text1">
+                스터디 만들기
+              </p>
+              <p className="font-sm font-30 title-banner-text2">
+                여러분과 함께 면접을 준비할 분들이 기다리고 계십니다! 바로
+                스터디를 만들어보세요!
+              </p>
+            </div>
+
             {/* 스터디 이름 */}
-            <Grid xs={12} className="create-grid-title">
-              <h5 bold>스터디 이름</h5>
-              <div className="create-grid-contents-title">
-                &nbsp;준비 중인 기업명이나 면접의 종류 등을 포함하면 더 많은
-                분들이 쉽게 찾을 수 있어요!
-              </div>
+            <Grid item xs={12} className="create-grid-title">
+              <p className="font-lg font-70">스터디 이름</p>
+              <p className="create-grid-contents-title font-30 font-sm">
+                &nbsp;&nbsp;&nbsp;준비 중인 기업명이나 면접의 종류 등을 포함하면
+                더 많은 분들이 쉽게 찾을 수 있어요!
+              </p>
             </Grid>
-            <Grid tem xs={12} className="create-grid-contents">
-              <FormControl className="title" fullWidth sx={{ m: 1 }}>
+            <Grid item xs={12} className="create-grid-contents">
+              <FormControl className="title" fullWidth>
                 <TextField
                   fullwidth
                   autoFocus
@@ -119,16 +130,16 @@ const StudyCreationForm = () => {
               </FormControl>
             </Grid>
             {/* D-Day */}
-            <Grid item container tem xs={6} className="create-grid-contents">
+            <Grid item container sm={6} className="create-grid-contents">
               <Grid xs={12} className="create-grid-contents">
-                <h5>D-Day</h5>
-                <div className="create-grid-contents-title">
-                  &nbsp;스터디 마감일을 설정해주세요!
-                </div>
+                <p className="font-lg font-60">D-Day</p>
+                <p className="create-grid-contents-title font-30 font-sm">
+                  &nbsp;&nbsp;&nbsp;스터디 마감일 지정해주세요!
+                </p>
               </Grid>
               <Grid item className="create-grid-contents">
                 <DatePicker
-                  className="expired"
+                  className="expired date-picker"
                   disabled={disable}
                   locale={ko}
                   dateFormat="yyyy년 MM월 dd일"
@@ -171,13 +182,14 @@ const StudyCreationForm = () => {
                 />
               </Grid>
             </Grid>
-            <Grid item tem xs={6} className="create-grid-contents">
+            <Grid item sm={6} className="create-grid-contents">
               {/* 모집 인원 */}
               <Grid className="create-grid-contents">
-                <h5>모집 인원</h5>
-                <div className="create-grid-contents-title">
-                  &nbsp;나를 포함한 스터디 최대 인원을 설정할 수 있어요!
-                </div>
+                <p className="font-lg font-70">모집 인원</p>
+                <p className="create-grid-contents-title font-30 font-sm">
+                  &nbsp;&nbsp;&nbsp;나를 포함한 스터디 최대 인원을 설정할 수
+                  있어요!
+                </p>
               </Grid>
               <Grid className="create-grid-contents">
                 <Select
@@ -204,12 +216,13 @@ const StudyCreationForm = () => {
             </Grid>
 
             {/* 공지사항 */}
-            <Grid tem xs={12}>
+            <Grid item xs={12}>
               <Grid className="create-grid-contents">
-                <h5>공지사항</h5>
-                <div className="create-grid-contents-title">
-                  &nbsp;스터디원들이 알아야 할 사항들을 미리 정해주세요!
-                </div>
+                <p className="font-lg font-70">공지사항</p>
+                <p className="create-grid-contents-title font-30 font-sm">
+                  &nbsp;&nbsp;&nbsp;스터디원들이 알아야 할 사항들을 미리
+                  적어주세요!
+                </p>
               </Grid>
               <Grid className="create-grid-contents">
                 <FormControl className="notice" fullWidth sx={{ m: 1 }}>
