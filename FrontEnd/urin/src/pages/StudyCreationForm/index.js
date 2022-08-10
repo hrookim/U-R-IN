@@ -102,14 +102,14 @@ const StudyCreationForm = () => {
           </div>
           <div className="content-title">
             <p className="font-lg font-70">스터디 이름</p>
-            <p className="create-grid-contents-title font-30 font-sm">
+            <p className="create-grid-contents-title1 font-30 font-sm">
               &nbsp;&nbsp;&nbsp;준비 중인 기업명이나 면접의 종류 등을 포함하면
               더 많은 분들이 쉽게 찾을 수 있어요!
             </p>
           </div>
           <FormControl className="title" fullWidth sx={{ m: 1 }}>
             <TextField
-              value={form.title}
+              // value={form.title}
               fullwidth
               autoFocus
               required
@@ -130,7 +130,7 @@ const StudyCreationForm = () => {
             <Grid item xs={12} md={6}>
               <div className="content-title-group">
                 <p className="font-lg font-60">D-Day</p>
-                <p className="create-grid-contents-title font-30 font-sm">
+                <p className="create-grid-contents-title1 font-30 font-sm">
                   &nbsp;&nbsp;&nbsp;스터디 마감일 지정해주세요!
                 </p>
               </div>
@@ -174,7 +174,8 @@ const StudyCreationForm = () => {
                       sx={{
                         "&.Mui-checked": { color: "#0037FA" },
                       }}
-                      onClick={handleClick}
+                      onMouseOver={handleClick}
+                      onMouseLeave={handleClick}
                       onChange={() => {
                         setDisable(!disable);
                       }}
@@ -186,7 +187,7 @@ const StudyCreationForm = () => {
             <Grid item xs={12} md={6}>
               <div className="content-title-group">
                 <p className="font-lg font-70">모집 인원</p>
-                <p className="create-grid-contents-title font-30 font-sm">
+                <p className="create-grid-contents-title1 font-30 font-sm">
                   &nbsp;&nbsp;&nbsp;나를 포함한 스터디 최대 인원을 설정할 수
                   있어요!
                 </p>
@@ -217,7 +218,7 @@ const StudyCreationForm = () => {
           </Grid>
           <div className="content-title-group">
             <p className="font-lg font-70">공지사항</p>
-            <p className="create-grid-contents-title font-30 font-sm">
+            <p className="create-grid-contents-title1 font-30 font-sm">
               &nbsp;&nbsp;&nbsp;스터디원들이 알아야 할 사항들을 미리 적어주세요!
             </p>
           </div>

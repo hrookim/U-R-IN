@@ -8,14 +8,13 @@ import axios from "axios";
 export const getMyPage = createAsyncThunk("GET_MY_PAGE", async (checked) => {
   try {
     const response = await axios.get(
-      `${process.env.REACT_APP_BACK_BASE_URL}studies/me?currentAll=${checked[0]}&terminatedAll=${checked[1]}`,
+      `${process.env.REACT_APP_BACK_BASE_URL}studies/me?currentAll=${checked[0]}&pastAll=${checked[1]}`,
       {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
         },
       }
     );
-    console.log(response.data);
     return response.data;
   } catch (err) {
     console.log(err);
@@ -35,7 +34,7 @@ const myPageSlice = createSlice({
         status: "RECRUITING",
       },
     ],
-    terminatedStudyList: [
+    pastStudyList: [
       {
         id: 0,
         title: "지난 스터디",

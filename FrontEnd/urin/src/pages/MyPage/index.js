@@ -3,6 +3,7 @@ import "./index.css";
 
 import {
   Avatar,
+  Button,
   Card,
   CardActionArea,
   CardContent,
@@ -29,13 +30,13 @@ const MyPage = () => {
   const myPage = useSelector((state) => state.mypage);
 
   const [currentAllChecked, setCurrentAllChecked] = useState(false);
-  const [terminatedAllChecked, setTerminatedAllChecked] = useState(false);
+  const [pastAllChecked, setPastAllChecked] = useState(false);
 
   const mounted = useRef(false);
 
   useEffect(() => {
-    dispatch(getMyPage([currentAllChecked, terminatedAllChecked]));
-  }, [currentAllChecked, terminatedAllChecked]);
+    dispatch(getMyPage([currentAllChecked, pastAllChecked]));
+  }, [currentAllChecked, pastAllChecked]);
 
   const currentCheck = (e) => {
     if (currentAllChecked) {
@@ -45,17 +46,16 @@ const MyPage = () => {
     }
   };
 
-  const terminatedCheck = (e) => {
-    if (currentAllChecked) {
-      setTerminatedAllChecked(false);
+  const pastCheck = (e) => {
+    if (pastAllChecked) {
+      setPastAllChecked(false);
     } else {
-      setTerminatedAllChecked(true);
+      setPastAllChecked(true);
     }
   };
 
   return (
     <div className="my-page">
-      <p className="font-xl">생각해보니까 나간 스터디는 어떻게 됨???</p>
       <CheckValidation />
 
       <div className="my-page-header">
@@ -69,8 +69,7 @@ const MyPage = () => {
         <div className="my-page-member">
           <p className="font-60 font-md member-name">
             {memberName}{" "}
-            {myPage.currentStudyList.length +
-              myPage.terminatedStudyList.length <=
+            {myPage.currentStudyList.length + myPage.pastStudyList.length <=
             10 ? (
               <WorkspacePremiumIcon
                 className="medal-icon"
@@ -85,8 +84,7 @@ const MyPage = () => {
           </p>
           <p className="font-40 font-sm member-info">
             스터디 참여 이력 :&nbsp;
-            {myPage.currentStudyList.length + myPage.terminatedStudyList.length}
-            회
+            {myPage.totalCurrentStudies + myPage.totalPastStudies}회
           </p>
         </div>
       </div>
@@ -154,12 +152,31 @@ const MyPage = () => {
           </Grid>
         ))}
       </Grid>
-      <IconButton onClick={currentCheck}>
-        <KeyboardArrowDownIcon />
-      </IconButton>
+      {myPage.totalCurrentStudies > 4 && !currentAllChecked ? (
+        <div className="more-btn">
+          <Button
+            sx={{ color: "#0037FA" }}
+            onClick={currentCheck}
+            variant="text"
+          >
+            펼치기
+          </Button>
+        </div>
+      ) : (
+        <div className="more-btn">
+          <Button
+            sx={{ color: "#0037FA" }}
+            onClick={currentCheck}
+            variant="text"
+          >
+            접기
+          </Button>
+        </div>
+      )}
+
       <p className="font-80 font-lg">지난 스터디</p>
       <Grid container spacing={2} className="card-grid">
-        {myPage.terminatedStudyList.map((item) => (
+        {myPage.pastStudyList.map((item) => (
           <Grid
             item
             xs={12}
@@ -221,9 +238,19 @@ const MyPage = () => {
           </Grid>
         ))}
       </Grid>
-      <IconButton onClick={terminatedCheck}>
-        <KeyboardArrowDownIcon />
-      </IconButton>
+      {myPage.totalPastStudies > 4 && !pastAllChecked ? (
+        <div className="more-btn">
+          <Button sx={{ color: "#0037FA" }} onClick={pastCheck} variant="text">
+            펼치기
+          </Button>
+        </div>
+      ) : (
+        <div className="more-btn">
+          <Button sx={{ color: "#0037FA" }} onClick={pastCheck} variant="text">
+            접기
+          </Button>
+        </div>
+      )}
     </div>
   );
 };
