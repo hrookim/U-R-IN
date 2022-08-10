@@ -28,7 +28,7 @@ public class ParticipantRepositoryImpl implements ParticipantRepositoryCustom {
     }
 
     @Override
-    public List<Participant> findMyTerminatedStudyParticipants(Member member) {
+    public List<Participant> findMyPastStudyParticipants(Member member) {
         return queryFactory.selectFrom(participant)
                 .where(participant.member.eq(member), isPastStudy())
                 .orderBy(participant.study.updatedAt.asc())

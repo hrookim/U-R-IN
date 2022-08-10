@@ -114,13 +114,13 @@ public class StudyService {
     @Transactional
     public StudyMyListDto getMyStudy(StudyMyDto studyMyDto, Member member) {
         List<Participant> myCurrentStudyParticipants = participantRepository.findMyCurrentStudyParticipants(member);
-        List<Participant> myPastStudyParticipants = participantRepository.findMyTerminatedStudyParticipants(member);
+        List<Participant> myPastStudyParticipants = participantRepository.findMyPastStudyParticipants(member);
 
         int totalCurrentStudies = myCurrentStudyParticipants.size();
         int totalPastStudies = myPastStudyParticipants.size();
 
         List<StudySummaryDto> currentStudyList = makeResponseList(myCurrentStudyParticipants, studyMyDto.getCurrentAll());
-        List<StudySummaryDto> pastStudyList = makeResponseList(myPastStudyParticipants, studyMyDto.getTerminatedAll());
+        List<StudySummaryDto> pastStudyList = makeResponseList(myPastStudyParticipants, studyMyDto.getPastAll());
 
         return StudyMyListDto.builder()
                 .totalCurrentStudies(totalCurrentStudies)
