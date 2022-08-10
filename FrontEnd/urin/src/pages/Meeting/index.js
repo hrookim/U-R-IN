@@ -22,7 +22,7 @@ class VideoRoomComponent extends Component {
     this.OPENVIDU_SERVER_URL = process.env.REACT_APP_OPENVIDU_SERVER_URL;
     this.OPENVIDU_SERVER_SECRET = process.env.REACT_APP_OPENVIDU_SERVER_SECRET;
     this.hasBeenUpdated = false;
-    let sessionName = this.props.sessionName
+    let sessionId = this.props.sessionName
       ? this.props.sessionName
       : "SessionA";
     // TODO: userName 나중에 바꾸기
@@ -33,7 +33,7 @@ class VideoRoomComponent extends Component {
     this.remotes = [];
     this.localUserAccessAllowed = false;
     this.state = {
-      mySessionId: sessionName,
+      sessionId: sessionId,
       myUserName: userName,
       session: undefined,
       localUser: undefined,
@@ -41,6 +41,7 @@ class VideoRoomComponent extends Component {
       feedbackDisplay: "none",
       currentVideoDevice: undefined,
       interviewee: "",
+      isInterviewing: false,
     };
 
     this.joinSession = this.joinSession.bind(this);
@@ -53,7 +54,7 @@ class VideoRoomComponent extends Component {
     this.closeDialogExtension = this.closeDialogExtension.bind(this);
     this.toggleFeedback = this.toggleFeedback.bind(this);
     this.checkNotification = this.checkNotification.bind(this);
-    this.interviewChanged = this.interviewChanged.bind(this);
+    this.interviewModeChanged = this.interviewModeChanged.bind(this);
     // this.updateLayout = this.updateLayout.bind(this);
     // this.checkSize = this.checkSize.bind(this);
   }
@@ -171,7 +172,7 @@ class VideoRoomComponent extends Component {
     localUser.setScreenShareActive(false);
     localUser.setStreamManager(publisher);
     this.subscribeToUserChanged();
-    this.subscribeToInterviewChanged();
+    this.subscribeToInterviewModeChanged();
     this.subscribeToStreamDestroyed();
     this.sendSignalUserChanged({
       isScreenShareActive: localUser.isScreenShareActive(),
@@ -220,7 +221,7 @@ class VideoRoomComponent extends Component {
     this.setState({
       session: undefined,
       subscribers: [],
-      mySessionId: "SessionA",
+      sessionId: "SessionA",
       myUserName: "OpenVidu_User" + Math.floor(Math.random() * 100),
       localUser: undefined,
     });
@@ -229,8 +230,10 @@ class VideoRoomComponent extends Component {
     }
   }
 
-  // 버튼을 클릭했을때 오는 면접자 변경
-  interviewChanged(interviewee) {
+  // 면접모드 전환
+  // 면접모드: {interviewee: "username"}
+  // 일반모드: {interviewee: ""}
+  interviewModeChanged(interviewee) {
     console.log("interviewee: ", interviewee);
     if (interviewee === "") {
       this.toggleFeedback("none");
@@ -238,7 +241,13 @@ class VideoRoomComponent extends Component {
       this.toggleFeedback("block");
     }
     this.setState({ interviewee: interviewee });
-    this.sendSignalInterviewChanged({ interviewee: interviewee });
+    this.sendSignalinterviewModeChanged({ interviewee: interviewee });
+  }
+
+  interviewingChanged(current) {
+    this.setState({ isInterviewing: !current });
+    console.log("isInterviewing: ", !current);
+    this.sendSignalinterviewingChanged({ isInterviewing: !current });
   }
 
   camStatusChanged() {
@@ -304,8 +313,8 @@ class VideoRoomComponent extends Component {
     });
   }
 
-  subscribeToInterviewChanged() {
-    this.state.session.on("signal:interviewChanged", (event) => {
+  subscribeToInterviewModeChanged() {
+    this.state.session.on("signal:interviewModeChanged", (event) => {
       let remoteUsers = this.state.subscribers;
       remoteUsers.forEach((user) => {
         if (user.getConnectionId() === event.from.connectionId) {
@@ -352,10 +361,18 @@ class VideoRoomComponent extends Component {
     });
   }
 
-  sendSignalInterviewChanged(data) {
+  sendSignalinterviewModeChanged(data) {
     const signalOptions = {
       data: JSON.stringify(data),
-      type: "interviewChanged",
+      type: "interviewModeChanged",
+    };
+    this.state.session.signal(signalOptions);
+  }
+
+  sendSignalinterviewingChanged(data) {
+    const signalOptions = {
+      data: JSON.stringify(data),
+      type: "interviewingChanged",
     };
     this.state.session.signal(signalOptions);
   }
@@ -462,8 +479,17 @@ class VideoRoomComponent extends Component {
   }
 
   render() {
-    const mySessionId = this.state.mySessionId;
-    const localUser = this.state.localUser;
+    const {
+      myUserName,
+      sessionId,
+      localUser,
+      subscribers,
+      interviewee,
+      isInterviewing,
+      feedbackDisplay,
+      messageReceived,
+      showExtensionDialog,
+    } = this.state;
 
     return (
       <>
@@ -473,14 +499,21 @@ class VideoRoomComponent extends Component {
             <div className="col-9" style={{ height: "100%" }}>
               {/* 면접 모드바 */}
               <div>
-                <button
-                  onClick={() => this.interviewChanged(this.state.myUserName)}
-                >
+                <button onClick={() => this.interviewModeChanged(myUserName)}>
                   면접모드
                 </button>
-                <button onClick={() => this.interviewChanged("")}>
+                <button onClick={() => this.interviewModeChanged("")}>
                   일반모드
                 </button>
+                {isInterviewing ? (
+                  <button onClick={() => this.interviewingChanged(true)}>
+                    면접종료
+                  </button>
+                ) : (
+                  <button onClick={() => this.interviewingChanged(false)}>
+                    면접시작
+                  </button>
+                )}
 
                 {/* 유저목록 */}
                 {/* <ul>
@@ -490,7 +523,7 @@ class VideoRoomComponent extends Component {
                       (user, i) => (
                         <li
                           key={i}
-                          onClick={() => this.interviewChanged(user.nickname)}
+                          onClick={() => this.interviewModeChanged(user.nickname)}
                         >
                           {user.nickname}
                         </li>
@@ -510,16 +543,14 @@ class VideoRoomComponent extends Component {
               >
                 {localUser !== undefined &&
                   localUser.getStreamManager() !== undefined &&
-                  [this.state.localUser, ...this.state.subscribers].map(
-                    (user, i) => (
-                      <StreamComponent
-                        key={i}
-                        user={user}
-                        interviewee={this.state.interviewee}
-                        streamId={user.streamManager.stream.streamId}
-                      />
-                    )
-                  )}
+                  [localUser, ...subscribers].map((user, i) => (
+                    <StreamComponent
+                      key={i}
+                      user={user}
+                      interviewee={interviewee}
+                      streamId={user.streamManager.stream.streamId}
+                    />
+                  ))}
               </div>
             </div>
 
@@ -530,7 +561,10 @@ class VideoRoomComponent extends Component {
                 localUser.getStreamManager() !== undefined && (
                   <div>
                     <FeedbackComponent
-                      feedbackDisplay={this.state.feedbackDisplay}
+                      sessionId={sessionId}
+                      localUser={localUser}
+                      interviewee={interviewee}
+                      feedbackDisplay={feedbackDisplay}
                     />
                   </div>
                 )}
@@ -551,9 +585,9 @@ class VideoRoomComponent extends Component {
 
               {/* 툴바 영역 */}
               <ToolbarComponent
-                sessionId={mySessionId}
+                sessionId={sessionId}
                 user={localUser}
-                showNotification={this.state.messageReceived}
+                showNotification={messageReceived}
                 camStatusChanged={this.camStatusChanged}
                 micStatusChanged={this.micStatusChanged}
                 screenShare={this.screenShare}
@@ -564,7 +598,7 @@ class VideoRoomComponent extends Component {
           </div>
         </div>
         <DialogExtensionComponent
-          showDialog={this.state.showExtensionDialog}
+          showDialog={showExtensionDialog}
           cancelClicked={this.closeDialogExtension}
         />
       </>
@@ -584,7 +618,7 @@ class VideoRoomComponent extends Component {
    */
 
   getToken() {
-    return this.createSession(this.state.mySessionId).then((sessionId) =>
+    return this.createSession(this.state.sessionId).then((sessionId) =>
       this.createToken(sessionId)
     );
   }
