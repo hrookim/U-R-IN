@@ -9,4 +9,5 @@ public class MemberInfoDto {
     private int id;
     private String memberName;
     private String nickname;
+    private Boolean isPassed;
 }
