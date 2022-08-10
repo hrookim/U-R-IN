@@ -4,7 +4,7 @@ import com.dongpop.urin.domain.feed.dto.request.FeedDataDto;
 import com.dongpop.urin.domain.feed.dto.request.FeedUpdateDto;
 import com.dongpop.urin.domain.feed.dto.response.FeedListDto;
 import com.dongpop.urin.domain.feed.service.FeedService;
-import com.dongpop.urin.domain.member.repository.Member;
+import com.dongpop.urin.domain.member.entity.Member;
 import com.dongpop.urin.oauth.model.MemberPrincipal;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;

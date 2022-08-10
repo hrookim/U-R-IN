@@ -1,14 +1,15 @@
 package com.dongpop.urin.domain.study.service;
 
-import com.dongpop.urin.domain.member.repository.Member;
+import com.dongpop.urin.domain.member.entity.Member;
 import com.dongpop.urin.domain.participant.dto.response.ParticipantDto;
-import com.dongpop.urin.domain.participant.repository.Participant;
+import com.dongpop.urin.domain.participant.entity.Participant;
 import com.dongpop.urin.domain.participant.repository.ParticipantRepository;
 import com.dongpop.urin.domain.study.dto.request.StudyDataDto;
+import com.dongpop.urin.domain.study.dto.request.StudyMyDto;
 import com.dongpop.urin.domain.study.dto.response.*;
-import com.dongpop.urin.domain.study.repository.Study;
+import com.dongpop.urin.domain.study.entity.Study;
+import com.dongpop.urin.domain.study.entity.StudyStatus;
 import com.dongpop.urin.domain.study.repository.StudyRepository;
-import com.dongpop.urin.domain.study.repository.StudyStatus;
 import com.dongpop.urin.global.error.exception.CustomException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,8 +25,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static com.dongpop.urin.domain.study.repository.StudyStatus.RECRUITING;
-import static com.dongpop.urin.domain.study.repository.StudyStatus.TERMINATED;
+import static com.dongpop.urin.domain.study.entity.StudyStatus.RECRUITING;
+import static com.dongpop.urin.domain.study.entity.StudyStatus.TERMINATED;
 import static com.dongpop.urin.global.error.errorcode.StudyErrorCode.*;
 
 
@@ -33,6 +34,8 @@ import static com.dongpop.urin.global.error.errorcode.StudyErrorCode.*;
 @RequiredArgsConstructor
 @Service
 public class StudyService {
+
+    private static final int MY_STUDY_DEFAULT_SIZE = 4;
 
     private final StudyRepository studyRepository;
     private final ParticipantRepository participantRepository;
@@ -102,7 +105,7 @@ public class StudyService {
                 .status(study.getStatus())
                 .expirationDate(study.getExpirationDate())
                 .dDay(dDay)
-                .isOnair(study.isOnair())
+                .isOnair(study.getIsOnair())
                 .participants(dtos)
                 .build();
     }
@@ -171,5 +174,42 @@ public class StudyService {
         //TODO: 상태변경 가능한 지 체크
         study.updateStatus(status);
         return new StudyStatusDto(studyId, status.name());
+    }
+
+    public StudyMyListDto getMyStudy(StudyMyDto studyMyDto, Member member) {
+        List<Participant> myCurrentStudyParticipants = participantRepository.findMyCurrentStudyParticipants(member);
+        List<Participant> myTerminatedStudyParticipants = participantRepository.findMyTerminatedStudyParticipants(member);
+
+        int totalCurrentStudies = myCurrentStudyParticipants.size();
+        int totalTerminatedStudies = myTerminatedStudyParticipants.size();
+
+        List<StudySummaryDto> currentStudyList = makeResponseList(myCurrentStudyParticipants, studyMyDto.getCurrentAll());
+        List<StudySummaryDto> terminatedStudyList = makeResponseList(myTerminatedStudyParticipants, studyMyDto.getTerminatedAll());
+
+        return StudyMyListDto.builder()
+                .totalCurrentStudies(totalCurrentStudies)
+                .totalTerminatedStudies(totalTerminatedStudies)
+                .currentStudyList(currentStudyList)
+                .terminatedStudyList(terminatedStudyList).build();
+    }
+
+    private List<StudySummaryDto> makeResponseList(List<Participant> myStudyParticipants, boolean allFlag) {
+        List<StudySummaryDto> studyResponseList = new ArrayList<>();
+
+        for (Participant participant : myStudyParticipants) {
+            Study study = participant.getStudy();
+            StudySummaryDto studySummaryDto = StudySummaryDto.builder()
+                    .id(study.getId())
+                    .title(study.getTitle())
+                    .memberCapacity(study.getMemberCapacity())
+                    .currentMember(study.getParticipants().size())
+                    .status(study.getStatus()).build();
+
+            studyResponseList.add(studySummaryDto);
+            if (!allFlag && studyResponseList.size() >= MY_STUDY_DEFAULT_SIZE) {
+                break;
+            }
+        }
+        return studyResponseList;
     }
 }
