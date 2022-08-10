@@ -17,7 +17,7 @@ import javax.transaction.Transactional;
 import java.util.UUID;
 
 import static com.dongpop.urin.global.error.errorcode.MeetingErrorCode.*;
-import static com.dongpop.urin.global.error.errorcode.StudyErrorCode.*;
+import static com.dongpop.urin.global.error.errorcode.StudyErrorCode.STUDY_DOES_NOT_EXIST;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -45,6 +45,10 @@ public class MeetingService {
 
     @Transactional
     public MeetingIdDto createMeeting(int studyId, Member member, MeetingCreateDto meetingCreateDto) {
+        if (!meetingCreateDto.getIsConnected()) {
+            return new MeetingIdDto(0);
+        }
+
         Study study = getStudy(studyId);
         if (!isStudyLeader(member, study)) {
             throw new CustomException(ONLY_POSSIBLE_STUDY_LEADER);
@@ -55,10 +59,9 @@ public class MeetingService {
         if (study.getIsOnair()) {
             throw new CustomException(MEETING_IS_ALREADY_ONAIR);
         }
-
         study.changeOnairStatus(meetingCreateDto.getIsConnected());
-        int meetingId = meetingCreateDto.getIsConnected() ?
-                meetingRepository.save(new Meeting(study)).getId() : 0;
+
+        int meetingId = meetingRepository.save(new Meeting(study)).getId();
         return new MeetingIdDto(meetingId);
     }
 
