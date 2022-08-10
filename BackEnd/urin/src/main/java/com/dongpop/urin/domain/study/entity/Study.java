@@ -70,7 +70,7 @@ public class Study extends BaseTimeEntity {
     public int getCurrentParticipantCount() {
         int count = 0;
         for (Participant participant : participants) {
-            if (participant.getWithdrawal())
+            if (participant.getWithdrawal() == null || participant.getWithdrawal())
                 continue;
             count++;
         }

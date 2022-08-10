@@ -29,6 +29,7 @@ public class MemberController {
                         .id(member.getId())
                         .memberName(member.getMemberName())
                         .nickname(member.getNickname())
+                        .isPassed(member.getIsPassed())
                         .build());
     }
 
