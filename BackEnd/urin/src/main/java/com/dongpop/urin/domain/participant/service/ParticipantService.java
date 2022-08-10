@@ -7,7 +7,6 @@ import com.dongpop.urin.domain.participant.entity.Participant;
 import com.dongpop.urin.domain.participant.repository.ParticipantRepository;
 import com.dongpop.urin.domain.study.entity.Study;
 import com.dongpop.urin.domain.study.repository.StudyRepository;
-import com.dongpop.urin.domain.study.entity.StudyStatus;
 import com.dongpop.urin.global.error.exception.CustomException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -16,6 +15,7 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.util.List;
 
+import static com.dongpop.urin.domain.study.entity.StudyStatus.*;
 import static com.dongpop.urin.global.error.errorcode.ParticipantErrorCode.*;
 import static com.dongpop.urin.global.error.errorcode.StudyErrorCode.*;
 
@@ -31,17 +31,17 @@ public class ParticipantService {
     public ParticipantJoinDto joinStudy(Member member, int studyId) {
         Study study = getStudy(studyId);
 
-        if (study.getParticipants().size() >= study.getMemberCapacity()) {
+        if (study.getCurrentParticipantCount() >= study.getMemberCapacity()) {
             throw new CustomException(STUDY_IS_FULL);
         }
         checkAlreadyRegistered(member, study);
         checkStudyStatus(study);
 
-        Integer participantId = participantRepository.save(Participant.builder()
-                .study(study)
-                .member(member)
-                .isLeader(false)
-                .build()).getId();
+        Participant joinParticipant = participantRepository.findByMemberAndStudy(member, study)
+                .orElseGet(() -> Participant.makeParticipant(member, study, false));
+
+        joinParticipant.joinStudy();
+        Integer participantId = participantRepository.save(joinParticipant).getId();
         return new ParticipantJoinDto(studyId, participantId);
     }
 
@@ -51,7 +51,7 @@ public class ParticipantService {
 
         List<Participant> participants = study.getParticipants();
         for (Participant participant : participants) {
-            if (member.getId() == participant.getMember().getId()) {
+            if (isRegisted(participant, member)) {
                 return new ParticipantIdDto(participant.getId());
             }
         }
@@ -75,23 +75,27 @@ public class ParticipantService {
     }
 
     private void checkAlreadyRegistered(Member member, Study study) {
-        study.getParticipants().forEach((participant) -> {
-            if (participant.getMember().getId() == member.getId()) {
+        for (Participant participant : study.getParticipants()) {
+            if (isRegisted(participant, member)) {
                 throw new CustomException(ALREADY_REGISTERED_MEMBER);
             }
-        });
+        }
+    }
+
+    private boolean isRegisted(Participant participant, Member member) {
+        return !participant.getWithdrawal() && participant.getMember().getId() == member.getId();
     }
 
     private void checkStudyStatus(Study study) {
-        if (study.getParticipants().size() + 1 == study.getMemberCapacity()) {
-            study.updateStatus(StudyStatus.COMPLETED);
+        if (study.getCurrentParticipantCount() + 1 == study.getMemberCapacity()) {
+            study.updateStatus(COMPLETED);
         }
     }
 
     private void deleteStudyParticipant(Study study, Participant deleteParticipant) {
-        participantRepository.delete(deleteParticipant);
-        if (study.getStatus().equals(StudyStatus.COMPLETED))
-            study.updateStatus(StudyStatus.RECRUITING);
+        deleteParticipant.withdrawStudy();
+        if (study.getStatus().equals(COMPLETED))
+            study.updateStatus(RECRUITING);
     }
 
     private boolean isPossible(Participant deleteParticipant, Member member, Study study) {
@@ -101,13 +105,12 @@ public class ParticipantService {
         if (deleteParticipant.getStudy().getId() != study.getId()) {
             throw new CustomException(PARTICIPANT_DOES_NOT_BELONG_STUDY);
         }
+        if (deleteParticipant.getWithdrawal()) {
+            throw new CustomException(ALREADY_WITHDRAW_PARTICIPANT);
+        }
 
-        Participant leadersParticipant = participantRepository.findLeader(study.getId())
-                .orElseThrow(() -> new CustomException(FAIL_TO_FIND_LEADER));
-        int studyLeaderId = leadersParticipant.getMember().getId();
-
-        if (member.getId() != deleteParticipant.getMember().getId()
-                && member.getId() != studyLeaderId) {
+        int studyLeaderId = study.getStudyLeader().getId();
+        if (member.getId() != deleteParticipant.getMember().getId() && member.getId() != studyLeaderId) {
             throw new CustomException(POSSIBLE_ONLY_LEADER);
         }
         return true;
