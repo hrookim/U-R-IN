@@ -25,13 +25,14 @@ export default class StreamComponent extends Component {
   }
 
   render() {
+    const isInterviewee = this.props.interviewee === this.state.nickname;
     return (
       <div
         className={
           "video-container p-1 " +
           (!this.props.interviewee
             ? "col-6"
-            : this.props.interviewee === this.state.nickname
+            : isInterviewee
             ? "order-first"
             : "col-4")
         }
@@ -46,6 +47,7 @@ export default class StreamComponent extends Component {
             <>
               <OvVideoComponent
                 user={this.props.user}
+                isInterviewee={isInterviewee}
                 mutedSound={this.state.mutedSound}
               />
 

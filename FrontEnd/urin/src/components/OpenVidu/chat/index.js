@@ -91,9 +91,6 @@ export default class ChatComponent extends Component {
           <span>
             {this.props.user.getStreamManager().stream.session.sessionId} - CHAT
           </span>
-          <IconButton id="closeButton" onClick={this.close}>
-            <HighlightOffIcon color="secondary" />
-          </IconButton>
         </div>
         <div className="message-wrap" ref={this.chatScroll}>
           {this.state.messageList.map((data, i) => (

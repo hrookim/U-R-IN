@@ -28,7 +28,6 @@ export default class ToolbarComponent extends Component {
     this.screenShare = this.screenShare.bind(this);
     this.stopScreenShare = this.stopScreenShare.bind(this);
     this.leaveSession = this.leaveSession.bind(this);
-    this.toggleFeedback = this.toggleFeedback.bind(this);
   }
 
   micStatusChanged() {
@@ -49,10 +48,6 @@ export default class ToolbarComponent extends Component {
 
   leaveSession() {
     this.props.leaveSession();
-  }
-
-  toggleFeedback() {
-    this.props.toggleFeedback();
   }
 
   render() {
@@ -122,11 +117,7 @@ export default class ToolbarComponent extends Component {
             <PowerSettingsNewIcon />
           </IconButton>
 
-          <IconButton
-            color="inherit"
-            onClick={this.toggleFeedback}
-            id="navChatButton"
-          >
+          <IconButton color="inherit" id="navChatButton">
             {this.props.showNotification && <div id="point" className="" />}
             <Tooltip title="Feedback">
               <RateReviewIcon />

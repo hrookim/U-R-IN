@@ -71,7 +71,9 @@ export default class OvVideoComponent extends Component {
           ref={this.videoRef}
           muted={this.props.mutedSound}
         />
-        <button onClick={this.startExpressDetection}>face</button>
+        {this.props.isInterviewee ? (
+          <button onClick={this.startExpressDetection}>face</button>
+        ) : null}
       </>
     );
   }
