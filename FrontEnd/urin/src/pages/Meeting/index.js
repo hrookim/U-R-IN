@@ -231,7 +231,12 @@ class VideoRoomComponent extends Component {
 
   // 버튼을 클릭했을때 오는 면접자 변경
   interviewChanged(interviewee) {
-    console.log(interviewee);
+    console.log("interviewee: ", interviewee);
+    if (interviewee === "") {
+      this.toggleFeedback("none");
+    } else {
+      this.toggleFeedback("block");
+    }
     this.setState({ interviewee: interviewee });
     this.sendSignalInterviewChanged({ interviewee: interviewee });
   }
@@ -299,7 +304,6 @@ class VideoRoomComponent extends Component {
     });
   }
 
-  //
   subscribeToInterviewChanged() {
     this.state.session.on("signal:interviewChanged", (event) => {
       let remoteUsers = this.state.subscribers;
@@ -308,6 +312,11 @@ class VideoRoomComponent extends Component {
           const data = JSON.parse(event.data);
           console.log("EVENTO REMOTE: ", data);
           this.setState(data);
+          if (data.interviewee === "") {
+            this.toggleFeedback("none");
+          } else {
+            this.toggleFeedback("block");
+          }
         }
       });
     });
@@ -438,6 +447,8 @@ class VideoRoomComponent extends Component {
     }
     if (displayF === "block") {
       this.setState({ feedbackDisplay: displayF });
+    } else if (displayF === "none") {
+      this.setState({ feedbackDisplay: displayF });
     } else {
       console.log("feedback", displayF);
       this.setState({ feedbackDisplay: displayF });
@@ -520,7 +531,6 @@ class VideoRoomComponent extends Component {
                   <div>
                     <FeedbackComponent
                       feedbackDisplay={this.state.feedbackDisplay}
-                      close={this.toggleFeedback}
                     />
                   </div>
                 )}
@@ -549,7 +559,6 @@ class VideoRoomComponent extends Component {
                 screenShare={this.screenShare}
                 stopScreenShare={this.stopScreenShare}
                 leaveSession={this.leaveSession}
-                toggleFeedback={this.toggleFeedback}
               />
             </div>
           </div>
