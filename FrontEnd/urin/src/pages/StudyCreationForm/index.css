@@ -1,16 +1,40 @@
 .container{
-    display: flex;
-        justify-content: center;
+  display: flex;
+  justify-content: center;
 }
 
+.title-banner {
+  position: relative;
+}
+
+.title-banner-title {
+  position: absolute;
+  text-align: center;
+  top: 50%;
+  left: 50%;
+  transform: translate( -50%, -50% );
+  color: white
+}
+
+
 .create-wrap-img{
-    width: 1200px;
+  width: 100%;
+  vertical-align: middle;
+
 }
 .study-create{
     margin: 0 auto;
     max-width: 1200px;
 }
 
+.date-picker-line{
+  display: flex;
+
+}
+
+.content-title {
+  margin: 40px 0 0 0;
+}
 .detail-wrap{
     /* width: 100%;
     position: absolute;
@@ -47,5 +71,21 @@
     border-left-style: solid;
 }
 .create-grid-contents-expired {
-    margin-left: 5px;
+    display: flex;
+    align-items: center;
+}
+
+.date-picker {
+  height: 56px;
+  width: 170px;
+
+}
+
+.btns {
+  display: flex;
+  justify-content: center;
+}
+
+.content-title-group {
+  margin: 20px 0 0 0;
 }
