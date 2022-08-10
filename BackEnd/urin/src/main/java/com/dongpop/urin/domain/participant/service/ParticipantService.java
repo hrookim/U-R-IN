@@ -99,6 +99,8 @@ public class ParticipantService {
     }
 
     private boolean isPossible(Participant deleteParticipant, Member member, Study study) {
+        log.info("[Remove study participant] : deleteParticipantId = {}, memberId = {}, memberName = {}, studyId = {}",
+                deleteParticipant.getId(), member.getId(), member.getMemberName(), study.getId());
         if (deleteParticipant.isLeader()) {
             throw new CustomException(CAN_NOT_DELETE_LEADER_PARTICIPANT);
         }

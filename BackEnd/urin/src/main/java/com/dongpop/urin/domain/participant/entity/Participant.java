@@ -38,6 +38,13 @@ public class Participant extends BaseTimeEntity {
         this.isLeader = isLeader;
     }
 
+    @PrePersist
+    public void prePersist() {
+        if (getWithdrawal() == null) {
+            withdrawal = false;
+        }
+    }
+
     public void addStudy(Study study) {
         this.study = study;
         study.getParticipants().add(this);
