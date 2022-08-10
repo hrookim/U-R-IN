@@ -1,6 +1,9 @@
 /* eslint-disable */
 import React, { Component } from "react";
+import * as faceapi from "face-api.js";
 // import "./index.css";
+
+const MODEL_URL = "/models";
 
 export default class OvVideoComponent extends Component {
   constructor(props) {
@@ -40,14 +43,36 @@ export default class OvVideoComponent extends Component {
     }
   }
 
+  // AI 관련 함수
+  // video는 this.videoRef.current
+  startExpressDetection = () => {
+    this.run(this.videoRef);
+  };
+
+  async run(videoRef) {
+    console.log(videoRef);
+    await faceapi.nets.ssdMobilenetv1.load(MODEL_URL);
+    await faceapi.nets.faceLandmark68Net.load(MODEL_URL);
+    await faceapi.nets.faceExpressionNet.load(MODEL_URL);
+    await faceapi.nets.tinyFaceDetector.load(MODEL_URL);
+
+    const result = await faceapi
+      .detectSingleFace(videoRef.current, new faceapi.TinyFaceDetectorOptions())
+      .withFaceExpressions();
+    console.log(result);
+  }
+
   render() {
     return (
-      <video
-        autoPlay={true}
-        id={"video-" + this.props.user.getStreamManager().stream.streamId}
-        ref={this.videoRef}
-        muted={this.props.mutedSound}
-      />
+      <>
+        <video
+          autoPlay={true}
+          id={"video-" + this.props.user.getStreamManager().stream.streamId}
+          ref={this.videoRef}
+          muted={this.props.mutedSound}
+        />
+        <button onClick={this.startExpressDetection}>face</button>
+      </>
     );
   }
 }
