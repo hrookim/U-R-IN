@@ -2,6 +2,7 @@ package com.dongpop.urin.domain.meeting.service;
 
 import com.dongpop.urin.domain.meeting.dto.request.MeetingCreateDto;
 import com.dongpop.urin.domain.meeting.dto.response.MeetingIdDto;
+import com.dongpop.urin.domain.meeting.dto.response.MeetingSessionDto;
 import com.dongpop.urin.domain.meeting.entity.Meeting;
 import com.dongpop.urin.domain.meeting.repository.MeetingRepository;
 import com.dongpop.urin.domain.member.entity.Member;
@@ -28,19 +29,19 @@ public class MeetingService {
     private final MeetingRepository meetingRepository;
 
     @Transactional
-    public String issueSessionId(Member member, int studyId) {
+    public MeetingSessionDto issueSessionId(Member member, int studyId) {
         Study study = getStudy(studyId);
 
         if (isStudyLeader(member, study)) {
             String sessionId = UUID.randomUUID().toString();
             study.saveSessionId(sessionId);
-            return sessionId;
+            return new MeetingSessionDto(sessionId, true);
         }
 
         if (!StringUtils.hasText(study.getSessionId())) {
             throw new CustomException(SESSIONID_IS_NOT_EXIST);
         }
-        return study.getSessionId();
+        return new MeetingSessionDto(study.getSessionId(), false);
     }
 
     @Transactional
