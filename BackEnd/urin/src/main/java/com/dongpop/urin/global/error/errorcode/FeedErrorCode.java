@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 public enum FeedErrorCode implements ErrorCode {
     DIFFRENT_STUDY(HttpStatus.BAD_REQUEST, "It's a different study."),
     PARENT_FEED_IS_NOT_EXIST(HttpStatus.BAD_REQUEST, "Parent feed is not exist."),
+    NOT_REGISTED_MEMBER(HttpStatus.FORBIDDEN, "You are not a registered member."),
             ;
 
     private final HttpStatus httpStatus;

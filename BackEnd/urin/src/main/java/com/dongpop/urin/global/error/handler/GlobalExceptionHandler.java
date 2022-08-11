@@ -21,7 +21,6 @@ public class GlobalExceptionHandler {
         return ErrorResponse.toResponseEntity(e.getErrorCode());
     }
 
-    //validation 에러 경우
     @ExceptionHandler({BindException.class, MethodArgumentNotValidException.class})
     public ResponseEntity<ErrorResponse> handleValidationException(BindException e){
         BindingResult bindingResult = e.getBindingResult();

@@ -2,14 +2,11 @@ package com.dongpop.urin.domain.participant.repository;
 
 import com.dongpop.urin.domain.member.entity.Member;
 import com.dongpop.urin.domain.participant.entity.Participant;
-import com.dongpop.urin.domain.participant.entity.QParticipant;
-import com.dongpop.urin.domain.study.dto.request.StudyMyDto;
-import com.dongpop.urin.domain.study.entity.StudyStatus;
+import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
 import javax.persistence.EntityManager;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static com.dongpop.urin.domain.participant.entity.QParticipant.*;
 import static com.dongpop.urin.domain.study.entity.StudyStatus.*;
@@ -25,16 +22,20 @@ public class ParticipantRepositoryImpl implements ParticipantRepositoryCustom {
     @Override
     public List<Participant> findMyCurrentStudyParticipants(Member member) {
         return queryFactory.selectFrom(participant)
-                .where(participant.study.status.notIn(TERMINATED))
+                .where(participant.member.eq(member), isPastStudy().not())
                 .orderBy(participant.study.id.asc())
-                .fetch().stream().distinct().collect(Collectors.toList());
+                .fetch();
     }
 
     @Override
-    public List<Participant> findMyTerminatedStudyParticipants(Member member) {
+    public List<Participant> findMyPastStudyParticipants(Member member) {
         return queryFactory.selectFrom(participant)
-                .where(participant.study.status.eq(TERMINATED))
+                .where(participant.member.eq(member), isPastStudy())
                 .orderBy(participant.study.updatedAt.asc())
-                .fetch().stream().distinct().collect(Collectors.toList());
+                .fetch();
+    }
+
+    private BooleanExpression isPastStudy() {
+        return participant.study.status.eq(TERMINATED).or(participant.withdrawal.isTrue());
     }
 }
