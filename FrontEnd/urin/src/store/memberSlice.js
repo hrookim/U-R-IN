@@ -25,6 +25,7 @@ export const getMemberId = createAsyncThunk(
     } catch (err) {
       localStorage.clear();
       navigate("/intro");
+      window.location.reload();
       console.log("잘못된 접근입니다. 제대로 로그인해주세요.");
       return isRejectedWithValue(err.response.data);
     }

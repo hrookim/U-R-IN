@@ -5,10 +5,10 @@ import {
   isRejectedWithValue,
 } from "@reduxjs/toolkit";
 
-export const getInquiry = createAsyncThunk("GET_INQUIRY", async (studyId) => {
+export const getInquiry = createAsyncThunk("GET_INQUIRY", async (arr) => {
   console.log("===axios INQUIERY 불러오기===");
   const response = await axios.get(
-    `${process.env.REACT_APP_BACK_BASE_URL}studies/${studyId}/inquiry`,
+    `${process.env.REACT_APP_BACK_BASE_URL}studies/${arr[0]}/inquiry?page=${arr[1]}&size=5&sort=id,desc`,
     {
       headers: {
         Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
