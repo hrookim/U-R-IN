@@ -44,9 +44,10 @@ const NavComponent = () => {
       {!["/intro"].includes(location.pathname) ? (
         <Navbar bg="light" expand="lg" className="navbar">
           <Container id="container">
-            <a href="http://localhost:3000/">
+            <Navbar.Brand href={`${process.env.REACT_APP_MAIN_URL}`}>
               <img src={logoImg} alt="hello" className="title-logo" />
-            </a>
+            </Navbar.Brand>
+
             <div className="nav-right">
               <Navbar.Collapse id="basic-navbar-nav">
                 <Nav className="me-auto">

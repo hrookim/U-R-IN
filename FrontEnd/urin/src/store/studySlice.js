@@ -25,8 +25,7 @@ export const getStudy = createAsyncThunk(
       );
       return response.data;
     } catch (err) {
-      alert("스터디를 가져올 수 없습니다!");
-      navigate("/");
+      navigate("/notfound");
       console.log(err);
       return isRejectedWithValue(err.response.data);
     }
@@ -134,34 +133,24 @@ export const joinStudy = createAsyncThunk("JOIN_STUDY", async (studyId) => {
 });
 
 // 스터디 참가자 삭제 FIXME: 분기는 백에서 처리하고 있음!
-export const leaveStudy = createAsyncThunk(
-  "LEAVE_STUDY",
-  async ({ studyId }) => {
-    try {
-      const res = await axios.get(
-        `${process.env.REACT_APP_BACK_BASE_URL}studies/${studyId}/participants/me`,
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-          },
-        }
-      );
-      const { participantId } = res.data;
-      const response = await axios.delete(
-        `${process.env.REACT_APP_BACK_BASE_URL}studies/${studyId}/participants/${participantId}`,
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-          },
-        }
-      );
-      return response.data;
-    } catch (err) {
-      console.log(err);
-      return isRejectedWithValue(err.response.data);
-    }
+export const leaveStudy = createAsyncThunk("LEAVE_STUDY", async (arr) => {
+  try {
+    const response = await axios.delete(
+      `${process.env.REACT_APP_BACK_BASE_URL}studies/${arr[0]}/participants/${arr[1]}`,
+      {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+        },
+      }
+    );
+    alert("스티디원을 퇴장시켰습니다!");
+
+    return response.data;
+  } catch (err) {
+    console.log(err);
+    return isRejectedWithValue(err.response.data);
   }
-);
+});
 
 const studySlice = createSlice({
   // state에 들어가는 이름

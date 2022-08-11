@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 
-import { Pagination } from "@mui/material";
+import { Pagination, Stack } from "@mui/material";
 
 import DetailFeedInput from "../DetailFeedInput";
 import DetailFeedListItem from "../DetailFeedListItem";
@@ -16,9 +16,15 @@ const DetailFeed = ({ study, isLeader, isParticipant }) => {
   const [isCommentDeleted, setIsCommentDeleted] = useState(false);
   const [isInputSubmitted, setIsInputSubmitted] = useState(false);
 
+  const [page, setPage] = useState(1);
+
+  const pageChange = (e, value) => {
+    setPage(value);
+  };
+
   useEffect(() => {
-    dispatch(getFeed(studyId));
-  }, [isCommentDeleted, isInputSubmitted]);
+    dispatch(getFeed([studyId, page - 1]));
+  }, [isCommentDeleted, isInputSubmitted, page]);
 
   return (
     <div>
@@ -39,7 +45,14 @@ const DetailFeed = ({ study, isLeader, isParticipant }) => {
           setIsInputSubmitted={setIsInputSubmitted}
         />
       ))}
-      <Pagination count={feed.totalPages + 1} className="pagination" />
+      <Stack spacing={2}>
+        <Pagination
+          count={feed.totalPages}
+          page={page}
+          onChange={pageChange}
+          className="pagination"
+        />
+      </Stack>{" "}
     </div>
   );
 };
