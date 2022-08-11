@@ -7,6 +7,7 @@ import com.dongpop.urin.oauth.handler.CustomLogoutHandler;
 import com.dongpop.urin.oauth.handler.OAuth2AuthenticationFailureHandler;
 import com.dongpop.urin.oauth.handler.OAuth2AuthenticationSuccessHandler;
 import com.dongpop.urin.oauth.repository.HttpCookieOAuth2AuthorizationRequestRepository;
+import com.dongpop.urin.oauth.service.CustomOAuth2AuthorizedClientService;
 import com.dongpop.urin.oauth.service.CustomOAuth2UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -33,6 +34,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private final OAuth2AuthenticationSuccessHandler oAuth2AuthenticationSuccessHandler;
     private final OAuth2AuthenticationFailureHandler oAuth2AuthenticationFailureHandler;
     private final MemberRepository memberRepository;
+    private final CustomOAuth2AuthorizedClientService oAuth2AuthorizedClientService;
     private final CorsProperties corsProperties;
 
     @Override
@@ -61,6 +63,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         .authenticationEntryPoint(new RestAuthenticationEntryPoint())
                 .and()
                 .oauth2Login()
+                    .authorizedClientService(oAuth2AuthorizedClientService)
                     .redirectionEndpoint()
                         .baseUri("/oauth2/code/*")
                     .and()
@@ -83,6 +86,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                                                      PasswordEncoder passwordEncoder) {
         return new CustomOAuth2UserService(memberRepository, passwordEncoder);
     }
+
+//    @Bean
+//    public OAuth2AuthorizedClientService oAuth2AuthorizedClientService() {
+//        return new CustomOAuth2AuthorizedClientService(oAuth2AuthorizedClientRepository);
+//    }
 
     @Bean
     public CorsConfigurationSource corsConfigurationSource(CorsProperties corsProperties) {
