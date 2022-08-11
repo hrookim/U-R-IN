@@ -5,10 +5,10 @@ import {
   isRejectedWithValue,
 } from "@reduxjs/toolkit";
 
-export const getFeed = createAsyncThunk("GET_FEED", async (studyId) => {
+export const getFeed = createAsyncThunk("GET_FEED", async (arr) => {
   console.log("===axios FEED 불러오기===");
   const response = await axios.get(
-    `${process.env.REACT_APP_BACK_BASE_URL}studies/${studyId}/feeds`,
+    `${process.env.REACT_APP_BACK_BASE_URL}studies/${arr[0]}/feeds?page=${arr[1]}&size=5&sort=id,desc`,
     {
       headers: {
         Authorization: `Bearer ${localStorage.getItem("accessToken")}`,

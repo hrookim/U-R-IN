@@ -1,6 +1,6 @@
 /* eslint-disable react/jsx-props-no-spreading */
 
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import "./index.css";
 import { useNavigate, Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
@@ -28,10 +28,10 @@ const MainPage = () => {
   const studies = useSelector((state) => state.studies);
   const mounted = useRef(false);
 
-  const [page, setPage] = React.useState(1);
-  const [inputword, setInputword] = React.useState("");
-  const [keyword, setKeyword] = React.useState("");
-  const [checked, setChecked] = React.useState(true);
+  const [page, setPage] = useState(1);
+  const [inputword, setInputword] = useState("");
+  const [keyword, setKeyword] = useState("");
+  const [checked, setChecked] = useState(true);
 
   const checkedChange = (e) => {
     setChecked(e.target.checked);
