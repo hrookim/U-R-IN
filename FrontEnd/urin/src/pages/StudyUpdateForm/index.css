@@ -1,19 +1,53 @@
-.container {
-    display: flex;
-    justify-content: center;
+.container{
+  display: flex;
+  justify-content: center;
 }
 
-.update-wrap-img {
-    width: 1200px;
+.title-banner {
+  position: relative;
 }
 
-.study-update {
+.title-banner-title {
+  position: absolute;
+  text-align: center;
+  top: 50%;
+  left: 50%;
+  transform: translate( -50%, -50% );
+  color: white
+}
+
+
+.create-wrap-img{
+  width: 100%;
+  vertical-align: middle;
+
+}
+.study-create{
     margin: 0 auto;
     max-width: 1200px;
 }
 
+.date-picker-line{
+  display: flex;
 
-.detail-wrap-text {
+}
+
+.content-title {
+  margin: 40px 0 0 0;
+}
+.detail-wrap{
+    /* width: 100%;
+    position: absolute;
+    background-color: blue; */
+}
+
+.detail-wrap-img {
+    height: 100px;
+        width: 100%;
+        vertical-align: middle;
+    }
+    
+    .detail-wrap-text{
     /* background-color: blue;
     padding: 5px 10px;
     background-color: white;
@@ -24,21 +58,34 @@
         transform: translate(-50%, -50%); */
 }
 
-.update-grid-title {
+.create-grid-title{
     margin-top: 1.2cm;
 
 }
-
-.update-grid-contents {
+.create-grid-contents {
     margin: 10px;
 }
-
-.update-grid-contents-title {
+.create-grid-contents-title{
     border-right-width: 3px;
     border-left-color: #FFB802;
     border-left-style: solid;
 }
+.create-grid-contents-expired {
+    display: flex;
+    align-items: center;
+}
 
-.update-grid-contents-expired {
-   margin-left: 5px;
+.date-picker {
+  height: 56px;
+  width: 170px;
+
+}
+
+.btns {
+  display: flex;
+  justify-content: center;
+}
+
+.content-title-group {
+  margin: 20px 0 0 0;
 }
