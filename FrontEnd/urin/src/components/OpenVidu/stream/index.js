@@ -26,17 +26,18 @@ export default class StreamComponent extends Component {
 
   render() {
     const isInterviewee = this.props.interviewee === this.state.nickname;
+    let layout = "col-4";
+    if (!this.props.isSomeoneShareScreen && !this.props.interviewee) {
+      layout = "col-6";
+    }
+    if (this.props.isSomeoneShareScreen && this.props.user.screenShareActive) {
+      layout = "order-first";
+    }
+    if (!!this.props.interviewee && isInterviewee) {
+      layout = "order-first";
+    }
     return (
-      <div
-        className={
-          "video-container p-1 " +
-          (!this.props.interviewee
-            ? "col-6"
-            : isInterviewee
-            ? "order-first"
-            : "col-4")
-        }
-      >
+      <div className={"video-container p-1 " + layout}>
         <div className="video-wrapper">
           <div className="nickname">
             <span id="nickname">{this.props.user.getNickname()}</span>

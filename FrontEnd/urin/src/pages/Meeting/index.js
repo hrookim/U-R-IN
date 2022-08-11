@@ -4,10 +4,10 @@ import { connect } from "react-redux";
 import axios from "axios";
 import { OpenVidu } from "openvidu-browser";
 
-import StreamComponent from "../../components/OpenVidu/stream";
-import DialogExtensionComponent from "../../components/OpenVidu/dialog-extension";
 import ChatComponent from "../../components/OpenVidu/chat";
+import DialogExtensionComponent from "../../components/OpenVidu/dialog-extension";
 import FeedbackComponent from "../../components/OpenVidu/feedback";
+import StreamComponent from "../../components/OpenVidu/stream";
 import ToolbarComponent from "../../components/OpenVidu/toolbar";
 
 import UserModel from "./models/user-model";
@@ -42,6 +42,7 @@ class VideoRoomComponent extends Component {
       currentVideoDevice: undefined,
       interviewee: "",
       isInterviewing: false,
+      isSomeoneShareScreen: false,
     };
 
     this.joinSession = this.joinSession.bind(this);
@@ -123,6 +124,10 @@ class VideoRoomComponent extends Component {
       .connect(token, { clientData: this.state.myUserName })
       .then(() => {
         this.connectWebCam();
+        this.subscribeToInterviewModeChanged();
+        this.subscribeToInterviewingChanged();
+        this.subscribeToUserChanged();
+        this.subscribeToStreamDestroyed();
       })
       .catch((error) => {
         if (this.props.error) {
@@ -171,22 +176,19 @@ class VideoRoomComponent extends Component {
     localUser.setConnectionId(this.state.session.connection.connectionId);
     localUser.setScreenShareActive(false);
     localUser.setStreamManager(publisher);
-    this.subscribeToUserChanged();
-    this.subscribeToInterviewModeChanged();
-    this.subscribeToStreamDestroyed();
-    this.sendSignalUserChanged({
-      isScreenShareActive: localUser.isScreenShareActive(),
-    });
+    // this.sendSignalUserChanged({
+    //   isScreenShareActive: localUser.isScreenShareActive(),
+    // });
 
     this.setState(
-      { currentVideoDevice: videoDevices[0], localUser: localUser },
-      () => {
-        this.state.localUser.getStreamManager().on("streamPlaying", (e) => {
-          publisher.videos[0].video.parentElement.classList.remove(
-            "custom-class"
-          );
-        });
-      }
+      { currentVideoDevice: videoDevices[0], localUser: localUser }
+      // ,() => {
+      //   this.state.localUser.getStreamManager().on("streamPlaying", (e) => {
+      //     publisher.videos[0].video.parentElement.classList.remove(
+      //       "custom-class"
+      //     );
+      //   });
+      // }
     );
   }
 
@@ -284,9 +286,9 @@ class VideoRoomComponent extends Component {
       // var subscribers = this.state.subscribers;
       subscriber.on("streamPlaying", (e) => {
         this.checkSomeoneShareScreen();
-        subscriber.videos[0].video.parentElement.classList.remove(
-          "custom-class"
-        );
+        // subscriber.videos[0].video.parentElement.classList.remove(
+        //   "custom-class"
+        // );
       });
       const newUser = new UserModel();
       newUser.setStreamManager(subscriber);
@@ -331,6 +333,19 @@ class VideoRoomComponent extends Component {
     });
   }
 
+  subscribeToInterviewingChanged() {
+    this.state.session.on("signal:interviewingChanged", (event) => {
+      let remoteUsers = this.state.subscribers;
+      remoteUsers.forEach((user) => {
+        if (user.getConnectionId() === event.from.connectionId) {
+          const data = JSON.parse(event.data);
+          console.log("EVENTO REMOTE: ", data);
+          this.setState(data);
+        }
+      });
+    });
+  }
+
   subscribeToUserChanged() {
     this.state.session.on("signal:userChanged", (event) => {
       let remoteUsers = this.state.subscribers;
@@ -352,12 +367,10 @@ class VideoRoomComponent extends Component {
           }
         }
       });
-      this.setState(
-        {
-          subscribers: remoteUsers,
-        },
-        () => this.checkSomeoneShareScreen()
-      );
+      this.setState({
+        subscribers: remoteUsers,
+      });
+      this.checkSomeoneShareScreen();
     });
   }
 
@@ -386,44 +399,46 @@ class VideoRoomComponent extends Component {
   }
 
   screenShare() {
-    const videoSource =
-      navigator.userAgent.indexOf("Firefox") !== -1 ? "window" : "screen";
-    const publisher = this.OV.initPublisher(
-      undefined,
-      {
-        videoSource: videoSource,
-        publishAudio: localUser.isAudioActive(),
-        publishVideo: localUser.isVideoActive(),
-        mirror: false,
-      },
-      (error) => {
-        if (error && error.name === "SCREEN_EXTENSION_NOT_INSTALLED") {
-          this.setState({ showExtensionDialog: true });
-        } else if (error && error.name === "SCREEN_SHARING_NOT_SUPPORTED") {
-          alert("Your browser does not support screen sharing");
-        } else if (error && error.name === "SCREEN_EXTENSION_DISABLED") {
-          alert("You need to enable screen sharing extension");
-        } else if (error && error.name === "SCREEN_CAPTURE_DENIED") {
-          alert("You need to choose a window or application to share");
+    if (!this.state.interviewee) {
+      const videoSource =
+        navigator.userAgent.indexOf("Firefox") !== -1 ? "window" : "screen";
+      const publisher = this.OV.initPublisher(
+        undefined,
+        {
+          videoSource: videoSource,
+          publishAudio: localUser.isAudioActive(),
+          publishVideo: localUser.isVideoActive(),
+          mirror: false,
+        },
+        (error) => {
+          if (error && error.name === "SCREEN_EXTENSION_NOT_INSTALLED") {
+            this.setState({ showExtensionDialog: true });
+          } else if (error && error.name === "SCREEN_SHARING_NOT_SUPPORTED") {
+            alert("Your browser does not support screen sharing");
+          } else if (error && error.name === "SCREEN_EXTENSION_DISABLED") {
+            alert("You need to enable screen sharing extension");
+          } else if (error && error.name === "SCREEN_CAPTURE_DENIED") {
+            alert("You need to choose a window or application to share");
+          }
         }
-      }
-    );
+      );
 
-    publisher.once("accessAllowed", () => {
-      this.state.session.unpublish(localUser.getStreamManager());
-      localUser.setStreamManager(publisher);
-      this.state.session.publish(localUser.getStreamManager()).then(() => {
-        localUser.setScreenShareActive(true);
-        this.setState({ localUser: localUser }, () => {
-          this.sendSignalUserChanged({
-            isScreenShareActive: localUser.isScreenShareActive(),
+      publisher.once("accessAllowed", () => {
+        this.state.session.unpublish(localUser.getStreamManager());
+        localUser.setStreamManager(publisher);
+        this.state.session.publish(localUser.getStreamManager()).then(() => {
+          localUser.setScreenShareActive(true);
+          this.setState({ localUser: localUser }, () => {
+            this.sendSignalUserChanged({
+              isScreenShareActive: localUser.isScreenShareActive(),
+            });
           });
         });
       });
-    });
-    publisher.on("streamPlaying", () => {
-      publisher.videos[0].video.parentElement.classList.remove("custom-class");
-    });
+      // publisher.on("streamPlaying", () => {
+      //   publisher.videos[0].video.parentElement.classList.remove("custom-class");
+      // });
+    }
   }
 
   closeDialogExtension() {
@@ -436,11 +451,11 @@ class VideoRoomComponent extends Component {
   }
 
   checkSomeoneShareScreen() {
-    let isScreenShared;
     // return true if at least one passes the test
-    isScreenShared =
+    const isScreenShared =
       this.state.subscribers.some((user) => user.isScreenShareActive()) ||
       localUser.isScreenShareActive();
+    this.setState({ isSomeoneShareScreen: isScreenShared });
     // const openviduLayoutOptions = {
     //   maxRatio: 3 / 2,
     //   minRatio: 9 / 16,
@@ -486,6 +501,7 @@ class VideoRoomComponent extends Component {
       subscribers,
       interviewee,
       isInterviewing,
+      isSomeoneShareScreen,
       feedbackDisplay,
       messageReceived,
       showExtensionDialog,
@@ -516,20 +532,22 @@ class VideoRoomComponent extends Component {
                 )}
 
                 {/* 유저목록 */}
-                {/* <ul>
+                <ul>
                   {localUser !== undefined &&
                     localUser.getStreamManager() !== undefined &&
                     [this.state.localUser, ...this.state.subscribers].map(
                       (user, i) => (
                         <li
                           key={i}
-                          onClick={() => this.interviewModeChanged(user.nickname)}
+                          onClick={() =>
+                            this.interviewModeChanged(user.nickname)
+                          }
                         >
                           {user.nickname}
                         </li>
                       )
                     )}
-                </ul> */}
+                </ul>
               </div>
 
               {/* 비디오 영역 */}
@@ -548,6 +566,7 @@ class VideoRoomComponent extends Component {
                       key={i}
                       user={user}
                       interviewee={interviewee}
+                      isSomeoneShareScreen={isSomeoneShareScreen}
                       streamId={user.streamManager.stream.streamId}
                     />
                   ))}
@@ -573,7 +592,7 @@ class VideoRoomComponent extends Component {
               {localUser !== undefined &&
                 localUser.getStreamManager() !== undefined && (
                   <div
-                    className="OT_root OT_publisher custom-class"
+                    className="OT_root OT_publisher"
                     style={{ height: "100%" }}
                   >
                     <ChatComponent
@@ -588,6 +607,7 @@ class VideoRoomComponent extends Component {
                 sessionId={sessionId}
                 user={localUser}
                 showNotification={messageReceived}
+                interviewee={interviewee}
                 camStatusChanged={this.camStatusChanged}
                 micStatusChanged={this.micStatusChanged}
                 screenShare={this.screenShare}
