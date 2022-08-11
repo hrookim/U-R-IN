@@ -2,7 +2,7 @@ package com.dongpop.urin.domain.meeting.controller;
 
 import com.dongpop.urin.domain.meeting.dto.request.MeetingCreateDto;
 import com.dongpop.urin.domain.meeting.dto.response.MeetingIdDto;
-import com.dongpop.urin.domain.meeting.dto.response.MeetingSessionIdDto;
+import com.dongpop.urin.domain.meeting.dto.response.MeetingSessionDto;
 import com.dongpop.urin.domain.meeting.service.MeetingService;
 import com.dongpop.urin.domain.member.entity.Member;
 import com.dongpop.urin.oauth.model.MemberPrincipal;
@@ -19,12 +19,12 @@ public class MeetingController {
     private final MeetingService meetingService;
 
     @GetMapping("/{studyId}/meeting")
-    public ResponseEntity<MeetingSessionIdDto> issueSessionId(@PathVariable int studyId,
-                                          @AuthenticationPrincipal MemberPrincipal memberPrincipal) {
+    public ResponseEntity<MeetingSessionDto> issueSessionId(@PathVariable int studyId,
+                                                            @AuthenticationPrincipal MemberPrincipal memberPrincipal) {
         Member member = memberPrincipal.getMember();
-        String sessionId = meetingService.issueSessionId(member, studyId);
+        MeetingSessionDto meetingSessionDto = meetingService.issueSessionId(member, studyId);
 
-        return ResponseEntity.ok().body(new MeetingSessionIdDto(sessionId));
+        return ResponseEntity.ok().body(meetingSessionDto);
     }
 
     @PostMapping("{studyId}/meeting")
