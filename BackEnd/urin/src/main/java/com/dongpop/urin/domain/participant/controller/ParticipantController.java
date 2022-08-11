@@ -46,8 +46,7 @@ public class ParticipantController {
     @DeleteMapping("/{studyId}/participants/{participantId}")
     public ResponseEntity<Void> removeStudyMember(@PathVariable int studyId, @PathVariable int participantId,
                                                   @AuthenticationPrincipal MemberPrincipal memberPrincipal) {
-        Member member = memberPrincipal.getMember();
-        participantService.removeStudyMember(member, studyId, participantId);
+        participantService.removeStudyMember(memberPrincipal.getMember(), studyId, participantId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }
