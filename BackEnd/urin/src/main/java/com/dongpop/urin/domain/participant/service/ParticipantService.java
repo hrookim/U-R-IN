@@ -61,6 +61,9 @@ public class ParticipantService {
     @Transactional
     public void removeStudyMember(Member member, int studyId, int participantsId) {
         Study study = getStudy(studyId);
+        if (TERMINATED.equals(study.getStatus())) {
+            throw new CustomException(CAN_NOT_WITHDRAW_PARTICIPANT_IN_TERMINATED_STUDY);
+        }
         Participant deleteParticipant = participantRepository.findById(participantsId)
                 .orElseThrow(() -> new CustomException(PARTICIPANT_IS_NOT_EXIST));
 
