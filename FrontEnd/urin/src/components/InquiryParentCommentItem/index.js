@@ -46,47 +46,87 @@ const InquiryParentCommentItem = ({
     });
   };
 
+  const onKeyPress = (event) => {
+    if (event.key == "Enter") {
+      onClickUpdate();
+    }
+  };
+
   return (
     <div>
-      <Avatar>{parentItem.writer[0]}</Avatar>
-      <p>{parentItem.writer}</p>
-      {!isEditing && (
-        <div>
-          {parentItem.contents}
-          {!parentItem.isDeleted && (isLeader || isAuthor) && (
-            <StyledXbutton onClick={onClickDelete}>
-              <FontAwesomeIcon icon={faSquareXmark} />
-            </StyledXbutton>
-          )}
-          {!parentItem.isDeleted && isAuthor && (
-            <Button
-              size="small"
-              variant="outlined"
+      <div className="writer-info">
+        <Avatar sx={{ width: "35px", height: "35px" }}>
+          {parentItem.writer[0]}
+        </Avatar>
+        <span className="font-sm font-50">{parentItem.writer}</span>
+      </div>
+      <div className="comment-content">
+        {!isEditing && (
+          <div>
+            <span className="font-sm font-30">{parentItem.contents}</span>
+            {!parentItem.isDeleted && isAuthor && (
+              <Button
+                size="small"
+                variant="text"
+                onClick={() => {
+                  setIsEditing(true);
+                }}
+                sx={{ color: "#707070" }}
+              >
+                수정
+              </Button>
+            )}
+            {!parentItem.isDeleted && (isLeader || isAuthor) && (
+              <Button
+                size="small"
+                variant="text"
+                onClick={onClickDelete}
+                sx={{ color: "#ff1900" }}
+              >
+                삭제
+              </Button>
+            )}
+          </div>
+        )}
+        {isEditing && (
+          <div>
+            <div>
+              <div>
+                <input
+                  onChange={onChange}
+                  onKeyPress={onKeyPress}
+                  value={form}
+                  className="inquiry-parent-input"
+                />
+                {/* <Button
+          onClick={onSubmit}
+          sx={{
+            backgroundColor: "#0037FA",
+            height: "60px",
+            marginLeft: "20px",
+            borderRadius: "10px",
+            "&:hover": { backgroundColor: "#0037FA" },
+          }}
+          variant="contained"
+        >
+          제출
+        </Button> */}
+              </div>
+            </div>{" "}
+            <button type="submit" onClick={onClickUpdate}>
+              수정
+            </button>
+            <button
+              type="button"
               onClick={() => {
-                setIsEditing(true);
+                setIsEditing(false);
               }}
             >
-              수정
-            </Button>
-          )}
-        </div>
-      )}
-      {isEditing && (
-        <div>
-          <input type="text" onChange={onChange} value={form} />
-          <button type="submit" onClick={onClickUpdate}>
-            수정
-          </button>
-          <button
-            type="button"
-            onClick={() => {
-              setIsEditing(false);
-            }}
-          >
-            취소
-          </button>
-        </div>
-      )}
+              취소
+            </button>
+          </div>
+        )}
+      </div>
     </div>
   );
 };

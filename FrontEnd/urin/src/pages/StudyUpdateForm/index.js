@@ -111,79 +111,84 @@ const StudyUpdateForm = () => {
   return (
     <div>
       <CheckValidation />
-      <div className="study-update">
+      <div className="study-create">
         <form onSubmit={onSubmit}>
-          {/* 전체 컨테이너 */}
-          <Grid className="container" container>
+          <div className="title-banner">
             <img
               src="/img/studyUpdate.png"
               alt="bannerImg"
-              className="update-wrap-img"
+              className="create-wrap-img"
             />
-
-            {/* 스터디 이름 */}
-            <Grid tem xs={12} className="create-grid-title">
-              <h5 bold>스터디 이름</h5>
-              <div className="update-grid-contents-title">
-                &nbsp;준비 중인 기업명이나 면접의 종류 등을 포함하면 더 많은
-                분들이 쉽게 찾을 수 있어요!
+            <div className="title-banner-title">
+              <p className="font-lg font-70 title-banner-text1">
+                스터디 정보 수정하기
+              </p>
+              <p className="font-sm font-30 title-banner-text2">
+                여러분의 면접 스터디에 맞게 더 멋진 스터디로 꾸며보세요.
+              </p>
+            </div>
+          </div>
+          <div className="content-title">
+            <p className="font-lg font-70">스터디 이름</p>
+            <p className="create-grid-contents-title font-30 font-sm">
+              &nbsp;&nbsp;&nbsp;준비 중인 기업명이나 면접의 종류 등을 포함하면
+              더 많은 분들이 쉽게 찾을 수 있어요!
+            </p>
+          </div>
+          <FormControl className="title" fullWidth sx={{ m: 1 }}>
+            <TextField
+              value={form.title}
+              fullwidth
+              autoFocus
+              required
+              id="title"
+              name="title"
+              type="text"
+              label="스터디 이름"
+              error={form.title.length < 3 || form.title.length > 50}
+              helperText={
+                form.title.length < 3 || form.title.length > 50
+                  ? "3~50자 스터디명을 입력하세요"
+                  : ""
+              }
+              onChange={onChange}
+            />
+          </FormControl>
+          <Grid container>
+            <Grid item xs={12} md={6}>
+              <div className="content-title-group">
+                <p className="font-lg font-60">D-Day</p>
+                <p className="create-grid-contents-title font-30 font-sm">
+                  &nbsp;&nbsp;&nbsp;스터디 마감일 지정해주세요!
+                </p>
               </div>
-            </Grid>
-            <Grid tem xs={12} className="update-grid-contents">
-              <FormControl className="title" fullWidth sx={{ m: 1 }}>
-                <TextField
-                  value={form.title}
-                  autoFocus
-                  required
-                  id="title"
-                  name="title"
-                  label="Title"
-                  type="text"
-                  error={form.title.length < 3 || form.title.length > 50}
-                  helperText={
-                    form.title.length < 3 || form.title.length > 50
-                      ? "3~50자 스터디명을 입력하세요"
-                      : ""
-                  }
-                  onChange={onChange}
-                />
-              </FormControl>
-            </Grid>
-
-            {/* D-Day */}
-            <Grid item container tem xs={6}>
-              <Grid xs={12} className="update-grid-contents">
-                <h5>D-Day</h5>
-                <div className="update-grid-contents-title">
-                  &nbsp;스터디 마감일을 설정해주세요!
+              <div style={{ display: "flex" }}>
+                <div style={{ margin: "5px" }}>
+                  <DatePicker
+                    className="expired date-picker"
+                    disabled={disable}
+                    locale={ko}
+                    dateFormat="yyyy년 MM월 dd일"
+                    minDate={moment().toDate()}
+                    selected={formDate}
+                    onChange={(date) => {
+                      setFormDate(date);
+                      setForm({
+                        ...form,
+                        expirationDate: moment(date).format("YYYY-MM-DD"),
+                      });
+                    }}
+                    required
+                  />
                 </div>
-              </Grid>
-              <Grid item className="create-grid-contents">
-                <DatePicker
-                  disabled={disable}
-                  locale={ko}
-                  dateFormat="yyyy/MM/dd"
-                  minDate={moment().toDate()}
-                  selected={formDate}
-                  onChange={(date) => {
-                    setFormDate(date);
-                    setForm({
-                      ...form,
-                      expirationDate: moment(date).format("YYYY-MM-DD"),
-                    });
-                  }}
-                  required
-                />
-              </Grid>
-
-              <Grid item className="update-grid-contents-expired">
                 <Popper open={open} anchorEl={anchorEl} transition>
                   {({ TransitionProps }) => (
-                    <Fade {...TransitionProps} timeout={350}>
+                    <Fade {...TransitionProps} timeout={200}>
                       <Paper>
                         <Typography sx={{ p: 2 }}>
-                          &apos;종료일 없음&apos;으로 설정할 경우 한달 간 미활성
-                          시 자동으로 스터디가 종료돼요!
+                          종료일 없음으로 설정하면
+                          <br /> 한달 간 미활성 시 <br />
+                          자동으로 스터디가 종료돼요!
                         </Typography>
                       </Paper>
                     </Fade>
@@ -191,102 +196,100 @@ const StudyUpdateForm = () => {
                 </Popper>
                 <FormControlLabel
                   label="종료일 없음"
+                  sx={{ marginLeft: "5px" }}
                   control={
                     <Checkbox
-                      checked={disable}
-                      onClick={handleClick}
+                      sx={{
+                        "&.Mui-checked": { color: "#0037FA" },
+                      }}
+                      onMouseOver={handleClick}
+                      onMouseLeave={handleClick}
                       onChange={() => {
                         setDisable(!disable);
                       }}
                     />
                   }
                 />
-              </Grid>
+              </div>
             </Grid>
-
-            <Grid item tem xs={6}>
-              {/* 모집 인원 */}
-              <Grid className="update-grid-contents">
-                <h5>모집 인원</h5>
-                <div className="update-grid-contents-title">
-                  &nbsp;나를 포함한 스터디 최대 인원을 설정할 수 있어요!
-                </div>
-              </Grid>
-              <Grid className="update-grid-contents">
-                <Select
-                  className="capacity"
-                  id="select"
-                  name="memberCapacity"
-                  defaultValue={2}
-                  onChange={(value) => {
-                    if (!value) {
-                      setErrorStatement("2~4명 입력해주세요");
-                    }
-                    setForm({
-                      ...form,
-                      memberCapacity: value,
-                    });
-                  }}
-                >
-                  <MenuItem value={2}>2명</MenuItem>
-                  <MenuItem value={3}>3명</MenuItem>
-                  <MenuItem value={4}>4명</MenuItem>
-                </Select>
-                <small>{errorStatement}</small>{" "}
-              </Grid>
-            </Grid>
-
-            {/* 공지사항 */}
-            <Grid tem xs={12}>
-              <Grid className="update-grid-contents">
-                <h5>공지사항</h5>
-                <div className="update-grid-contents-title">
-                  &nbsp;스터디원들이 알아야 할 사항들을 미리 정해주세요!
-                </div>
-              </Grid>
-              <Grid className="update-grid-contents">
-                <FormControl className="notice" fullWidth sx={{ m: 1 }}>
-                  <TextField
-                    value={form.notice}
-                    type="text"
-                    label="Notice"
-                    name="공지"
-                    variant="outlined"
-                    multiline
-                    rows={10}
-                    onChange={onChange}
-                    required
-                  />
-                </FormControl>
-              </Grid>
-            </Grid>
-
-            <Grid className="update-grid-contents">
-              <Button
-                variant="contained"
-                color="primary"
-                type="submit"
-                style={{
-                  backgroundColor: "#FFB802",
-                  margin: "10px",
+            <Grid item xs={12} md={6}>
+              <div className="content-title-group">
+                <p className="font-lg font-70">모집 인원</p>
+                <p className="create-grid-contents-title font-30 font-sm">
+                  &nbsp;&nbsp;&nbsp;나를 포함한 스터디 최대 인원을 설정할 수
+                  있어요!
+                </p>
+              </div>
+              <Select
+                key={form.memberCapacity}
+                className="capacity"
+                id="select"
+                name="memberCapacity"
+                sx={{ m: 1 }}
+                defaultValue={form.memberCapacity}
+                label="인원"
+                onChange={(event) => {
+                  if (!event.target.value) {
+                    setErrorStatement("2~4명 입력해주세요");
+                  }
+                  setForm({
+                    ...form,
+                    memberCapacity: event.target.value,
+                  });
                 }}
               >
-                Submit
-              </Button>
-              <Button
-                variant="contained"
-                color="primary"
-                component={Link}
-                to={`/study/${studyId}`}
-                style={{
-                  backgroundColor: "gray",
-                  margin: "10px",
-                }}
-              >
-                취소
-              </Button>
+                <MenuItem value={2}>2명</MenuItem>
+                <MenuItem value={3}>3명</MenuItem>
+                <MenuItem value={4}>4명</MenuItem>
+              </Select>
+              <small>{errorStatement}</small>{" "}
             </Grid>
           </Grid>
+          <div className="content-title-group">
+            <p className="font-lg font-70">공지사항</p>
+            <p className="create-grid-contents-title font-30 font-sm">
+              &nbsp;&nbsp;&nbsp;스터디원들이 알아야 할 사항들을 미리 적어주세요!
+            </p>
+          </div>
+          <FormControl className="notice" fullWidth sx={{ m: 1 }}>
+            <TextField
+              // style={{ width: "400px", margin: "5px" }}
+              value={form.notice}
+              type="text"
+              label="공지"
+              name="notice"
+              variant="outlined"
+              multiline
+              rows={15}
+              onChange={onChange}
+              required
+            />
+          </FormControl>
+          <div className="btns">
+            <Button
+              variant="contained"
+              type="submit"
+              sx={{
+                backgroundColor: "#0037FA",
+                margin: "10px",
+                "&:hover": { backgroundColor: "#0037FA" },
+              }}
+            >
+              만들기
+            </Button>
+            <Button
+              variant="contained"
+              color="primary"
+              component={Link}
+              to="/"
+              style={{
+                backgroundColor: "gray",
+                margin: "10px",
+              }}
+            >
+              취소
+            </Button>
+          </div>
         </form>
       </div>
     </div>

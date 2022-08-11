@@ -58,24 +58,11 @@ const MainPage = () => {
     dispatch(getStudyList([page - 1, checked, keyword]));
   }, [page, checked, keyword]);
 
-  // useEffect(() => {
-  //   dispatch(getMemberId(navigate));
-  //   dispatch(getStudyList([page - 1, checked, keyword]));
-  // }, [page, checked, keyword]);
-
-  // useEffect(() => {
-  //   if (!mounted.current && !memberId) {
-  //     mounted.current = true;
-  //   } else {
-  //     dispatch(checkValidation(memberId, navigate));
-  //   }
-  // }, [memberId]);
-
   return (
     <div className="main-page">
       <CheckValidation />
       <div className="top-header">
-        <span className="font-70 search-font">
+        <span className="font-70 font-xl search-font">
           당신에게 맞는 스터디를 검색해보세요!
         </span>
         <form className="searchbar-form">
@@ -145,7 +132,7 @@ const MainPage = () => {
               key={item.id}
               className="card"
               sx={{
-                border: "none",
+                borderColor: "#dedede",
                 borderRadius: "20px",
                 maxWidth: "500px",
                 boxShadow: 0,

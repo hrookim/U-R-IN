@@ -28,3 +28,148 @@
   align-items: center;
   margin: 5px 0 0 0;
 }
+
+.more-btn{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  text-align: center;
+  margin: 0 auto 0 auto;
+}
+
+.more-btn > p{
+  margin: 0 0 0 0;
+
+}
+
+.main-page{
+  margin: 0 auto 0 auto;
+  max-width: 1200px;
+}
+
+.top-header {
+  height: 40vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background-color: #0037FA;
+  background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)  ),url(../../../public/img/mainpage-img1.jpg);
+
+  background-size: cover;
+  border-radius: 10px;
+}
+
+.top-header > span {
+  color: white;
+  margin: 0 0 30px 0;
+}
+
+.header{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 20px 20px 20px;
+  margin: 10px 0 0 0;
+}
+
+.header-grid-1{
+  display: flex;
+  align-items: center;
+}
+
+.header-grid-2 {
+  display: flex;
+  justify-content: right;
+}
+
+.searchbar-form{
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.searchbar{
+  width: 30vw;
+  height: 35px;
+  border-radius: 20px;
+}
+
+.search-btn{
+  position: absolute;
+  right: -5px;
+  padding: 0 0 0 0;
+}
+
+.card-item{
+  display: flex;
+  justify-content: center;
+  
+}
+
+.card{
+  width: 250px;
+  padding: 20px 20px 20px 20px;
+  display: flex;
+  justify-content: center;
+  box-shadow: 0px 0px 10px rgba(50, 50, 50, 0.1);
+  margin: 10px auto 10px auto;
+}
+
+.card-link{
+  text-decoration: none;
+  color: black;
+}
+
+.card-img{
+  padding: 10px 10px 10px 10px; 
+  box-shadow: 0px 0px 5px rgba(50, 50, 50, 0.2);
+}
+
+
+.card-title{
+  margin: 0 0 0 0;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.card-status-recruiting{
+  display: flex;
+  justify-content: end;
+  color: red;
+}
+
+.card-status-completed{
+  display: flex;
+  justify-content: end;
+  color: rgb(180, 180, 180)
+}
+
+.card-status {
+  display: flex;
+  justify-content: right;
+  align-items: center;
+  margin: 7px 2px 0 0;
+}
+
+.pagination{
+  display: flex;
+  justify-content: center;
+  margin: 30px 0 10px 0;
+}
+
+
+@media screen and (max-width: 1200px) {
+	.main-page {
+    margin: 0 90px 0 90px;
+	}
+}
+
+
+@media screen and (max-width: 720px) {
+	.main-page {
+    margin: 0 30px 0 30px;
+	}
+}
+

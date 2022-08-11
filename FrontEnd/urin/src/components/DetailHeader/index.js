@@ -4,6 +4,8 @@ import { useDispatch } from "react-redux";
 import "../../assets/DesignSystem.css";
 import SettingsIcon from "@mui/icons-material/Settings";
 import { Link, useParams } from "react-router-dom";
+import IconButton from "@mui/material/IconButton";
+
 import {
   changeStudyStatus,
   joinStudy,
@@ -53,19 +55,21 @@ const DetailHeader = ({
         </div>
         <div className="dh-container-item">
           {study.status === "TERMINATED" && (
-            <div className="font-40 dh-tag">종료</div>
+            <div className="font-40 font-xs dh-tag">종료</div>
           )}
           {study.status === "COMPLETED" && (
-            <div className="font-40 dh-tag">모집 완료</div>
+            <div className="font-40 font-xs dh-tag">모집 완료</div>
           )}
           {study.status === "RECRUITING" && (
-            <div className="font-40 dh-tag">모집 중</div>
+            <div className="font-40 font-xs dh-tag">모집 중</div>
           )}
 
           {study.dday > 0 && (
-            <div className="font-40 dh-tag">{`D-${study.dday}`}</div>
+            <div className="font-40 font-xs dh-tag">{`D-${study.dday}`}</div>
           )}
-          {study.dday === 0 && <div className="font-40 dh-tag">D-day</div>}
+          {study.dday === 0 && (
+            <div className="font-40 font-xs dh-tag">D-day</div>
+          )}
           {isLeader && (
             <Link to={`/study/${studyId}/edit`} className="dh-setting-icon">
               <SettingsIcon color="action" sx={{ fontSize: 30 }} />
@@ -81,7 +85,7 @@ const DetailHeader = ({
                     {study.isOnair ? (
                       <button
                         type="button"
-                        className="dh-meeting-button font-50 font-md"
+                        className="dh-meeting-button font-50 font-sm"
                         disabled
                       >
                         미팅 중
@@ -89,14 +93,14 @@ const DetailHeader = ({
                     ) : (
                       <button
                         type="button"
-                        className="dh-meeting-button font-50 font-md"
+                        className="dh-meeting-button font-50 font-sm"
                       >
                         미팅 시작하기
                       </button>
                     )}
                     <button
                       type="button"
-                      className="dh-study-button font-50 font-md"
+                      className="dh-study-button font-50 font-sm"
                       onClick={onClickTerminate}
                     >
                       스터디 종료하기
@@ -111,14 +115,14 @@ const DetailHeader = ({
                     {study.isOnair ? (
                       <button
                         type="button"
-                        className="dh-meeting-button font-50 font-md"
+                        className="dh-meeting-button font-50 font-sm"
                       >
                         미팅 입장하기
                       </button>
                     ) : (
                       <button
                         type="button"
-                        className="dh-meeting-button font-50 font-md"
+                        className="dh-meeting-button font-50 font-sm"
                         disabled
                       >
                         미팅 입장하기
@@ -126,7 +130,7 @@ const DetailHeader = ({
                     )}
                     <button
                       type="button"
-                      className="dh-study-button font-50 font-md"
+                      className="dh-study-button font-50 font-sm"
                       onClick={onClickLeave}
                     >
                       스터디 나가기
