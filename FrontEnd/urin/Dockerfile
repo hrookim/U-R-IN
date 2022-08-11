@@ -1,15 +1,30 @@
-FROM node:16.16.0
+FROM node:16.16.0 as build-stage
 
-RUN npm install -g serve
+# work directory 설정
+WORKDIR /usr/src/app
 
-RUN mkdir /app
+# pachage.. 로 시작하는 json을 work directory로 가져옴
+COPY package*.json ./
 
-WORKDIR /app
+# RUN npm install -g npm@8.16.0
 
-RUN mkdir ./build
+# 강제 업뎃
+RUN npm install --force
 
-COPY ./build ./build
+# 젠킨스 워크스페이스로부터 코드를 가져옴
+COPY . .
 
-EXPOSE 3000
+RUN npm run build
 
-ENTRYPOINT ["serve", "-s", "build"]
+# nginx configuration
+FROM nginx:stable-alpine as production-stage
+
+RUN rm -rf /etc/nginx/conf.d
+
+COPY conf /etc/nginx
+
+COPY --from=build-stage /usr/src/app/build /usr/share/nginx/html
+
+EXPOSE 80
+
+ENTRYPOINT ["nginx", "-g", "daemon off;"]
