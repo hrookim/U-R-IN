@@ -84,13 +84,6 @@ const App = () => {
           }
         />
 
-        {/*
-        <Route
-          path="/study/:studyId/meeting/:meetingId"
-          element={<Meeting />}
-        /> */}
-        {/* FIXME: 임시 meeting 페이지 */}
-        <Route path="/meeting" element={<Meeting />} />
         <Route
           path="/intro"
           element={
@@ -100,6 +93,9 @@ const App = () => {
             />
           }
         />
+
+        {/* validation이 필요 없는 페이지 */}
+        <Route path="/study/:studyId/meeting/" element={<Meeting />} />
         <Route path="/login" element={<Login />} />
         <Route path="/logout" element={<Logout />} />
         <Route path="/notfound" element={<NotFound />} />

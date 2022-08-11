@@ -14,7 +14,7 @@ export default class StreamComponent extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      nickname: this.props.user.getNickname(),
+      id: this.props.user.getId(),
       mutedSound: false,
     };
     this.toggleSound = this.toggleSound.bind(this);
@@ -25,15 +25,15 @@ export default class StreamComponent extends Component {
   }
 
   render() {
-    const isInterviewee = this.props.interviewee === this.state.nickname;
+    const isInterviewee = this.props.intervieweeId === this.state.id;
     let layout = "col-4";
-    if (!this.props.isSomeoneShareScreen && !this.props.interviewee) {
+    if (!this.props.isSomeoneShareScreen && !this.props.intervieweeId) {
       layout = "col-6";
     }
     if (this.props.isSomeoneShareScreen && this.props.user.screenShareActive) {
       layout = "order-first";
     }
-    if (!!this.props.interviewee && isInterviewee) {
+    if (!!this.props.intervieweeId && isInterviewee) {
       layout = "order-first";
     }
     return (
