@@ -1,21 +1,24 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import "./index.css";
 
 import {
   Avatar,
+  Button,
   Card,
   CardActionArea,
   CardContent,
   CardMedia,
   Grid,
+  IconButton,
 } from "@mui/material";
 
+import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import WorkspacePremiumIcon from "@mui/icons-material/WorkspacePremium";
 import { useNavigate, Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { checkValidation } from "../../store/checkValidationSlice";
 import { getMemberId } from "../../store/memberSlice";
 import { getMyPage } from "../../store/myPageSlice";
+import CheckValidation from "../../components/CheckValidation";
 import "../../assets/DesignSystem.css";
 
 const MyPage = () => {
@@ -26,23 +29,35 @@ const MyPage = () => {
   const memberId = useSelector((state) => state.member.id);
   const myPage = useSelector((state) => state.mypage);
 
+  const [currentAllChecked, setCurrentAllChecked] = useState(false);
+  const [pastAllChecked, setPastAllChecked] = useState(false);
+
   const mounted = useRef(false);
 
   useEffect(() => {
-    dispatch(getMemberId(navigate));
-    dispatch(getMyPage());
-  }, []);
+    dispatch(getMyPage([currentAllChecked, pastAllChecked]));
+  }, [currentAllChecked, pastAllChecked]);
 
-  useEffect(() => {
-    if (!mounted.current && !memberId) {
-      mounted.current = true;
+  const currentCheck = (e) => {
+    if (currentAllChecked) {
+      setCurrentAllChecked(false);
     } else {
-      dispatch(checkValidation(memberId, navigate));
+      setCurrentAllChecked(true);
     }
-  }, [memberId]);
+  };
+
+  const pastCheck = (e) => {
+    if (pastAllChecked) {
+      setPastAllChecked(false);
+    } else {
+      setPastAllChecked(true);
+    }
+  };
 
   return (
     <div className="my-page">
+      <CheckValidation />
+
       <div className="my-page-header">
         <Avatar
           className="my-page-avatar"
@@ -54,8 +69,7 @@ const MyPage = () => {
         <div className="my-page-member">
           <p className="font-60 font-md member-name">
             {memberName}{" "}
-            {myPage.currentStudyList.length +
-              myPage.terminatedStudyList.length <=
+            {myPage.currentStudyList.length + myPage.pastStudyList.length <=
             10 ? (
               <WorkspacePremiumIcon
                 className="medal-icon"
@@ -70,11 +84,11 @@ const MyPage = () => {
           </p>
           <p className="font-40 font-sm member-info">
             스터디 참여 이력 :&nbsp;
-            {myPage.currentStudyList.length + myPage.terminatedStudyList.length}
-            회
+            {myPage.totalCurrentStudies + myPage.totalPastStudies}회
           </p>
         </div>
       </div>
+
       <p className="font-80 font-lg">참여 중인 스터디</p>
       <Grid container spacing={2} className="card-grid">
         {myPage.currentStudyList.map((item) => (
@@ -92,7 +106,7 @@ const MyPage = () => {
               key={item.id}
               className="card"
               sx={{
-                border: "none",
+                borderColor: "#dedede",
                 borderRadius: "20px",
                 maxWidth: "500px",
                 boxShadow: 0,
@@ -138,9 +152,31 @@ const MyPage = () => {
           </Grid>
         ))}
       </Grid>
+      {myPage.totalCurrentStudies > 4 && !currentAllChecked ? (
+        <div className="more-btn">
+          <Button
+            sx={{ color: "#0037FA" }}
+            onClick={currentCheck}
+            variant="text"
+          >
+            펼치기
+          </Button>
+        </div>
+      ) : (
+        <div className="more-btn">
+          <Button
+            sx={{ color: "#0037FA" }}
+            onClick={currentCheck}
+            variant="text"
+          >
+            접기
+          </Button>
+        </div>
+      )}
+
       <p className="font-80 font-lg">지난 스터디</p>
       <Grid container spacing={2} className="card-grid">
-        {myPage.terminatedStudyList.map((item) => (
+        {myPage.pastStudyList.map((item) => (
           <Grid
             item
             xs={12}
@@ -151,6 +187,7 @@ const MyPage = () => {
             key={item.id}
             className="card-item"
           >
+            {console.log("============", item.id)}
             <Card
               key={item.id}
               className="card"
@@ -201,6 +238,19 @@ const MyPage = () => {
           </Grid>
         ))}
       </Grid>
+      {myPage.totalPastStudies > 4 && !pastAllChecked ? (
+        <div className="more-btn">
+          <Button sx={{ color: "#0037FA" }} onClick={pastCheck} variant="text">
+            펼치기
+          </Button>
+        </div>
+      ) : (
+        <div className="more-btn">
+          <Button sx={{ color: "#0037FA" }} onClick={pastCheck} variant="text">
+            접기
+          </Button>
+        </div>
+      )}
     </div>
   );
 };

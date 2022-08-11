@@ -7,6 +7,7 @@ import { Pagination } from "@mui/material";
 import DetailFeedInput from "../DetailFeedInput";
 import DetailFeedListItem from "../DetailFeedListItem";
 import { getFeed } from "../../store/feedSlice";
+import "../../assets/DesignSystem.css";
 
 const DetailFeed = ({ study, isLeader, isParticipant }) => {
   const dispatch = useDispatch();
@@ -21,11 +22,14 @@ const DetailFeed = ({ study, isLeader, isParticipant }) => {
 
   return (
     <div>
-      <p>피드입니다!</p>
+      <p className="font-60 font-md">
+        스터디원끼리 자유롭게 이야기를 나눠보세요!
+      </p>
       <DetailFeedInput
         studyId={studyId}
         setIsInputSubmitted={setIsInputSubmitted}
       />
+      <hr />
       {feed.feedList.map((feedListItem) => (
         <DetailFeedListItem
           key={feedListItem.parent.feedId}
@@ -35,7 +39,7 @@ const DetailFeed = ({ study, isLeader, isParticipant }) => {
           setIsInputSubmitted={setIsInputSubmitted}
         />
       ))}
-      <Pagination count={feed.totalPages + 1} />
+      <Pagination count={feed.totalPages + 1} className="pagination" />
     </div>
   );
 };

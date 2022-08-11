@@ -4,11 +4,7 @@ import styled from "styled-components";
 import InquiryParentCommentItem from "../InquiryParentCommentItem";
 import InquiryChildCommentItem from "../InquiryChildCommentItem";
 import InquiryCommentInput from "../InquiryCommentInput";
-
-const StyledDiv = styled.div`
-  border: 1px solid black;
-  margin: 10px 40px;
-`;
+import "./index.css";
 
 const DetailInquiryListItem = ({
   inquiryListItem,
@@ -17,14 +13,13 @@ const DetailInquiryListItem = ({
   setIsInputSubmitted,
 }) => {
   return (
-    <StyledDiv>
+    <div className="inquiry-comment">
       <InquiryParentCommentItem
         parentItem={inquiryListItem.parent}
         isLeader={isLeader}
         setIsCommentDeleted={setIsCommentDeleted}
       />
-      <hr />
-      <StyledDiv>
+      <div className="child-comment">
         {inquiryListItem.children.map((childListItem) => (
           <InquiryChildCommentItem
             key={childListItem.inquiryId}
@@ -37,8 +32,8 @@ const DetailInquiryListItem = ({
           parentId={inquiryListItem.parent.inquiryId}
           setIsInputSubmitted={setIsInputSubmitted}
         />
-      </StyledDiv>
-    </StyledDiv>
+      </div>
+    </div>
   );
 };
 

@@ -9,7 +9,7 @@ import java.util.List;
 @Data
 public class StudyMyListDto {
     private int totalCurrentStudies;
-    private int totalTerminatedStudies;
+    private int totalPastStudies;
     private List<StudySummaryDto> currentStudyList;
-    private List<StudySummaryDto> terminatedStudyList;
+    private List<StudySummaryDto> pastStudyList;
 }

@@ -68,7 +68,7 @@ public class StudyService {
                         .id(s.getId())
                         .memberCapacity(s.getMemberCapacity())
                         .title(s.getTitle())
-                        .currentMember(s.getParticipants().size())
+                        .currentMember(s.getCurrentParticipantCount())
                         .status(s.getStatus())
                         .build()
         ).collect(Collectors.toList());
@@ -85,12 +85,13 @@ public class StudyService {
                 .orElseThrow(() -> new CustomException(STUDY_DOES_NOT_EXIST));
 
         List<ParticipantDto> dtos = study.getParticipants().stream()
+                .filter((p) -> !p.getWithdrawal())
                 .map(p -> ParticipantDto.builder()
-                        .id(p.getId())
-                        .memberId(p.getMember().getId())
-                        .nickname(p.getMember().getNickname())
-                        .isLeader(p.isLeader())
-                        .build()).collect(Collectors.toList());
+                            .id(p.getId())
+                            .memberId(p.getMember().getId())
+                            .nickname(p.getMember().getNickname())
+                            .isLeader(p.isLeader())
+                            .build()).collect(Collectors.toList());
 
         int dDay = (int) Duration.between(LocalDate.now().atStartOfDay(),
                 study.getExpirationDate().atStartOfDay()).toDays();
@@ -101,7 +102,7 @@ public class StudyService {
                 .title(study.getTitle())
                 .notice(study.getNotice())
                 .memberCapacity(study.getMemberCapacity())
-                .currentMember(study.getParticipants().size())
+                .currentMember(study.getCurrentParticipantCount())
                 .status(study.getStatus())
                 .expirationDate(study.getExpirationDate())
                 .dDay(dDay)
@@ -110,14 +111,33 @@ public class StudyService {
                 .build();
     }
 
+    @Transactional
+    public StudyMyListDto getMyStudy(StudyMyDto studyMyDto, Member member) {
+        List<Participant> myCurrentStudyParticipants = participantRepository.findMyCurrentStudyParticipants(member);
+        List<Participant> myPastStudyParticipants = participantRepository.findMyPastStudyParticipants(member);
+
+        int totalCurrentStudies = myCurrentStudyParticipants.size();
+        int totalPastStudies = myPastStudyParticipants.size();
+
+        List<StudySummaryDto> currentStudyList = makeResponseList(myCurrentStudyParticipants, studyMyDto.getCurrentAll());
+        List<StudySummaryDto> pastStudyList = makeResponseList(myPastStudyParticipants, studyMyDto.getPastAll());
+
+        return StudyMyListDto.builder()
+                .totalCurrentStudies(totalCurrentStudies)
+                .totalPastStudies(totalPastStudies)
+                .currentStudyList(currentStudyList)
+                .pastStudyList(pastStudyList).build();
+    }
+
     /**
      * 스터디 생성
      */
     @Transactional
     public StudyIdDto generateStudy(StudyDataDto studyData, Member member) {
-        log.info("memberId : {}, studyData : {}", member.getId(), studyData);
+        log.info("member_name = {}, studyData = {}", member.getMemberName(), studyData);
         LocalDate expirationDate = studyData.getExpirationDate() != null ?
                 studyData.getExpirationDate() : LocalDate.of(2222, 1, 1);
+
         Study study = studyRepository.save(Study.builder()
                 .title(studyData.getTitle())
                 .notice(studyData.getNotice())
@@ -125,11 +145,7 @@ public class StudyService {
                 .memberCapacity(studyData.getMemberCapacity())
                 .status(RECRUITING)
                 .build());
-
-        participantRepository.save(Participant.builder()
-                .member(member)
-                .study(study)
-                .isLeader(true).build());
+        participantRepository.save(Participant.makeParticipant(member, study, true));
 
         return new StudyIdDto(study.getId());
     }
@@ -147,7 +163,7 @@ public class StudyService {
                     study.getStudyLeader().getId(), member.getId());
             throw new CustomException(POSSIBLE_ONLY_LEADER);
         }
-        if (study.getParticipants().size() > studyData.getMemberCapacity()) {
+        if (study.getCurrentParticipantCount() > studyData.getMemberCapacity()) {
             throw new CustomException(IMPOSSIBLE_SET_MEMBER_CAPACITY);
         }
         if (study.getStatus().equals(TERMINATED)) {
@@ -171,26 +187,8 @@ public class StudyService {
                 study.getStudyLeader().getId() != member.getId()) {
             throw new CustomException(POSSIBLE_ONLY_LEADER);
         }
-        //TODO: 상태변경 가능한 지 체크
         study.updateStatus(status);
         return new StudyStatusDto(studyId, status.name());
-    }
-
-    public StudyMyListDto getMyStudy(StudyMyDto studyMyDto, Member member) {
-        List<Participant> myCurrentStudyParticipants = participantRepository.findMyCurrentStudyParticipants(member);
-        List<Participant> myTerminatedStudyParticipants = participantRepository.findMyTerminatedStudyParticipants(member);
-
-        int totalCurrentStudies = myCurrentStudyParticipants.size();
-        int totalTerminatedStudies = myTerminatedStudyParticipants.size();
-
-        List<StudySummaryDto> currentStudyList = makeResponseList(myCurrentStudyParticipants, studyMyDto.getCurrentAll());
-        List<StudySummaryDto> terminatedStudyList = makeResponseList(myTerminatedStudyParticipants, studyMyDto.getTerminatedAll());
-
-        return StudyMyListDto.builder()
-                .totalCurrentStudies(totalCurrentStudies)
-                .totalTerminatedStudies(totalTerminatedStudies)
-                .currentStudyList(currentStudyList)
-                .terminatedStudyList(terminatedStudyList).build();
     }
 
     private List<StudySummaryDto> makeResponseList(List<Participant> myStudyParticipants, boolean allFlag) {
@@ -202,7 +200,7 @@ public class StudyService {
                     .id(study.getId())
                     .title(study.getTitle())
                     .memberCapacity(study.getMemberCapacity())
-                    .currentMember(study.getParticipants().size())
+                    .currentMember(study.getCurrentParticipantCount())
                     .status(study.getStatus()).build();
 
             studyResponseList.add(studySummaryDto);

@@ -11,7 +11,6 @@ const DetailInquiryInput = ({ studyId, setIsInputSubmitted }) => {
   };
 
   const onSubmit = (event) => {
-    event.preventDefault();
     dispatch(createInquiry({ studyId, form })).then(() => {
       setIsInputSubmitted(true);
       setInterval(() => setIsInputSubmitted(false), 100);
@@ -19,13 +18,34 @@ const DetailInquiryInput = ({ studyId, setIsInputSubmitted }) => {
     setForm("");
   };
 
+  const onKeyPress = (event) => {
+    if (event.key == "Enter") {
+      onSubmit();
+    }
+  };
+
   return (
     <div>
       <div>
-        <input onChange={onChange} value={form} />
-        <button type="submit" onClick={onSubmit}>
+        <input
+          onChange={onChange}
+          onKeyPress={onKeyPress}
+          value={form}
+          className="feed-input"
+        />
+        {/* <Button
+          onClick={onSubmit}
+          sx={{
+            backgroundColor: "#0037FA",
+            height: "60px",
+            marginLeft: "20px",
+            borderRadius: "10px",
+            "&:hover": { backgroundColor: "#0037FA" },
+          }}
+          variant="contained"
+        >
           제출
-        </button>
+        </Button> */}
       </div>
     </div>
   );
