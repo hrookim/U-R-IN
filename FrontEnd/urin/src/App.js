@@ -24,6 +24,7 @@ import NavComponent from "./components/Navbar";
 import Footer from "./components/Footer";
 import NotFound from "./pages/NotFound";
 import MyPage from "./pages/MyPage";
+import Report from "./pages/Report";
 
 const App = () => {
   const [privateAccess, setPrivateAccess] = useState(false);
@@ -100,6 +101,7 @@ const App = () => {
             />
           }
         />
+        <Route path="/report" element={<Report />} />
         <Route path="/login" element={<Login />} />
         <Route path="/logout" element={<Logout />} />
         <Route path="/notfound" element={<NotFound />} />
