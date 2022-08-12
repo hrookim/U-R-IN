@@ -45,6 +45,7 @@ class VideoRoomComponent extends Component {
       feedbackDisplay: "none",
       currentVideoDevice: undefined,
       intervieweeId: 0,
+      intervieweeNickname: "",
       isLeader: false,
       isInterviewing: false,
       isSomeoneShareScreen: false,
@@ -243,15 +244,21 @@ class VideoRoomComponent extends Component {
   // 면접모드 전환
   // 면접모드: {intervieweeId: userId}
   // 일반모드: {intervieweeId: 0}
-  interviewModeChanged(intervieweeId) {
-    console.log("intervieweeId: ", intervieweeId);
+  interviewModeChanged(intervieweeId, intervieweeNickname) {
+    console.log("interviewee: ", intervieweeNickname);
     if (intervieweeId === 0) {
       this.toggleFeedback("none");
     } else {
       this.toggleFeedback("block");
     }
-    this.setState({ intervieweeId: intervieweeId });
-    this.sendSignalinterviewModeChanged({ intervieweeId: intervieweeId });
+    this.setState({
+      intervieweeId: intervieweeId,
+      intervieweeNickname: intervieweeNickname,
+    });
+    this.sendSignalinterviewModeChanged({
+      intervieweeId: intervieweeId,
+      intervieweeNickname: intervieweeNickname,
+    });
   }
 
   interviewingChanged(current) {
@@ -502,11 +509,13 @@ class VideoRoomComponent extends Component {
   render() {
     const {
       myuserId,
+      myNickname,
       sessionId,
       meetingId,
       localUser,
       subscribers,
       intervieweeId,
+      intervieweeNickname,
       isInterviewing,
       isSomeoneShareScreen,
       feedbackDisplay,
@@ -522,10 +531,14 @@ class VideoRoomComponent extends Component {
             <div className="col-9" style={{ height: "100%" }}>
               {/* 면접 모드바 */}
               <div>
-                <button onClick={() => this.interviewModeChanged(myuserId)}>
+                <button
+                  onClick={() =>
+                    this.interviewModeChanged(myuserId, myNickname)
+                  }
+                >
                   면접모드
                 </button>
-                <button onClick={() => this.interviewModeChanged(0)}>
+                <button onClick={() => this.interviewModeChanged(0, "")}>
                   일반모드
                 </button>
                 {isInterviewing ? (
@@ -545,7 +558,9 @@ class VideoRoomComponent extends Component {
                     [localUser, ...subscribers].map((user, i) => (
                       <li
                         key={i}
-                        onClick={() => this.interviewModeChanged(user.id)}
+                        onClick={() =>
+                          this.interviewModeChanged(user.id, user.nickname)
+                        }
                       >
                         {user.nickname}
                       </li>
@@ -586,6 +601,7 @@ class VideoRoomComponent extends Component {
                       meetingId={meetingId}
                       localUser={localUser}
                       intervieweeId={intervieweeId}
+                      intervieweeNickname={intervieweeNickname}
                       feedbackDisplay={feedbackDisplay}
                     />
                   </div>
