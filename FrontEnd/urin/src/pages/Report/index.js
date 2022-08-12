@@ -140,7 +140,7 @@ const Report = () => {
             className="report-content-box"
           >
             {reports[page].feedBackList.map((item) => (
-              <Paper elevation={3}>
+              <Paper elevation={3} className="report-content-paper">
                 <div className="font-lg font-50 report-content-question">
                   {item.question}
                 </div>
@@ -176,8 +176,8 @@ const Report = () => {
             className="report-content-box"
           >
             {" "}
-            <Paper elevation={3}>
-              <div className="report-content-paper">
+            <Paper elevation={3} className="report-content-paper">
+              <div>
                 <AnalysisChart className="report-content-paper-chart" />
               </div>
             </Paper>
