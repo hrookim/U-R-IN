@@ -39,6 +39,8 @@ public class Study extends BaseTimeEntity {
     private Boolean isOnair;
     private String sessionId;
 
+    private String hashtagCodes;
+
     @PrePersist
     public void prePersist() {
         if (getIsOnair() == null) {
@@ -114,5 +116,9 @@ public class Study extends BaseTimeEntity {
     public void closeMeeting() {
         isOnair = false;
         sessionId = "";
+    }
+
+    public void saveHashtagCodes(String hashtagCodes) {
+        this.hashtagCodes = hashtagCodes;
     }
 }
