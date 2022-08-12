@@ -56,9 +56,10 @@ public class FeedbackService {
         Meeting meeting = getMeeting(meetingId);
         Member interviewee = getMember(intervieweeId);
 
-        if (interviewee.getId() == interviewer.getId()) {
-            throw new CustomException(CAN_NOT_BE_THE_SAME);
-        }
+        //TODO: 테스트를 위해 유효성 검사를 꺼두었음.
+//        if (interviewee.getId() == interviewer.getId()) {
+//            throw new CustomException(CAN_NOT_BE_THE_SAME);
+//        }
 
         checkAuthorization(meeting, interviewer, interviewee);
 
