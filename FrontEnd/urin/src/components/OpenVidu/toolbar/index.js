@@ -7,9 +7,9 @@ import MicIcon from "@mui/icons-material/Mic";
 import MicOffIcon from "@mui/icons-material/MicOff";
 import VideocamIcon from "@mui/icons-material/Videocam";
 import VideocamOffIcon from "@mui/icons-material/VideocamOff";
-import FullscreenIcon from "@mui/icons-material/Fullscreen";
-import FullscreenExitIcon from "@mui/icons-material/FullscreenExit";
-import SwitchVideoIcon from "@mui/icons-material/SwitchVideo";
+// import FullscreenIcon from "@mui/icons-material/Fullscreen";
+// import FullscreenExitIcon from "@mui/icons-material/FullscreenExit";
+// import SwitchVideoIcon from "@mui/icons-material/SwitchVideo";
 import PictureInPictureIcon from "@mui/icons-material/PictureInPicture";
 import ScreenShareIcon from "@mui/icons-material/ScreenShare";
 import StopScreenShareIcon from "@mui/icons-material/StopScreenShare";
@@ -51,14 +51,15 @@ export default class ToolbarComponent extends Component {
   }
 
   render() {
-    const mySessionId = this.props.sessionId;
+    const sessionId = this.props.sessionId;
     const localUser = this.props.user;
+    const interviewee = this.props.interviewee;
     return (
       <div id="toolBar">
         <div id="navSessionInfo">
           {this.props.sessionId && (
             <div id="titleContent">
-              <span id="session-title">{mySessionId}</span>
+              <span id="session-title">{sessionId}</span>
             </div>
           )}
         </div>
