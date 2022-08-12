@@ -42,9 +42,13 @@
 .report-content {
 position: relative;
 }
+.report-content-box {
+  width: 100%
+}
 
 .report-content-paper {
   position: relative;
+  width: 1200
 }
 
 .report-content-paper-chart {
