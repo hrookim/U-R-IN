@@ -1,11 +1,15 @@
 package com.dongpop.urin.domain.study.service;
 
+import com.dongpop.urin.domain.hashtag.dto.HashtagDataDto;
+import com.dongpop.urin.domain.hashtag.entity.Hashtag;
+import com.dongpop.urin.domain.hashtag.repository.HashtagRepository;
 import com.dongpop.urin.domain.member.entity.Member;
 import com.dongpop.urin.domain.participant.dto.response.ParticipantDto;
 import com.dongpop.urin.domain.participant.entity.Participant;
 import com.dongpop.urin.domain.participant.repository.ParticipantRepository;
 import com.dongpop.urin.domain.study.dto.request.StudyDataDto;
 import com.dongpop.urin.domain.study.dto.request.StudyMyDto;
+import com.dongpop.urin.domain.study.dto.request.StudySearchDto;
 import com.dongpop.urin.domain.study.dto.response.*;
 import com.dongpop.urin.domain.study.entity.Study;
 import com.dongpop.urin.domain.study.entity.StudyStatus;
@@ -17,16 +21,18 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import javax.transaction.Transactional;
 import java.time.Duration;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.dongpop.urin.domain.study.entity.StudyStatus.RECRUITING;
 import static com.dongpop.urin.domain.study.entity.StudyStatus.TERMINATED;
+import static com.dongpop.urin.global.error.errorcode.HashtagErrorCode.DUPLICATED_HASHTAG;
+import static com.dongpop.urin.global.error.errorcode.HashtagErrorCode.NO_SUCH_HASHTAG;
 import static com.dongpop.urin.global.error.errorcode.StudyErrorCode.*;
 
 
@@ -39,6 +45,7 @@ public class StudyService {
 
     private final StudyRepository studyRepository;
     private final ParticipantRepository participantRepository;
+    private final HashtagRepository hashtagRepository;
 
     @Transactional
     @Scheduled(cron = "0 0 0 * * *")
@@ -57,21 +64,28 @@ public class StudyService {
      * 스터디 summary 리스트 (검색, 페이징)
      */
     @Transactional
-    public StudyListDto getStudyList(Pageable pageable, String keyword, Boolean isRecruiting) {
-        Page<Study> pages = studyRepository.findStudyList(keyword, isRecruiting, pageable);
+    public StudyListDto getStudyList(Pageable pageable, StudySearchDto studySearchDto) {
+        String hashtags = studySearchDto.getHashtags();
+        if (StringUtils.hasText(hashtags)) {
+            checkInputHashtags(hashtags);
+        }
 
+        Page<Study> pages = studyRepository.findStudyList(studySearchDto, pageable);
         if (pages.isEmpty()) {
             return new StudyListDto(0, new ArrayList<StudySummaryDto>());
         }
-        List<StudySummaryDto> studyList = pages.toList().stream().map(s ->
-                StudySummaryDto.builder()
-                        .id(s.getId())
-                        .memberCapacity(s.getMemberCapacity())
-                        .title(s.getTitle())
-                        .currentMember(s.getCurrentParticipantCount())
-                        .status(s.getStatus())
-                        .build()
-        ).collect(Collectors.toList());
+
+        List<StudySummaryDto> studyList = pages.toList().stream()
+                .map(s -> {
+                    return StudySummaryDto.builder()
+                            .id(s.getId())
+                            .memberCapacity(s.getMemberCapacity())
+                            .title(s.getTitle())
+                            .currentMember(s.getCurrentParticipantCount())
+                            .status(s.getStatus())
+                            .hashtags(getHashtagDatas(s))
+                            .build();
+                }).collect(Collectors.toList());
 
         return new StudyListDto(pages.getTotalPages(), studyList);
     }
@@ -84,7 +98,7 @@ public class StudyService {
         Study study = studyRepository.findById(studyId)
                 .orElseThrow(() -> new CustomException(STUDY_DOES_NOT_EXIST));
 
-        List<ParticipantDto> dtos = study.getParticipants().stream()
+        List<ParticipantDto> participants = study.getParticipants().stream()
                 .filter((p) -> !p.getWithdrawal())
                 .map(p -> ParticipantDto.builder()
                             .id(p.getId())
@@ -107,7 +121,8 @@ public class StudyService {
                 .expirationDate(study.getExpirationDate())
                 .dDay(dDay)
                 .isOnair(study.getIsOnair())
-                .participants(dtos)
+                .hashtags(getHashtagDatas(study))
+                .participants(participants)
                 .build();
     }
 
@@ -134,7 +149,7 @@ public class StudyService {
      */
     @Transactional
     public StudyIdDto generateStudy(StudyDataDto studyData, Member member) {
-        log.info("member_name = {}, studyData = {}", member.getMemberName(), studyData);
+        log.info("[Service GenerateStudy] : member_name = {}, studyData = {}", member.getMemberName(), studyData);
         LocalDate expirationDate = studyData.getExpirationDate() != null ?
                 studyData.getExpirationDate() : LocalDate.of(2222, 1, 1);
 
@@ -146,9 +161,11 @@ public class StudyService {
                 .status(RECRUITING)
                 .build());
         participantRepository.save(Participant.makeParticipant(member, study, true));
+        setHashtags(study, studyData.getHashtags());
 
         return new StudyIdDto(study.getId());
     }
+
 
     /**
      * 스터디 정보 수정
@@ -172,6 +189,8 @@ public class StudyService {
 
         study.updateStudyInfo(studyData.getTitle(), studyData.getNotice(),
                 studyData.getMemberCapacity(), studyData.getExpirationDate());
+        setHashtags(study, studyData.getHashtags());
+
         return new StudyIdDto(studyId);
     }
 
@@ -191,23 +210,61 @@ public class StudyService {
         return new StudyStatusDto(studyId, status.name());
     }
 
+    private List<HashtagDataDto> getHashtagDatas(Study study) {
+        String[] hashtagCodes = study.getHashtagCodes().split("");
+        List<String> hashtagCodeList = new ArrayList<>(Arrays.asList(hashtagCodes));
+
+        return hashtagRepository.findAllByCodeIn(hashtagCodeList).stream()
+                .map(h -> new HashtagDataDto(h.getCode(), h.getName()))
+                .collect(Collectors.toList());
+    }
+
     private List<StudySummaryDto> makeResponseList(List<Participant> myStudyParticipants, boolean allFlag) {
         List<StudySummaryDto> studyResponseList = new ArrayList<>();
 
         for (Participant participant : myStudyParticipants) {
             Study study = participant.getStudy();
+
             StudySummaryDto studySummaryDto = StudySummaryDto.builder()
                     .id(study.getId())
                     .title(study.getTitle())
                     .memberCapacity(study.getMemberCapacity())
                     .currentMember(study.getCurrentParticipantCount())
-                    .status(study.getStatus()).build();
-
+                    .status(study.getStatus())
+                    .hashtags(getHashtagDatas(study)).build();
             studyResponseList.add(studySummaryDto);
             if (!allFlag && studyResponseList.size() >= MY_STUDY_DEFAULT_SIZE) {
                 break;
             }
         }
         return studyResponseList;
+    }
+
+    private void setHashtags(Study study, String hashtags) {
+        checkInputHashtags(hashtags);
+        study.saveHashtagCodes(hashtags);
+    }
+
+    private void checkInputHashtags(String hashtags) {
+        String[] hashtagCodes = hashtags.split("");
+        checkDuplicatedHashtag(hashtagCodes);
+        checkExistHashtag(hashtagCodes);
+    }
+
+    private void checkExistHashtag(String[] hashtagCodes) {
+        List<String> hashtagCodeList = new ArrayList<>(Arrays.asList(hashtagCodes));
+        List<Hashtag> findHashtagList = hashtagRepository.findAllByCodeIn(hashtagCodeList);
+        if (hashtagCodes.length != findHashtagList.size()) {
+            throw new CustomException(NO_SUCH_HASHTAG);
+        }
+    }
+
+    private void checkDuplicatedHashtag(String[] hashtagCodes) {
+        Set<String> checkDuplicateSet = new HashSet<>();
+        for (String hashtagCode : hashtagCodes) {
+            if (!checkDuplicateSet.add(hashtagCode)) {
+                throw new CustomException(DUPLICATED_HASHTAG);
+            }
+        }
     }
 }
