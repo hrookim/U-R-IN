@@ -28,10 +28,17 @@
 }
 
 
+.report-index {
+  margin: 40px 0 0 0;
+  
+}
+.report-index-title {
+  margin: 5px 5px 5px 5px;
+  
+}
 .report-title {
   margin: 40px 0 0 0;
-  font-size: large;
-  font: 70;
+  
 }
 
 .report-select{
@@ -43,7 +50,23 @@
 position: relative;
 }
 .report-content-box {
-  width: 100%
+  width: 1200
+}
+
+.report-content-comment{
+  margin: 10px 0 0 0 ;
+}
+.report-content-box {
+  margin: 15px 0 0 0 ;
+ padding: 25px 15px 25px 25px;
+width: 100%
+}
+.report-content-question {
+  
+}
+.report-content-comment {
+  margin: 0 0 0 20px;
+ 
 }
 
 .report-content-paper {
@@ -59,16 +82,6 @@ position: relative;
       transform: translate(-50%, -50%);
 }
 
-.report-content-question {
-  margin: 15px 15px 15px 15px;
-  font-size: medium;
-  font: 70;
-}
-.report-content-comment {
-  margin: 0 0 0 0;
-  font-size: smaller;
-  font: 70;
-}
 
 
 .create-grid-title{

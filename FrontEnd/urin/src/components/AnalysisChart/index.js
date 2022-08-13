@@ -5,43 +5,29 @@ const AnalysisChart = (props) => {
   const [chart, setChart] = useState({
     options: {
       chart: {
-        id: "basic-treemap",
+        id: "bar",
+      },
+      plotOptions: {
+        bar: {
+          horizontal: true,
+          dataLabels: {
+            position: "top",
+          },
+        },
+      },
+      xaxis: {
+        categories: ["미소", "눈동자"],
+        max: 100,
       },
     },
     series: [
       {
-        name: "series-1",
-        data: [
-          {
-            x: "미소",
-            y: 218,
-          },
-          {
-            x: "분노",
-            y: 149,
-          },
-          {
-            x: "찡그림",
-            y: 184,
-          },
-          {
-            x: "흔들림",
-            y: 55,
-          },
-          {
-            x: "무표정",
-            y: 84,
-          },
-
-          {
-            x: "Indore",
-            y: 19,
-          },
-          {
-            x: "Kanpur",
-            y: 29,
-          },
-        ],
+        name: "나의 평균",
+        data: [56, 95],
+      },
+      {
+        name: "합격자 평균",
+        data: [73, 42],
       },
     ],
   });
@@ -50,8 +36,9 @@ const AnalysisChart = (props) => {
     <Chart
       options={chart.options}
       series={chart.series}
-      type="treemap"
-      width="750"
+      type="bar"
+      width="1200"
+      height="300"
     />
   );
 };
