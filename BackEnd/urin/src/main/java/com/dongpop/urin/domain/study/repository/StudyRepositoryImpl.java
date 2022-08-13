@@ -31,9 +31,6 @@ public class StudyRepositoryImpl implements StudyRepositoryCustom {
 
     @Override
     public Page<Study> findStudyList(StudySearchDto studySearchDto, Pageable pageable) {
-        String hashtags = studySearchDto.getHashtags();
-        //검색한 스터디 중 한 글자가 스터디의 해시태그스에 포함되어 있으면 됨
-
         JPAQuery<Study> query = queryFactory
                 .selectFrom(study)
                 .where(keywordLike(studySearchDto.getKeyword()),
@@ -55,6 +52,7 @@ public class StudyRepositoryImpl implements StudyRepositoryCustom {
                 .from(study)
                 .where(keywordLike(studySearchDto.getKeyword()),
                         statusIsRecruiting(studySearchDto.getIsRecruiting()),
+                        includeSearchHashtagCode(studySearchDto.getHashtags()),
                         statusNotInTerminated());
 
         return PageableExecutionUtils.getPage(contents, pageable, countQuery::fetchOne);
@@ -67,7 +65,7 @@ public class StudyRepositoryImpl implements StudyRepositoryCustom {
         String[] hashtagCodes = hashtags.split("");
         BooleanExpression conditions = study.hashtagCodes.contains(hashtagCodes[0]);
         for (int i = 1; i < hashtagCodes.length; i++) {
-            conditions.or(study.hashtagCodes.contains(hashtagCodes[i]));
+            conditions = conditions.or(study.hashtagCodes.contains(hashtagCodes[i]));
         }
         return conditions;
     }

@@ -12,6 +12,7 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static com.dongpop.urin.global.error.errorcode.StudyErrorCode.IMPOSSIBLE_SET_EXPIRATION_DATE_BEFORE_TODAY;
@@ -119,6 +120,8 @@ public class Study extends BaseTimeEntity {
     }
 
     public void saveHashtagCodes(String hashtagCodes) {
-        this.hashtagCodes = hashtagCodes;
+        char[] array = hashtagCodes.toCharArray();
+        Arrays.sort(array);
+        this.hashtagCodes = new String(array);
     }
 }
