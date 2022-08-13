@@ -1,6 +1,6 @@
 /* eslint-disable react/jsx-props-no-spreading */
 
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import "./index.css";
 import { useNavigate, Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
@@ -19,19 +19,23 @@ import {
 } from "@mui/material";
 import { getStudyList } from "../../store/studyListSlice";
 import CheckValidation from "../../components/CheckValidation";
+import SearchFilter from "../../components/SearchFilter";
 
 const MainPage = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const memberId = useSelector((state) => state.member.id);
   const studies = useSelector((state) => state.studies);
-  const mounted = useRef(false);
 
   const [page, setPage] = useState(1);
   const [inputword, setInputword] = useState("");
   const [keyword, setKeyword] = useState("");
   const [checked, setChecked] = useState(true);
+  const [hashtag, setHashtag] = useState("");
+  const [hashtagCnt, setHashtagCnt] = useState(0);
+  const [unselected, setUnselected] = useState(false);
+
+  const mounted = useRef(false);
 
   const checkedChange = (e) => {
     setChecked(e.target.checked);
@@ -41,9 +45,11 @@ const MainPage = () => {
     setInputword(e.target.value);
   };
 
-  const keywordChange = (e) => {
+  const searchBtn = (e) => {
     e.preventDefault();
     setKeyword(inputword);
+    setHashtag(hashtag);
+    dispatch(getStudyList([page - 1, checked, keyword, hashtag]));
   };
 
   const pageChange = (e, value) => {
@@ -54,8 +60,45 @@ const MainPage = () => {
     navigate(`/study/create`);
   };
 
+  const getHashtag = (valueArr) => {
+    console.log("넘어오는 해시태그 밸류", hashtagCnt);
+    if (valueArr[0].length < 4 && valueArr[1]) {
+      setHashtag(valueArr[0]);
+    } else if (valueArr[0].length >= 4 && valueArr[1]) {
+      alert("3개 이하로 선택해주세요!");
+    } else if (!valueArr[1]) {
+      setHashtagCnt(hashtagCnt - 1);
+    }
+
+    // if (!hashtag.includes(value) && hashtag.length < 3) {
+    //   console.log("해시태그에 밸류 없을 때 ", hashtag, value);
+    //   setHashtag(value);
+    //   setUnselected(false);
+    // } else {
+    //   console.log("해시태그에 밸류 있을 때 ", hashtag, value);
+
+    //   setHashtag(value);
+    //   setUnselected(true);
+    // }
+  };
+
   useEffect(() => {
-    dispatch(getStudyList([page - 1, checked, keyword]));
+    console.log("해시태그와 길이", hashtag, hashtagCnt);
+    if (!mounted.current) {
+      mounted.current = true;
+    } else if (hashtagCnt >= 3 && unselected) {
+      setHashtagCnt(hashtagCnt - 1);
+    } else if (hashtagCnt >= 3 && !unselected) {
+      alert("3개 이하로 선택해주세요!");
+    } else if (unselected) {
+      setHashtagCnt(hashtagCnt - 1);
+    } else {
+      setHashtagCnt(hashtagCnt + 1);
+    }
+  }, [hashtag]);
+
+  useEffect(() => {
+    dispatch(getStudyList([page - 1, checked, keyword, hashtag]));
   }, [page, checked, keyword]);
 
   return (
@@ -72,10 +115,11 @@ const MainPage = () => {
             title="Search"
             onChange={inputwordChange}
           />
-          <Button type="submit" className="search-btn" onClick={keywordChange}>
-            <SearchIcon className="btn-icon" sx={{ color: "#7d7d7d" }} />
+          <Button type="submit" className="search-btn" onClick={searchBtn}>
+            <SearchIcon className="btn-icon" sx={{ color: "rgb(0,0,0)" }} />
           </Button>
         </form>
+        <SearchFilter getHashtag={getHashtag} hashtagCnt={hashtagCnt} />
       </div>
       <div className="header">
         <Grid container>

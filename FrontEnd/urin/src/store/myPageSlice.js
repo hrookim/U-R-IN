@@ -7,8 +7,9 @@ import axios from "axios";
 
 export const getMyPage = createAsyncThunk("GET_MY_PAGE", async (checked) => {
   try {
+    console.log("디스패치 하는 것", checked);
     const response = await axios.get(
-      `${process.env.REACT_APP_BACK_BASE_URL}studies/me?currentAll=${checked[0]}&pastAll=${checked[1]}`,
+      `${process.env.REACT_APP_BACK_BASE_URL}studies/me?currentAll=${checked[0]}&pastAll=${checked[1]}}`,
       {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("accessToken")}`,

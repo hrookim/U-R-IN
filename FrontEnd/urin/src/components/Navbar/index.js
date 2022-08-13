@@ -42,103 +42,206 @@ const NavComponent = () => {
   return (
     <div>
       {!["/intro"].includes(location.pathname) ? (
-        <Navbar bg="light" expand="lg" className="navbar">
-          <Container id="container">
-            <Navbar.Brand href={`${process.env.REACT_APP_MAIN_URL}`}>
+        <div className="nav">
+          <input type="checkbox" id="nav-check" />
+          <div className="nav-header">
+            <a href={`${process.env.REACT_APP_MAIN_URL}`}>
               <img src={logoImg} alt="hello" className="title-logo" />
-            </Navbar.Brand>
-
-            <div className="nav-right">
-              <Navbar.Collapse id="basic-navbar-nav">
-                <Nav className="me-auto">
-                  <Link className="nav-link font-50 font-md" to="/">
-                    스터디 찾기
-                  </Link>
-                  <Link className="nav-link font-50 font-md" to="/mypage">
-                    마이페이지
-                  </Link>
-                </Nav>
-              </Navbar.Collapse>
-              <NotificationsNone />
-              <div>
-                <Box
-                  sx={{
-                    display: "flex",
-                    alignItems: "center",
-                    textAlign: "center",
-                  }}
-                >
-                  <Tooltip title="Account settings">
-                    <IconButton
-                      onClick={handleClick}
-                      size="small"
-                      sx={{ ml: 2, mr: 2 }}
-                      aria-controls={open ? "account-menu" : undefined}
-                      aria-haspopup="true"
-                      aria-expanded={open ? "true" : undefined}
-                    >
-                      <Avatar sx={{ bgcolor: "#0037FA" }}>
-                        {memberName[0]}
-                      </Avatar>
-                    </IconButton>
-                  </Tooltip>
-                </Box>
-                <Menu
-                  anchorEl={anchorEl}
-                  id="account-menu"
-                  open={open}
-                  onClose={handleClose}
-                  onClick={handleClose}
-                  PaperProps={{
-                    elevation: 0,
-                    sx: {
-                      overflow: "visible",
-                      filter: "drop-shadow(0px 2px 8px rgba(0,0,0,0.32))",
-                      mt: 1.5,
-                      "& .MuiAvatar-root": {
-                        width: 32,
-                        height: 32,
-                        ml: -0.5,
-                        mr: 1,
-                      },
-                      "&:before": {
-                        content: '""',
-                        display: "block",
-                        position: "absolute",
-                        top: 0,
-                        right: 14,
-                        width: 10,
-                        height: 10,
-                        bgcolor: "background.paper",
-                        transform: "translateY(-50%) rotate(45deg)",
-                        zIndex: 0,
-                      },
-                    },
-                  }}
-                  transformOrigin={{ horizontal: "right", vertical: "top" }}
-                  anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
-                >
-                  <MenuItem>
-                    <b className="font-50 font-md">{memberName}&nbsp;</b>
-                    <span className="font-30">님 안녕하세요!</span>
-                  </MenuItem>
-                  <Divider />
-                  <Link to="/logout" className="btn-logout">
-                    <MenuItem>
-                      <ListItemIcon>
-                        <Logout fontSize="small" />
-                      </ListItemIcon>
-                      Logout
-                    </MenuItem>
-                  </Link>
-                </Menu>
-              </div>
-              <Navbar.Toggle aria-controls="basic-navbar-nav" />
+            </a>
+          </div>
+          <div className="nav-btn">
+            <label htmlFor="nav-check">
+              <span></span>
+              <span></span>
+              <span></span>
+            </label>
+          </div>
+          <div className="nav-right-group">
+            <div className="nav-links">
+              <a
+                className="font-30 font-md"
+                href={`${process.env.REACT_APP_MAIN_URL}`}
+              >
+                스터디 찾기
+              </a>
+              <a
+                className="font-30 font-md"
+                href={`${process.env.REACT_APP_MAIN_URL}mypage`}
+              >
+                내 스터디 보기
+              </a>
             </div>
-          </Container>
-        </Navbar>
+            <div className="avatar">
+              <Box
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  textAlign: "center",
+                }}
+              >
+                <Tooltip title="Account settings">
+                  <IconButton
+                    onClick={handleClick}
+                    size="small"
+                    sx={{ ml: 2, mr: 2 }}
+                    aria-controls={open ? "account-menu" : undefined}
+                    aria-haspopup="true"
+                    aria-expanded={open ? "true" : undefined}
+                  >
+                    <Avatar sx={{ bgcolor: "#0037FA" }}>{memberName[0]}</Avatar>
+                  </IconButton>
+                </Tooltip>
+              </Box>
+              <Menu
+                anchorEl={anchorEl}
+                id="account-menu"
+                open={open}
+                onClose={handleClose}
+                onClick={handleClose}
+                PaperProps={{
+                  elevation: 0,
+                  sx: {
+                    overflow: "visible",
+                    filter: "drop-shadow(0px 2px 8px rgba(0,0,0,0.32))",
+                    mt: 1.5,
+                    "& .MuiAvatar-root": {
+                      width: 32,
+                      height: 32,
+                      ml: -0.5,
+                      mr: 1,
+                    },
+                    "&:before": {
+                      content: '""',
+                      display: "block",
+                      position: "absolute",
+                      top: 0,
+                      right: 14,
+                      width: 10,
+                      height: 10,
+                      bgcolor: "background.paper",
+                      transform: "translateY(-50%) rotate(45deg)",
+                      zIndex: 0,
+                    },
+                  },
+                }}
+                transformOrigin={{ horizontal: "right", vertical: "top" }}
+                anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
+              >
+                <MenuItem>
+                  <b className="font-50 font-md">{memberName}&nbsp;</b>
+                  <span className="font-30">님 안녕하세요!</span>
+                </MenuItem>
+                <Divider />
+                <Link to="/logout" className="btn-logout">
+                  <MenuItem>
+                    <ListItemIcon>
+                      <Logout fontSize="small" />
+                    </ListItemIcon>
+                    Logout
+                  </MenuItem>
+                </Link>
+              </Menu>
+            </div>
+          </div>
+        </div>
       ) : null}
     </div>
   );
 };
 export default NavComponent;
+
+// <Navbar bg="light" expand="lg" className="navbar">
+//   <Container id="container">
+//     <Navbar.Brand href={`${process.env.REACT_APP_MAIN_URL}`}>
+//       <img src={logoImg} alt="hello" className="title-logo" />
+//     </Navbar.Brand>
+
+//     <div className="nav-right">
+//       <Navbar.Collapse id="basic-navbar-nav">
+//         <Nav className="me-auto">
+//           <Link className="nav-link font-50 font-md" to="/">
+//             스터디 찾기
+//           </Link>
+//           <Link className="nav-link font-50 font-md" to="/mypage">
+//             마이페이지
+//           </Link>
+//         </Nav>
+//       </Navbar.Collapse>
+//       <NotificationsNone />
+//       <div>
+//         <Box
+//           sx={{
+//             display: "flex",
+//             alignItems: "center",
+//             textAlign: "center",
+//           }}
+//         >
+//           <Tooltip title="Account settings">
+//             <IconButton
+//               onClick={handleClick}
+//               size="small"
+//               sx={{ ml: 2, mr: 2 }}
+//               aria-controls={open ? "account-menu" : undefined}
+//               aria-haspopup="true"
+//               aria-expanded={open ? "true" : undefined}
+//             >
+//               <Avatar sx={{ bgcolor: "#0037FA" }}>
+//                 {memberName[0]}
+//               </Avatar>
+//             </IconButton>
+//           </Tooltip>
+//         </Box>
+//         <Menu
+//           anchorEl={anchorEl}
+//           id="account-menu"
+//           open={open}
+//           onClose={handleClose}
+//           onClick={handleClose}
+//           PaperProps={{
+//             elevation: 0,
+//             sx: {
+//               overflow: "visible",
+//               filter: "drop-shadow(0px 2px 8px rgba(0,0,0,0.32))",
+//               mt: 1.5,
+//               "& .MuiAvatar-root": {
+//                 width: 32,
+//                 height: 32,
+//                 ml: -0.5,
+//                 mr: 1,
+//               },
+//               "&:before": {
+//                 content: '""',
+//                 display: "block",
+//                 position: "absolute",
+//                 top: 0,
+//                 right: 14,
+//                 width: 10,
+//                 height: 10,
+//                 bgcolor: "background.paper",
+//                 transform: "translateY(-50%) rotate(45deg)",
+//                 zIndex: 0,
+//               },
+//             },
+//           }}
+//           transformOrigin={{ horizontal: "right", vertical: "top" }}
+//           anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
+//         >
+//           <MenuItem>
+//             <b className="font-50 font-md">{memberName}&nbsp;</b>
+//             <span className="font-30">님 안녕하세요!</span>
+//           </MenuItem>
+//           <Divider />
+//           <Link to="/logout" className="btn-logout">
+//             <MenuItem>
+//               <ListItemIcon>
+//                 <Logout fontSize="small" />
+//               </ListItemIcon>
+//               Logout
+//             </MenuItem>
+//           </Link>
+//         </Menu>
+//       </div>
+//       <Navbar.Toggle aria-controls="basic-navbar-nav" />
+//     </div>
+//   </Container>
+// </Navbar>

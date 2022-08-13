@@ -16,15 +16,18 @@ const DetailFeed = ({ study, isLeader, isParticipant }) => {
   const [isCommentDeleted, setIsCommentDeleted] = useState(false);
   const [isInputSubmitted, setIsInputSubmitted] = useState(false);
 
-  const [page, setPage] = useState(1);
+  const [page, setPage] = useState(0);
 
   const pageChange = (e, value) => {
     setPage(value);
   };
 
   useEffect(() => {
-    dispatch(getFeed([studyId, page - 1]));
-  }, [isCommentDeleted, isInputSubmitted, page]);
+    if (isLeader) {
+      const pageValue = page - 1;
+      dispatch(getFeed({ studyId, pageValue }));
+    }
+  }, [isCommentDeleted, isInputSubmitted, page, isLeader]);
 
   return (
     <div>

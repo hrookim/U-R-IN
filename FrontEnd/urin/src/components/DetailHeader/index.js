@@ -41,6 +41,7 @@ const DetailHeader = ({
     const confirmAnswer = window.confirm("스터디를 탈퇴하시겠습니까?");
     if (confirmAnswer) {
       const participantId = currentMemberId;
+      console.log("studyId", studyId);
       dispatch(leaveStudy({ studyId, participantId })).then(() => {
         setIsChanged(true);
         setInterval(() => setIsChanged(false), 100);
@@ -50,34 +51,47 @@ const DetailHeader = ({
   return (
     <div>
       <div className="dh-container">
-        <div className="dh-container-item">
-          <div className="font-xl font-70">{study.title}</div>
+        <div className="dh-chips">
+          {study.hashtags.map((item) => (
+            <button
+              type="button"
+              className="dh-chip-button font-30 font-xs"
+              disabled
+              key={item.code}
+            >
+              {item.name}
+            </button>
+          ))}
         </div>
-        <div className="dh-container-item">
-          {study.status === "TERMINATED" && (
-            <div className="font-40 font-xs dh-tag">종료</div>
-          )}
-          {study.status === "COMPLETED" && (
-            <div className="font-40 font-xs dh-tag">모집 완료</div>
-          )}
-          {study.status === "RECRUITING" && (
-            <div className="font-40 font-xs dh-tag">모집 중</div>
-          )}
 
-          {study.dday > 0 && (
-            <div className="font-40 font-xs dh-tag">{`D-${study.dday}`}</div>
-          )}
-          {study.dday === 0 && (
-            <div className="font-40 font-xs dh-tag">D-day</div>
-          )}
+        <div className="dh-container-item">
+          <span className="font-xl font-70">{study.title}</span>
           {isLeader && (
             <Link to={`/study/${studyId}/edit`} className="dh-setting-icon">
               <SettingsIcon color="action" sx={{ fontSize: 30 }} />
             </Link>
           )}
         </div>
+        <div className="dh-container-item">
+          {study.status === "TERMINATED" && (
+            <span className="font-40 font-sm dh-tag">종료</span>
+          )}
+          {study.status === "COMPLETED" && (
+            <span className="font-40 font-sm dh-tag">모집 완료</span>
+          )}
+          {study.status === "RECRUITING" && (
+            <span className="font-40 font-sm dh-tag">모집 중</span>
+          )}
+          {study.dday > 0 && (
+            <span className="font-40 font-sm dh-tag">{`D-${study.dday}`}</span>
+          )}
+          {study.dday <= 0 && (
+            <span className="font-40 font-sm dh-tag">D-day</span>
+          )}
+        </div>
+
         {study.status !== "TERMINATED" && (
-          <div className="dh-container-item">
+          <div className="dh-container-item2">
             {isLeader ? (
               <div className="font-40">
                 {study.status !== "TERMINATED" && (
@@ -130,7 +144,7 @@ const DetailHeader = ({
                     )}
                     <button
                       type="button"
-                      className="dh-study-button font-50 font-sm"
+                      className="dh-study-button dh-study-button-leave font-50 font-sm"
                       onClick={onClickLeave}
                     >
                       스터디 나가기

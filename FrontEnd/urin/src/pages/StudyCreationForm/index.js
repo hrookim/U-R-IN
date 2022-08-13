@@ -25,6 +25,8 @@ import { Link, useNavigate } from "react-router-dom";
 import { createStudy } from "../../store/studySlice";
 import CheckValidation from "../../components/CheckValidation";
 import { getMemberId } from "../../store/memberSlice";
+import SearchFilter from "../../components/SearchFilter";
+
 import "./index.css";
 import "../../assets/DesignSystem.css";
 
@@ -37,10 +39,12 @@ const StudyCreationForm = () => {
     notice: "",
     expirationDate: "",
     memberCapacity: 2,
+    hashtags: "",
   });
   const [formDate, setFormDate] = useState(new Date());
   const [disable, setDisable] = useState(false);
   const [errorStatement, setErrorStatement] = useState("");
+  const [hashtag, setHashtag] = useState("");
 
   // popper관련
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -66,7 +70,6 @@ const StudyCreationForm = () => {
       ...form,
       [name]: value,
     });
-    console.log(form);
   };
   // popper 관련 함수
   const handleClick = (event) => {
@@ -77,6 +80,21 @@ const StudyCreationForm = () => {
   const onSubmit = (e) => {
     e.preventDefault();
     dispatch(createStudy({ form, navigate }));
+  };
+
+  useEffect(() => {
+    setForm({
+      ...form,
+      hashtags: hashtag,
+    });
+  }, [hashtag]);
+
+  const getHashtag = (value) => {
+    if (!hashtag.includes(value)) {
+      setHashtag(value);
+    } else {
+      setHashtag(hashtag.replace(value, ""));
+    }
   };
 
   return (
@@ -226,14 +244,25 @@ const StudyCreationForm = () => {
             <TextField
               // style={{ width: "400px", margin: "5px" }}
               type="text"
-              label="공지"
+              label="공지사항을 적어주세요."
               name="notice"
               variant="outlined"
+              className="notice-form"
               multiline
               rows={15}
               onChange={onChange}
               required
             />
+          </FormControl>
+          <div className="content-title">
+            <p className="font-lg font-70">태그</p>
+            <p className="create-grid-contents-title1 font-30 font-sm">
+              &nbsp;&nbsp;&nbsp;다른 스터디원들이 쉽게 검색할 수 있도록 태그를
+              설정해보세요! (최대 3개까지 가능)
+            </p>
+          </div>
+          <FormControl className="title" fullWidth sx={{ m: 1 }}>
+            <SearchFilter getHashtag={getHashtag} />
           </FormControl>
           <div className="btns">
             <Button
