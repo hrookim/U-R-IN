@@ -2,6 +2,7 @@ package com.dongpop.urin.domain.meeting.service;
 
 import com.dongpop.urin.domain.meeting.dto.request.MeetingCreateDto;
 import com.dongpop.urin.domain.meeting.dto.response.MeetingIdDto;
+import com.dongpop.urin.domain.meeting.dto.response.MeetingSessionDto;
 import com.dongpop.urin.domain.meeting.entity.Meeting;
 import com.dongpop.urin.domain.meeting.repository.MeetingRepository;
 import com.dongpop.urin.domain.member.entity.Member;
@@ -17,7 +18,7 @@ import javax.transaction.Transactional;
 import java.util.UUID;
 
 import static com.dongpop.urin.global.error.errorcode.MeetingErrorCode.*;
-import static com.dongpop.urin.global.error.errorcode.StudyErrorCode.*;
+import static com.dongpop.urin.global.error.errorcode.StudyErrorCode.STUDY_DOES_NOT_EXIST;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -28,23 +29,27 @@ public class MeetingService {
     private final MeetingRepository meetingRepository;
 
     @Transactional
-    public String issueSessionId(Member member, int studyId) {
+    public MeetingSessionDto issueSessionId(Member member, int studyId) {
         Study study = getStudy(studyId);
 
         if (isStudyLeader(member, study)) {
             String sessionId = UUID.randomUUID().toString();
             study.saveSessionId(sessionId);
-            return sessionId;
+            return new MeetingSessionDto(sessionId, true);
         }
 
         if (!StringUtils.hasText(study.getSessionId())) {
             throw new CustomException(SESSIONID_IS_NOT_EXIST);
         }
-        return study.getSessionId();
+        return new MeetingSessionDto(study.getSessionId(), false);
     }
 
     @Transactional
     public MeetingIdDto createMeeting(int studyId, Member member, MeetingCreateDto meetingCreateDto) {
+        if (!meetingCreateDto.getIsConnected()) {
+            return new MeetingIdDto(0);
+        }
+
         Study study = getStudy(studyId);
         if (!isStudyLeader(member, study)) {
             throw new CustomException(ONLY_POSSIBLE_STUDY_LEADER);
@@ -55,10 +60,9 @@ public class MeetingService {
         if (study.getIsOnair()) {
             throw new CustomException(MEETING_IS_ALREADY_ONAIR);
         }
-
         study.changeOnairStatus(meetingCreateDto.getIsConnected());
-        int meetingId = meetingCreateDto.getIsConnected() ?
-                meetingRepository.save(new Meeting(study)).getId() : 0;
+
+        int meetingId = meetingRepository.save(new Meeting(study)).getId();
         return new MeetingIdDto(meetingId);
     }
 

@@ -35,6 +35,12 @@ public class Member extends BaseTimeEntity {
         this.role = role;
     }
 
+    @PrePersist
+    public void prePersist() {
+        if (getIsPassed() == null)
+            isPassed = false;
+    }
+
     public void saveRefreshToken(String refreshToken) {
         this.refreshToken = refreshToken;
     }

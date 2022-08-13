@@ -67,6 +67,25 @@ public class Study extends BaseTimeEntity {
         return member;
     }
 
+    public int getCurrentParticipantCount() {
+        int count = 0;
+        for (Participant participant : participants) {
+            if (participant.getWithdrawal() == null || participant.getWithdrawal())
+                continue;
+            count++;
+        }
+        return count;
+    }
+
+    public boolean isRegistedMember(Member member) {
+        for (Participant participant : participants) {
+            if (!participant.getWithdrawal() && participant.getMember().getId() == member.getId()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     //TODO : 유효성 검사 방법 확인하기
     public void updateStudyInfo(String title, String notice, int memberCapacity, LocalDate expirationDate) {
         this.title = title;

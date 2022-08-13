@@ -1,9 +1,10 @@
 /* eslint-disable */
 import React, { Component } from "react";
-import * as faceapi from "face-api.js";
-// import "./index.css";
+import face from "./face";
+import teachable from "./teachable";
+import * as tmPose from "@teachablemachine/pose";
 
-const MODEL_URL = "/models";
+const URL = "https://teachablemachine.withgoogle.com/models/Rafr6YSIZ/";
 
 export default class OvVideoComponent extends Component {
   constructor(props) {
@@ -43,24 +44,20 @@ export default class OvVideoComponent extends Component {
     }
   }
 
-  // AI 관련 함수
-  // video는 this.videoRef.current
-  startExpressDetection = () => {
-    this.run(this.videoRef);
+  startDetection = async() => {
+    const modelURL = `${URL}model.json`;
+    const metadataURL = `${URL}metadata.json`;
+
+    // eslint-disable-next-line no-undef
+    const model = Object.freeze(await tmPose.load(modelURL, metadataURL));
+
+    setInterval(async() => {
+      await face(this.videoRef);
+      // TODO : teachable machine의 모델을 불러오는 것을 mount 시점 혹은 setInterval 전에 불러서 1번만 불러온다
+      // tmPose.load로 불러온 model은 파라미터로 전달
+      await teachable(this.videoRef, model);
+    }, 2000)
   };
-
-  async run(videoRef) {
-    console.log(videoRef);
-    await faceapi.nets.ssdMobilenetv1.load(MODEL_URL);
-    await faceapi.nets.faceLandmark68Net.load(MODEL_URL);
-    await faceapi.nets.faceExpressionNet.load(MODEL_URL);
-    await faceapi.nets.tinyFaceDetector.load(MODEL_URL);
-
-    const result = await faceapi
-      .detectSingleFace(videoRef.current, new faceapi.TinyFaceDetectorOptions())
-      .withFaceExpressions();
-    console.log(result);
-  }
 
   render() {
     return (
@@ -72,7 +69,7 @@ export default class OvVideoComponent extends Component {
           muted={this.props.mutedSound}
         />
         {this.props.isInterviewee ? (
-          <button onClick={this.startExpressDetection}>face</button>
+          <button onClick={this.startDetection}>face</button>
         ) : null}
       </>
     );

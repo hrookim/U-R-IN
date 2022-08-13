@@ -2,9 +2,10 @@ import React, { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { useParams } from "react-router-dom";
 import styled from "styled-components";
-import { Avatar, Typography } from "@mui/material";
+import { Avatar, IconButton, Typography } from "@mui/material";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCrown, faSquareXmark } from "@fortawesome/free-solid-svg-icons";
+import RemoveCircleOutlineIcon from "@mui/icons-material/RemoveCircleOutline";
 import { leaveStudy } from "../../store/studySlice";
 import "../../assets/DesignSystem.css";
 import "./index.css";
@@ -19,8 +20,7 @@ const DetailInfo = ({ study, isLeader, isParticipant, setIsChanged }) => {
   const { studyId } = useParams();
 
   const onClickLeave = (memberId) => {
-    const participantId = memberId;
-    dispatch(leaveStudy({ studyId, participantId })).then(() => {
+    dispatch(leaveStudy([studyId, memberId])).then(() => {
       setIsChanged(true);
       setInterval(() => setIsChanged(false), 100);
     });
@@ -38,22 +38,28 @@ const DetailInfo = ({ study, isLeader, isParticipant, setIsChanged }) => {
         <p className="font-70 content-title2">멤버</p>
         <hr />
         {study.participants.map((participant) => (
-          <div key={participant.id} className="member-info">
+          <div
+            key={participant.id}
+            className="member-info"
+            style={{ margin: "0 0 15px 0" }}
+          >
             <Avatar sx={{ width: "30px", height: "30px" }}>
               {participant.nickname[0]}
             </Avatar>
-            <span>
-              {participant.nickname}
-              {participant.isLeader && <FontAwesomeIcon icon={faCrown} />}
-              {isLeader && !participant.isLeader && (
-                <StyledXbutton>
-                  <FontAwesomeIcon
-                    icon={faSquareXmark}
-                    onClick={() => onClickLeave(participant.memberId)}
-                  />
-                </StyledXbutton>
-              )}
-            </span>
+            <span>{participant.nickname}</span>
+            {participant.isLeader && (
+              <FontAwesomeIcon icon={faCrown} style={{ margin: "0 0 0 8px" }} />
+            )}
+            {console.log(isLeader, study.status)}
+            {isLeader &&
+            !participant.isLeader &&
+            study.status != "TERMINATED" ? (
+              <IconButton onClick={() => onClickLeave(participant.id)}>
+                <RemoveCircleOutlineIcon
+                  sx={{ fontSize: "small", color: "#f44336" }}
+                />
+              </IconButton>
+            ) : null}
           </div>
         ))}
       </div>

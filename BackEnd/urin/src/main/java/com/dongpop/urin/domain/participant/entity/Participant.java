@@ -30,11 +30,19 @@ public class Participant extends BaseTimeEntity {
     @Column(updatable = false)
     private boolean isLeader;
 
+    private Boolean withdrawal;
+
     @Builder
-    private Participant(Member member, Study study, boolean isLeader) {
+    private Participant(Member member, boolean isLeader) {
         this.member = member;
-        this.study = study;
         this.isLeader = isLeader;
+    }
+
+    @PrePersist
+    public void prePersist() {
+        if (getWithdrawal() == null) {
+            withdrawal = false;
+        }
     }
 
     public void addStudy(Study study) {
@@ -51,7 +59,15 @@ public class Participant extends BaseTimeEntity {
         return ret;
     }
 
-    public void removeObjectInStudyList() {
+    public void withdrawStudy() {
+        this.withdrawal = true;
         study.getParticipants().remove(this);
+    }
+
+    public void joinStudy() {
+        this.withdrawal = false;
+        if (study.getParticipants().lastIndexOf(this) < 0) {
+            study.getParticipants().add(this);
+        }
     }
 }
