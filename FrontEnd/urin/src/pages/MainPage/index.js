@@ -6,6 +6,7 @@ import { useNavigate, Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import SearchIcon from "@mui/icons-material/Search";
 import {
+  Box,
   Button,
   Card,
   CardActionArea,
@@ -15,7 +16,9 @@ import {
   FormControlLabel,
   Grid,
   Pagination,
+  Popper,
   Stack,
+  Typography,
 } from "@mui/material";
 import { getStudyList } from "../../store/studyListSlice";
 import CheckValidation from "../../components/CheckValidation";
@@ -31,9 +34,7 @@ const MainPage = () => {
   const [inputword, setInputword] = useState("");
   const [keyword, setKeyword] = useState("");
   const [checked, setChecked] = useState(true);
-  const [hashtag, setHashtag] = useState("");
-  const [hashtagCnt, setHashtagCnt] = useState(0);
-  const [unselected, setUnselected] = useState(false);
+  const [hashtags, setHashtags] = useState("");
 
   const mounted = useRef(false);
 
@@ -48,8 +49,8 @@ const MainPage = () => {
   const searchBtn = (e) => {
     e.preventDefault();
     setKeyword(inputword);
-    setHashtag(hashtag);
-    dispatch(getStudyList([page - 1, checked, keyword, hashtag]));
+    setHashtags(hashtags);
+    dispatch(getStudyList([page - 1, checked, keyword, hashtags]));
   };
 
   const pageChange = (e, value) => {
@@ -60,46 +61,31 @@ const MainPage = () => {
     navigate(`/study/create`);
   };
 
-  const getHashtag = (valueArr) => {
-    console.log("넘어오는 해시태그 밸류", hashtagCnt);
-    if (valueArr[0].length < 4 && valueArr[1]) {
-      setHashtag(valueArr[0]);
-    } else if (valueArr[0].length >= 4 && valueArr[1]) {
-      alert("3개 이하로 선택해주세요!");
-    } else if (!valueArr[1]) {
-      setHashtagCnt(hashtagCnt - 1);
-    }
-
-    // if (!hashtag.includes(value) && hashtag.length < 3) {
-    //   console.log("해시태그에 밸류 없을 때 ", hashtag, value);
-    //   setHashtag(value);
-    //   setUnselected(false);
-    // } else {
-    //   console.log("해시태그에 밸류 있을 때 ", hashtag, value);
-
-    //   setHashtag(value);
-    //   setUnselected(true);
-    // }
+  const getHashtags = (value) => {
+    setHashtags(value);
   };
 
-  useEffect(() => {
-    console.log("해시태그와 길이", hashtag, hashtagCnt);
-    if (!mounted.current) {
-      mounted.current = true;
-    } else if (hashtagCnt >= 3 && unselected) {
-      setHashtagCnt(hashtagCnt - 1);
-    } else if (hashtagCnt >= 3 && !unselected) {
-      alert("3개 이하로 선택해주세요!");
-    } else if (unselected) {
-      setHashtagCnt(hashtagCnt - 1);
-    } else {
-      setHashtagCnt(hashtagCnt + 1);
+  const getOverflowed = (value2) => {
+    if (value2) {
+      alert("3개 이하로 선택해주세요.");
     }
-  }, [hashtag]);
+  };
+
+  const [anchorEl, setAnchorEl] = React.useState(null);
+  const [open, setOpen] = React.useState(false);
+  const [placement, setPlacement] = React.useState();
+
+  const handleClick = (newPlacement) => (event) => {
+    setAnchorEl(event.currentTarget);
+    setOpen((prev) => placement !== newPlacement || !prev);
+    setPlacement(newPlacement);
+  };
+
+  const id = open ? "simple-popover" : undefined;
 
   useEffect(() => {
-    dispatch(getStudyList([page - 1, checked, keyword, hashtag]));
-  }, [page, checked, keyword]);
+    dispatch(getStudyList([page - 1, checked, keyword, hashtags]));
+  }, [page, checked, keyword, hashtags]);
 
   return (
     <div className="main-page">
@@ -108,18 +94,51 @@ const MainPage = () => {
         <span className="font-70 font-xl search-font">
           당신에게 맞는 스터디를 검색해보세요!
         </span>
-        <form className="searchbar-form">
-          <input
-            className="searchbar"
-            type="text"
-            title="Search"
-            onChange={inputwordChange}
-          />
-          <Button type="submit" className="search-btn" onClick={searchBtn}>
-            <SearchIcon className="btn-icon" sx={{ color: "rgb(0,0,0)" }} />
-          </Button>
-        </form>
-        <SearchFilter getHashtag={getHashtag} hashtagCnt={hashtagCnt} />
+        <div className="search-bar-group">
+          <form className="searchbar-form">
+            <input
+              className="searchbar"
+              type="text"
+              title="Search"
+              onChange={inputwordChange}
+            />
+            <Button type="submit" className="search-btn" onClick={searchBtn}>
+              <SearchIcon className="btn-icon" sx={{ color: "rgb(0,0,0)" }} />
+            </Button>
+            <div className="search-condition">
+              <Button
+                aria-describedby={id}
+                variant="text"
+                onClick={handleClick("bottom-end")}
+                className="font-30 font-xs"
+                sx={{ color: "#0037FA" }}
+              >
+                검색 조건
+              </Button>
+
+              <Popper id={id} open={open} anchorEl={anchorEl}>
+                <Box
+                  sx={{
+                    border: 1,
+                    padding: "15px",
+                    bgcolor: "background.paper",
+                    maxWidth: "480px",
+                    minWidth: "200px",
+                    maxHeight: "400px",
+                    borderColor: "white",
+                    borderRadius: "20px",
+                    boxShadow: "2",
+                  }}
+                >
+                  <SearchFilter
+                    getHashtags={getHashtags}
+                    getOverflowed={getOverflowed}
+                  />
+                </Box>
+              </Popper>
+            </div>
+          </form>
+        </div>
       </div>
       <div className="header">
         <Grid container>

@@ -44,7 +44,7 @@ const StudyCreationForm = () => {
   const [formDate, setFormDate] = useState(new Date());
   const [disable, setDisable] = useState(false);
   const [errorStatement, setErrorStatement] = useState("");
-  const [hashtag, setHashtag] = useState("");
+  const [hashtags, setHashtags] = useState("");
 
   // popper관련
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -85,15 +85,17 @@ const StudyCreationForm = () => {
   useEffect(() => {
     setForm({
       ...form,
-      hashtags: hashtag,
+      hashtags,
     });
-  }, [hashtag]);
+  }, [hashtags]);
 
-  const getHashtag = (value) => {
-    if (!hashtag.includes(value)) {
-      setHashtag(value);
-    } else {
-      setHashtag(hashtag.replace(value, ""));
+  const getHashtags = (value) => {
+    setHashtags(value);
+  };
+
+  const getOverflowed = (value2) => {
+    if (value2) {
+      alert("3개 이하로 선택해주세요.");
     }
   };
 
@@ -262,7 +264,10 @@ const StudyCreationForm = () => {
             </p>
           </div>
           <FormControl className="title" fullWidth sx={{ m: 1 }}>
-            <SearchFilter getHashtag={getHashtag} />
+            <SearchFilter
+              getHashtags={getHashtags}
+              getOverflowed={getOverflowed}
+            />
           </FormControl>
           <div className="btns">
             <Button
