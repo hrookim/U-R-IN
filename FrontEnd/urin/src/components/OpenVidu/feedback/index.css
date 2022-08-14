@@ -1,0 +1,78 @@
+.fb-container {
+  width: 350px;
+  padding: 10px;
+  border: 1px solid #ffffff;
+  box-shadow: 0px 0px 5px 1px rgba(175, 175, 175, 0.39);
+  box-sizing: border-box;
+  border-radius: 10px;
+  height: 400px;
+  overflow: scroll;
+}
+
+.fb-radio-box {
+  display: flex;
+  justify-content: flex-start;
+}
+
+.fb-radio {
+  margin: 0;
+}
+
+.fb-q-list {
+  list-style: none;
+  list-style-position: outside;
+}
+
+.fb-q-item {
+  margin: 3px 0;
+}
+
+#qna {
+  width: 320px;
+  height: 40px;
+  font-size: 14px;
+  border: 0;
+  border-radius: 5px;
+  outline: none;
+  padding-left: 10px;
+  background-color: rgb(233, 233, 233);
+}
+
+.add-button {
+  width: 320px;
+  height: 25px;
+  border: 1px solid #d3d3d3;
+  background-color: white;
+  border-radius: 12px;
+
+}
+
+#add-question {
+  width: 200px;
+  height: 40px;
+  font-size: 14px;
+  border: 1px solid #d3d3d3;
+  background-color: white;
+  border-radius: 5px;
+  outline: none;
+  padding-left: 10px;
+}
+
+.save-button {
+  text-align: center;
+  height: 25px;
+  border: 0;
+  border-radius: 12px;
+  outline: none;
+  padding-left: 10px;
+  background-color: rgb(233, 233, 233);
+}
+
+.delete-button {
+  height: 15px;
+  border: 1px solid rgb(255, 21, 21);
+  border-radius: 3px;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+}
