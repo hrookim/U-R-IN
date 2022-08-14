@@ -24,6 +24,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import "react-widgets/styles.css";
 import { getStudy, updateStudy } from "../../store/studySlice";
 import CheckValidation from "../../components/CheckValidation";
+import SearchFilter from "../../components/SearchFilter";
 import "./index.css";
 
 const StudyUpdateForm = () => {
@@ -38,10 +39,12 @@ const StudyUpdateForm = () => {
     notice: "",
     expirationDate: "",
     memberCapacity: "",
+    hashtags: "",
   });
   const [formDate, setFormDate] = useState(new Date());
   const [disable, setDisable] = useState(false);
   const [errorStatement, setErrorStatement] = useState("");
+  const [newHashtags, setNewHashtags] = useState("");
 
   // popper관련
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -63,7 +66,14 @@ const StudyUpdateForm = () => {
 
   useEffect(() => {
     dispatch(getStudy({ studyId, navigate })).then(() => {
-      const { title, notice, expirationDate, memberCapacity, dday } = study;
+      const {
+        title,
+        notice,
+        expirationDate,
+        memberCapacity,
+        dday,
+        hashtagCodes,
+      } = study;
 
       if (dday === -1) {
         const formatDate = new Date();
@@ -72,6 +82,7 @@ const StudyUpdateForm = () => {
           notice,
           expirationDate: moment(formatDate).format("YYYY-MM-DD"),
           memberCapacity,
+          hashtagCodes,
         });
         setFormDate(formatDate);
         setDisable(true);
@@ -82,10 +93,12 @@ const StudyUpdateForm = () => {
           notice,
           expirationDate: moment(formatDate).format("YYYY-MM-DD"),
           memberCapacity,
+          hashtagCodes,
         });
         setFormDate(formatDate);
       }
     });
+    console.log("======111111");
   }, []);
 
   const onChange = (e) => {
@@ -99,7 +112,27 @@ const StudyUpdateForm = () => {
 
   const onSubmit = (e) => {
     e.preventDefault();
-    dispatch(updateStudy({ studyId, form, navigate }));
+    console.log("form", "newHashtags", form);
+    if (form.hashtags) {
+      dispatch(updateStudy({ studyId, form, navigate }));
+    } else {
+      alert("1개 이상 선택해주세요!");
+    }
+  };
+
+  const getHashtags = (value) => {
+    setForm({
+      ...form,
+      hashtags: value,
+    });
+  };
+
+  console.log("newHAsh", newHashtags);
+
+  const getOverflowed = (value2) => {
+    if (value2) {
+      alert("3개 이하로 선택해주세요.");
+    }
   };
 
   // popper 관련 함수
@@ -263,6 +296,20 @@ const StudyUpdateForm = () => {
               rows={15}
               onChange={onChange}
               required
+            />
+          </FormControl>
+          <div className="content-title">
+            <p className="font-lg font-70">태그</p>
+            <p className="create-grid-contents-title1 font-30 font-sm">
+              &nbsp;&nbsp;&nbsp;다른 스터디원들이 쉽게 검색할 수 있도록 태그를
+              설정해보세요! (최대 3개까지 가능)
+            </p>
+          </div>
+          <FormControl className="title" fullWidth sx={{ m: 1 }}>
+            <SearchFilter
+              getHashtags={getHashtags}
+              getOverflowed={getOverflowed}
+              oldHashtags={form.hashtags}
             />
           </FormControl>
           <div className="btns">

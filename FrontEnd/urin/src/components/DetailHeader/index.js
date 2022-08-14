@@ -22,16 +22,6 @@ const DetailHeader = ({
   const dispatch = useDispatch();
   const { studyId } = useParams();
 
-  const startMeeting = () => {
-    const screenWidth = window.screen.width * 0.75;
-    const screenHeight = window.screen.height * 0.75;
-    window.open(
-      `${window.location.origin}/study/${studyId}/meeting`,
-      "Popup",
-      `width=${screenWidth}px, height=${screenHeight}px`
-    );
-  };
-
   const onClickTerminate = () => {
     const confirmAnswer = window.confirm("스터디를 종료하시겠습니까?");
     if (confirmAnswer) {
@@ -51,7 +41,6 @@ const DetailHeader = ({
     const confirmAnswer = window.confirm("스터디를 탈퇴하시겠습니까?");
     if (confirmAnswer) {
       const participantId = currentMemberId;
-      console.log("studyId", studyId);
       dispatch(leaveStudy({ studyId, participantId })).then(() => {
         setIsChanged(true);
         setInterval(() => setIsChanged(false), 100);
@@ -62,14 +51,14 @@ const DetailHeader = ({
     <div>
       <div className="dh-container">
         <div className="dh-chips">
-          {study.hashtags.map((item) => (
+          {study.hashtagNameList.map((item) => (
             <button
               type="button"
               className="dh-chip-button font-30 font-xs"
               disabled
               key={item.code}
             >
-              {item.name}
+              {item}
             </button>
           ))}
         </div>
@@ -118,7 +107,6 @@ const DetailHeader = ({
                       <button
                         type="button"
                         className="dh-meeting-button font-50 font-sm"
-                        onClick={startMeeting}
                       >
                         미팅 시작하기
                       </button>
@@ -141,7 +129,6 @@ const DetailHeader = ({
                       <button
                         type="button"
                         className="dh-meeting-button font-50 font-sm"
-                        onClick={startMeeting}
                       >
                         미팅 입장하기
                       </button>

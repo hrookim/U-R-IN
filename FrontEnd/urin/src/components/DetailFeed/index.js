@@ -23,11 +23,11 @@ const DetailFeed = ({ study, isLeader, isParticipant }) => {
   };
 
   useEffect(() => {
-    if (isLeader) {
+    if (isParticipant) {
       const pageValue = page - 1;
       dispatch(getFeed({ studyId, pageValue }));
     }
-  }, [isCommentDeleted, isInputSubmitted, page, isLeader]);
+  }, [isCommentDeleted, isInputSubmitted, page, isParticipant]);
 
   return (
     <div>
