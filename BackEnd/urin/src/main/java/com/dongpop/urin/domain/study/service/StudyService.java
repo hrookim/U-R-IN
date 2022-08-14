@@ -95,8 +95,7 @@ public class StudyService {
      */
     @Transactional
     public StudyDetailDto getStudyDetail(int studyId) {
-        Study study = studyRepository.findById(studyId)
-                .orElseThrow(() -> new CustomException(STUDY_DOES_NOT_EXIST));
+        Study study = getStudy(studyId);
 
         List<ParticipantDto> participants = study.getParticipants().stream()
                 .filter((p) -> !p.getWithdrawal())
@@ -111,6 +110,16 @@ public class StudyService {
                 study.getExpirationDate().atStartOfDay()).toDays();
         dDay = dDay > 36500 ? -1 : dDay;
 
+        List<HashtagDataDto> hashtagDatas = getHashtagDatas(study);
+
+        StringBuilder sb = new StringBuilder();
+        List<String> hashtagNameList = new ArrayList<>();
+        hashtagDatas.stream().forEach((dataDto) -> {
+            sb.append(dataDto.getCode());
+            hashtagNameList.add(dataDto.getName());
+        });
+        String hashtagCodes = sb.toString();
+
         return StudyDetailDto.builder()
                 .id(study.getId())
                 .title(study.getTitle())
@@ -121,7 +130,8 @@ public class StudyService {
                 .expirationDate(study.getExpirationDate())
                 .dDay(dDay)
                 .isOnair(study.getIsOnair())
-                .hashtags(getHashtagDatas(study))
+                .hashtagCodes(hashtagCodes)
+                .hashtagNameList(hashtagNameList)
                 .participants(participants)
                 .build();
     }
@@ -152,6 +162,9 @@ public class StudyService {
         log.info("[Service GenerateStudy] : member_name = {}, studyData = {}", member.getMemberName(), studyData);
         LocalDate expirationDate = studyData.getExpirationDate() != null ?
                 studyData.getExpirationDate() : LocalDate.of(2222, 1, 1);
+        if (expirationDate.isBefore(LocalDate.now())) {
+            throw new CustomException(IMPOSSIBLE_SET_EXPIRATION_DATE_BEFORE_TODAY);
+        }
 
         Study study = studyRepository.save(Study.builder()
                 .title(studyData.getTitle())
@@ -166,14 +179,12 @@ public class StudyService {
         return new StudyIdDto(study.getId());
     }
 
-
     /**
      * 스터디 정보 수정
      */
     @Transactional
     public StudyIdDto editStudy(Member member, int studyId, StudyDataDto studyData) {
-        Study study = studyRepository.findById(studyId)
-                .orElseThrow(() -> new CustomException(STUDY_DOES_NOT_EXIST));
+        Study study = getStudy(studyId);
 
         if (study.getStudyLeader().getId() != member.getId()) {
             log.info("Edit can only leader, leaderId = {}, memberId = {}",
@@ -199,8 +210,7 @@ public class StudyService {
      */
     @Transactional
     public StudyStatusDto changeStudyStatus(Member member, int studyId, StudyStatus status) {
-        Study study = studyRepository.findById(studyId)
-                .orElseThrow(() -> new CustomException(STUDY_DOES_NOT_EXIST));
+        Study study = getStudy(studyId);
 
         if (status.name().equals(TERMINATED.name()) &&
                 study.getStudyLeader().getId() != member.getId()) {
@@ -208,6 +218,12 @@ public class StudyService {
         }
         study.updateStatus(status);
         return new StudyStatusDto(studyId, status.name());
+    }
+
+    private Study getStudy(int studyId) {
+        Study study = studyRepository.findById(studyId)
+                .orElseThrow(() -> new CustomException(STUDY_DOES_NOT_EXIST));
+        return study;
     }
 
     private List<HashtagDataDto> getHashtagDatas(Study study) {
