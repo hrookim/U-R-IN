@@ -61,7 +61,7 @@ const DetailHeader = ({
     <div>
       <div className="dh-container">
         <div className="dh-chips">
-          {/* {study.hashtagNameList.map((item) => (
+          {study.hashtagNameList.map((item) => (
             <button
               type="button"
               className="dh-chip-button font-30 font-xs"
@@ -70,7 +70,7 @@ const DetailHeader = ({
             >
               {item}
             </button>
-          ))} */}
+          ))}
         </div>
 
         <div className="dh-container-item">

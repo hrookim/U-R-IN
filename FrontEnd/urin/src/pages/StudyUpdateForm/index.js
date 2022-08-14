@@ -44,7 +44,6 @@ const StudyUpdateForm = () => {
   const [formDate, setFormDate] = useState(new Date());
   const [disable, setDisable] = useState(false);
   const [errorStatement, setErrorStatement] = useState("");
-  const [newHashtags, setNewHashtags] = useState("");
 
   // popper관련
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -119,11 +118,13 @@ const StudyUpdateForm = () => {
   };
 
   const getHashtags = (value) => {
-    console.log("밸류-=--", value);
-    setForm({
-      ...form,
-      hashtags: value,
-    });
+    if (value) {
+      console.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+      setForm({
+        ...form,
+        hashtags: value,
+      });
+    }
   };
 
   const getOverflowed = (value2) => {
@@ -303,7 +304,7 @@ const StudyUpdateForm = () => {
             </p>
           </div>
           <FormControl className="title" fullWidth sx={{ m: 1 }}>
-            {console.log("최상단 리턴 안 oldHashtags", form.hashtags)}
+            {console.log("최상단 리턴 안 oldHashtags", form, form.hashtags)}
             <StudyUpdateTag
               getHashtags={getHashtags}
               getOverflowed={getOverflowed}
@@ -320,7 +321,7 @@ const StudyUpdateForm = () => {
                 "&:hover": { backgroundColor: "#0037FA" },
               }}
             >
-              만들기
+              수정하기
             </Button>
             <Button
               variant="contained"

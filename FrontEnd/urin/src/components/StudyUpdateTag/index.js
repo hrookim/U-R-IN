@@ -8,11 +8,12 @@ const StudyUpdateTag = ({ getHashtags, getOverflowed, oldHashtags }) => {
   const [selected, setSelected] = useState(true);
   const [oldChecked, setOldChecked] = useState("");
 
+  console.log("2번째 안 맨 위 oldHashtags", oldHashtags);
+
   useEffect(() => {
-    console.log("oldHashtags", oldHashtags);
     setOldChecked(oldHashtags);
     setHashtags(oldChecked);
-  }, []);
+  }, [oldHashtags]);
 
   useEffect(() => {
     getHashtags(hashtags);
