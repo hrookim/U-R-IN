@@ -137,7 +137,6 @@ const Feedback = ({
         </div>
         <div>
           {/* 작성된 질문 */}
-          {isLeader && <div>질문 편집</div>}
           {feedbackList &&
             feedbackList.map((singleFeedback, index) => (
               <div key={index} className="font-xs font-40">
