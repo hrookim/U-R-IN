@@ -8,16 +8,7 @@ const SearchFilter = ({ getHashtags, getOverflowed, oldHashtags }) => {
   const [selected, setSelected] = useState(true);
   const [oldChecked, setOldChecked] = useState("");
 
-  useEffect(() => {
-    if (oldHashtags) {
-      let oldHashtagItems = "";
-      for (let i = 0; i < oldHashtags.length; i += 1) {
-        oldHashtagItems += oldHashtags[i].code;
-      }
-      setOldChecked(oldHashtagItems);
-      setHashtags(oldChecked);
-    }
-  }, [oldHashtags, oldChecked]);
+  useEffect(() => {}, [oldHashtags, oldChecked]);
 
   useEffect(() => {
     getHashtags(hashtags);

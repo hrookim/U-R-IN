@@ -41,7 +41,6 @@ const NavComponent = () => {
 
   return (
     <div>
-      {console.log(location.pathname)}
       {!location.pathname.includes("/intro") &&
       !location.pathname.includes("/meeting") ? (
         <div className="nav">
