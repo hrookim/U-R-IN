@@ -2,7 +2,6 @@ package com.dongpop.urin.domain.hashtag.controller;
 
 import com.dongpop.urin.domain.hashtag.dto.HashtagDataDto;
 import com.dongpop.urin.domain.hashtag.dto.HashtagResponseDto;
-import com.dongpop.urin.domain.hashtag.entity.Hashtag;
 import com.dongpop.urin.domain.hashtag.repository.HashtagRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
