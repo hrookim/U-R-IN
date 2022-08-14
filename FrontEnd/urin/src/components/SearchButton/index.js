@@ -2,7 +2,13 @@ import React, { useState, useRef, useEffect } from "react";
 import { css } from "@emotion/react";
 import { Button } from "@mui/material";
 
-const SearchButton = ({ id, contents, getHashtagCode, hashtags }) => {
+const SearchButton = ({
+  id,
+  contents,
+  getHashtagCode,
+  hashtags,
+  oldChecked,
+}) => {
   const SelectedButtonStyle = css`
     background-color: #0037fa;
     color: white;
@@ -41,6 +47,13 @@ const SearchButton = ({ id, contents, getHashtagCode, hashtags }) => {
 
   const [selected, setSelected] = useState(false);
 
+  useEffect(() => {
+    if (oldChecked.includes(id)) {
+      setSelected(true);
+    } else {
+      setSelected(false);
+    }
+  }, [oldChecked]);
   const sendHashtagCode = () => {
     getHashtagCode(id);
   };
@@ -58,7 +71,6 @@ const SearchButton = ({ id, contents, getHashtagCode, hashtags }) => {
 
   return (
     <div sx={{ margin: "0px" }}>
-      {console.log("selected", selected, hashtags)}
       <Button
         id={id}
         variant="outlined"

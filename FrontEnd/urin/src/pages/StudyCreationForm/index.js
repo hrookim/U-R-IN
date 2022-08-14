@@ -79,7 +79,12 @@ const StudyCreationForm = () => {
 
   const onSubmit = (e) => {
     e.preventDefault();
-    dispatch(createStudy({ form, navigate }));
+
+    if (form.hashtags) {
+      dispatch(createStudy({ form, navigate }));
+    } else {
+      alert("1개 이상 선택해주세요!");
+    }
   };
 
   useEffect(() => {
