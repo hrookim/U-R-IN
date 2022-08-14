@@ -5,6 +5,7 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class MeetingSessionIdDto {
+public class MeetingSessionDto {
     private String sessionId;
+    private Boolean isLeader;
 }

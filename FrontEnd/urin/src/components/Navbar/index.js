@@ -45,7 +45,7 @@ const NavComponent = () => {
         <div className="nav">
           <input type="checkbox" id="nav-check" />
           <div className="nav-header">
-            <a href={`${process.env.REACT_APP_MAIN_URL}`}>
+            <a href={`${window.location.protocol}//${window.location.host}`}>
               <img src={logoImg} alt="hello" className="title-logo" />
             </a>
           </div>
