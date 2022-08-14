@@ -38,6 +38,7 @@ export const createStudy = createAsyncThunk(
   "CREATE_STUDY",
   async ({ form, navigate }) => {
     try {
+      console.log("form", form);
       const response = await axios.post(
         `${process.env.REACT_APP_BACK_BASE_URL}studies/`,
         form,
