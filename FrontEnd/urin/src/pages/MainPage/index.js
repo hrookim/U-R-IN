@@ -1,11 +1,12 @@
 /* eslint-disable react/jsx-props-no-spreading */
 
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import "./index.css";
 import { useNavigate, Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import SearchIcon from "@mui/icons-material/Search";
 import {
+  Box,
   Button,
   Card,
   CardActionArea,
@@ -15,23 +16,27 @@ import {
   FormControlLabel,
   Grid,
   Pagination,
+  Popper,
   Stack,
+  Typography,
 } from "@mui/material";
 import { getStudyList } from "../../store/studyListSlice";
 import CheckValidation from "../../components/CheckValidation";
+import SearchFilter from "../../components/SearchFilter";
 
 const MainPage = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const memberId = useSelector((state) => state.member.id);
   const studies = useSelector((state) => state.studies);
-  const mounted = useRef(false);
 
   const [page, setPage] = useState(1);
   const [inputword, setInputword] = useState("");
   const [keyword, setKeyword] = useState("");
   const [checked, setChecked] = useState(true);
+  const [hashtags, setHashtags] = useState("");
+
+  const mounted = useRef(false);
 
   const checkedChange = (e) => {
     setChecked(e.target.checked);
@@ -41,9 +46,11 @@ const MainPage = () => {
     setInputword(e.target.value);
   };
 
-  const keywordChange = (e) => {
+  const searchBtn = (e) => {
     e.preventDefault();
     setKeyword(inputword);
+    setHashtags(hashtags);
+    dispatch(getStudyList([page - 1, checked, keyword, hashtags]));
   };
 
   const pageChange = (e, value) => {
@@ -54,9 +61,31 @@ const MainPage = () => {
     navigate(`/study/create`);
   };
 
+  const getHashtags = (value) => {
+    setHashtags(value);
+  };
+
+  const getOverflowed = (value2) => {
+    if (value2) {
+      alert("3개 이하로 선택해주세요.");
+    }
+  };
+
+  const [anchorEl, setAnchorEl] = React.useState(null);
+  const [open, setOpen] = React.useState(false);
+  const [placement, setPlacement] = React.useState();
+
+  const handleClick = (newPlacement) => (event) => {
+    setAnchorEl(event.currentTarget);
+    setOpen((prev) => placement !== newPlacement || !prev);
+    setPlacement(newPlacement);
+  };
+
+  const id = open ? "simple-popover" : undefined;
+
   useEffect(() => {
-    dispatch(getStudyList([page - 1, checked, keyword]));
-  }, [page, checked, keyword]);
+    dispatch(getStudyList([page - 1, checked, keyword, hashtags]));
+  }, [page, checked, keyword, hashtags]);
 
   return (
     <div className="main-page">
@@ -65,17 +94,51 @@ const MainPage = () => {
         <span className="font-70 font-xl search-font">
           당신에게 맞는 스터디를 검색해보세요!
         </span>
-        <form className="searchbar-form">
-          <input
-            className="searchbar"
-            type="text"
-            title="Search"
-            onChange={inputwordChange}
-          />
-          <Button type="submit" className="search-btn" onClick={keywordChange}>
-            <SearchIcon className="btn-icon" sx={{ color: "#7d7d7d" }} />
-          </Button>
-        </form>
+        <div className="search-bar-group">
+          <form className="searchbar-form">
+            <input
+              className="searchbar"
+              type="text"
+              title="Search"
+              onChange={inputwordChange}
+            />
+            <Button type="submit" className="search-btn" onClick={searchBtn}>
+              <SearchIcon className="btn-icon" sx={{ color: "rgb(0,0,0)" }} />
+            </Button>
+            <div className="search-condition">
+              <Button
+                aria-describedby={id}
+                variant="text"
+                onClick={handleClick("bottom-end")}
+                className="font-30 font-xs"
+                sx={{ color: "#0037FA" }}
+              >
+                검색 조건
+              </Button>
+
+              <Popper id={id} open={open} anchorEl={anchorEl}>
+                <Box
+                  sx={{
+                    border: 1,
+                    padding: "15px",
+                    bgcolor: "background.paper",
+                    maxWidth: "480px",
+                    minWidth: "200px",
+                    maxHeight: "400px",
+                    borderColor: "white",
+                    borderRadius: "20px",
+                    boxShadow: "2",
+                  }}
+                >
+                  <SearchFilter
+                    getHashtags={getHashtags}
+                    getOverflowed={getOverflowed}
+                  />
+                </Box>
+              </Popper>
+            </div>
+          </form>
+        </div>
       </div>
       <div className="header">
         <Grid container>

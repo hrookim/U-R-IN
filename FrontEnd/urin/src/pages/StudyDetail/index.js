@@ -35,7 +35,6 @@ const StudyDetail = () => {
       participant.memberId === currentMemberId && participant.isLeader
   );
   const isLeader = checkLeader.includes(true);
-
   return (
     <div className="main-page">
       <CheckValidation />

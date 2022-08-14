@@ -37,6 +37,7 @@ export const createStudy = createAsyncThunk(
   "CREATE_STUDY",
   async ({ form, navigate }) => {
     try {
+      console.log("form====", form);
       const response = await axios.post(
         `${process.env.REACT_APP_BACK_BASE_URL}studies/`,
         form,
@@ -133,24 +134,27 @@ export const joinStudy = createAsyncThunk("JOIN_STUDY", async (studyId) => {
 });
 
 // 스터디 참가자 삭제 FIXME: 분기는 백에서 처리하고 있음!
-export const leaveStudy = createAsyncThunk("LEAVE_STUDY", async (arr) => {
-  try {
-    const response = await axios.delete(
-      `${process.env.REACT_APP_BACK_BASE_URL}studies/${arr[0]}/participants/${arr[1]}`,
-      {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-        },
-      }
-    );
-    alert("스티디원을 퇴장시켰습니다!");
+export const leaveStudy = createAsyncThunk(
+  "LEAVE_STUDY",
+  async ({ studyId, participantId }) => {
+    try {
+      const response = await axios.delete(
+        `${process.env.REACT_APP_BACK_BASE_URL}studies/${studyId}/participants/${participantId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+          },
+        }
+      );
+      alert("스티디원을 퇴장시켰습니다!");
 
-    return response.data;
-  } catch (err) {
-    console.log(err);
-    return isRejectedWithValue(err.response.data);
+      return response.data;
+    } catch (err) {
+      console.log(err);
+      return isRejectedWithValue(err.response.data);
+    }
   }
-});
+);
 
 const studySlice = createSlice({
   // state에 들어가는 이름
@@ -175,6 +179,12 @@ const studySlice = createSlice({
     ],
     status: "COMPLETED",
     title: "string",
+    hashtags: [
+      {
+        code: "string",
+        name: "string",
+      },
+    ],
   },
   // 비동기 통신이 없는 상황에서 사용 : 서버에 요청 없이 study의 상태를 바꿀 일이 없기 때문에 딱히 쓸 일이 없음
   reducers: {},
