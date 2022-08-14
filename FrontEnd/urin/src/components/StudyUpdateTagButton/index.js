@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 import { css } from "@emotion/react";
 import { Button } from "@mui/material";
 
-const SearchButton = ({
+const StudyUpdateTagButton = ({
   id,
   contents,
   getHashtagCode,
@@ -47,6 +47,14 @@ const SearchButton = ({
 
   const [selected, setSelected] = useState(false);
 
+  useEffect(() => {
+    console.log("oldchecked", oldChecked);
+    if (oldChecked.includes(id)) {
+      setSelected(true);
+    } else {
+      setSelected(false);
+    }
+  }, [oldChecked]);
   const sendHashtagCode = () => {
     getHashtagCode(id);
   };
@@ -76,4 +84,4 @@ const SearchButton = ({
   );
 };
 
-export default SearchButton;
+export default StudyUpdateTagButton;

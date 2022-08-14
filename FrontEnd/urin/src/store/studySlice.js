@@ -23,6 +23,7 @@ export const getStudy = createAsyncThunk(
           },
         }
       );
+      console.log("여깅머리ㅏㅇ널매ㅑ;ㄴㅇ", response.data);
       return response.data;
     } catch (err) {
       navigate("/notfound");
@@ -37,7 +38,6 @@ export const createStudy = createAsyncThunk(
   "CREATE_STUDY",
   async ({ form, navigate }) => {
     try {
-      console.log("form====", form);
       const response = await axios.post(
         `${process.env.REACT_APP_BACK_BASE_URL}studies/`,
         form,
@@ -179,12 +179,8 @@ const studySlice = createSlice({
     ],
     status: "COMPLETED",
     title: "string",
-    hashtags: [
-      {
-        code: "string",
-        name: "string",
-      },
-    ],
+    hashtagCodes: "string",
+    hashtagNameList: ["string", "string"],
   },
   // 비동기 통신이 없는 상황에서 사용 : 서버에 요청 없이 study의 상태를 바꿀 일이 없기 때문에 딱히 쓸 일이 없음
   reducers: {},

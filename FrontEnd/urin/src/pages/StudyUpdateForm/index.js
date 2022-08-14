@@ -24,7 +24,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import "react-widgets/styles.css";
 import { getStudy, updateStudy } from "../../store/studySlice";
 import CheckValidation from "../../components/CheckValidation";
-import SearchFilter from "../../components/SearchFilter";
+import StudyUpdateTag from "../../components/StudyUpdateTag";
 import "./index.css";
 
 const StudyUpdateForm = () => {
@@ -82,7 +82,7 @@ const StudyUpdateForm = () => {
           notice,
           expirationDate: moment(formatDate).format("YYYY-MM-DD"),
           memberCapacity,
-          hashtagCodes,
+          hashtags: hashtagCodes,
         });
         setFormDate(formatDate);
         setDisable(true);
@@ -93,12 +93,11 @@ const StudyUpdateForm = () => {
           notice,
           expirationDate: moment(formatDate).format("YYYY-MM-DD"),
           memberCapacity,
-          hashtagCodes,
+          hashtags: hashtagCodes,
         });
         setFormDate(formatDate);
       }
     });
-    console.log("======111111");
   }, []);
 
   const onChange = (e) => {
@@ -107,7 +106,6 @@ const StudyUpdateForm = () => {
       ...form,
       [name]: value,
     });
-    console.log(form);
   };
 
   const onSubmit = (e) => {
@@ -121,13 +119,12 @@ const StudyUpdateForm = () => {
   };
 
   const getHashtags = (value) => {
+    console.log("밸류-=--", value);
     setForm({
       ...form,
       hashtags: value,
     });
   };
-
-  console.log("newHAsh", newHashtags);
 
   const getOverflowed = (value2) => {
     if (value2) {
@@ -306,7 +303,8 @@ const StudyUpdateForm = () => {
             </p>
           </div>
           <FormControl className="title" fullWidth sx={{ m: 1 }}>
-            <SearchFilter
+            {console.log("최상단 리턴 안 oldHashtags", form.hashtags)}
+            <StudyUpdateTag
               getHashtags={getHashtags}
               getOverflowed={getOverflowed}
               oldHashtags={form.hashtags}
