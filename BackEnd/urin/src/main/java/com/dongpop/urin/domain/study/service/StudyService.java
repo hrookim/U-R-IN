@@ -110,16 +110,6 @@ public class StudyService {
                 study.getExpirationDate().atStartOfDay()).toDays();
         dDay = dDay > 36500 ? -1 : dDay;
 
-        List<HashtagDataDto> hashtagDatas = getHashtagDatas(study);
-
-        StringBuilder sb = new StringBuilder();
-        List<String> hashtagNameList = new ArrayList<>();
-        hashtagDatas.stream().forEach((dataDto) -> {
-            sb.append(dataDto.getCode());
-            hashtagNameList.add(dataDto.getName());
-        });
-        String hashtagCodes = sb.toString();
-
         return StudyDetailDto.builder()
                 .id(study.getId())
                 .title(study.getTitle())
@@ -130,8 +120,7 @@ public class StudyService {
                 .expirationDate(study.getExpirationDate())
                 .dDay(dDay)
                 .isOnair(study.getIsOnair())
-                .hashtagCodes(hashtagCodes)
-                .hashtagNameList(hashtagNameList)
+                .hashtags(getHashtagDatas(study))
                 .participants(participants)
                 .build();
     }
