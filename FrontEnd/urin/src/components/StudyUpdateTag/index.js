@@ -8,24 +8,26 @@ const StudyUpdateTag = ({ getHashtags, getOverflowed, oldHashtags }) => {
   const [selected, setSelected] = useState(true);
   const [oldChecked, setOldChecked] = useState("");
 
-  console.log("2번째 안 맨 위 oldHashtags", oldHashtags);
-
   useEffect(() => {
     setOldChecked(oldHashtags);
-    setHashtags(oldChecked);
+    if (!hashtags) {
+      setHashtags(oldChecked);
+    }
   }, [oldHashtags]);
 
   useEffect(() => {
     getHashtags(hashtags);
     getOverflowed(false);
-  }, [hashtags, oldChecked]);
+  }, [oldChecked, hashtags]);
 
   const getHashtagCode = (value) => {
-    if (!hashtags.includes(value)) {
+    console.log("value===========", hashtags, value);
+    if (value && !hashtags.includes(value)) {
       if (hashtags.length < 3) {
         setHashtags(hashtags + value);
         setSelected(true);
       } else {
+        console.log("====================", hashtags);
         getHashtags(hashtags);
         getOverflowed(true);
       }

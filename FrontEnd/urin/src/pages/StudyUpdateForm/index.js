@@ -111,6 +111,7 @@ const StudyUpdateForm = () => {
     e.preventDefault();
     console.log("form", "newHashtags", form);
     if (form.hashtags) {
+      console.log("제출제출제출", form);
       dispatch(updateStudy({ studyId, form, navigate }));
     } else {
       alert("1개 이상 선택해주세요!");
@@ -119,7 +120,6 @@ const StudyUpdateForm = () => {
 
   const getHashtags = (value) => {
     if (value) {
-      console.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
       setForm({
         ...form,
         hashtags: value,
