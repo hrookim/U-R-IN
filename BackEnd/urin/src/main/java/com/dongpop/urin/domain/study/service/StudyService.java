@@ -77,13 +77,17 @@ public class StudyService {
 
         List<StudySummaryDto> studyList = pages.toList().stream()
                 .map(s -> {
+                    List<String> hashtagNameList = new ArrayList<>();
+                    String hashtagCodes = makeHashtagResponse(s, hashtagNameList);
+
                     return StudySummaryDto.builder()
                             .id(s.getId())
                             .memberCapacity(s.getMemberCapacity())
                             .title(s.getTitle())
                             .currentMember(s.getCurrentParticipantCount())
                             .status(s.getStatus())
-                            .hashtags(getHashtagDatas(s))
+                            .hashtagCodes(hashtagCodes)
+                            .hashtagNameList(hashtagNameList)
                             .build();
                 }).collect(Collectors.toList());
 
@@ -110,6 +114,9 @@ public class StudyService {
                 study.getExpirationDate().atStartOfDay()).toDays();
         dDay = dDay > 36500 ? -1 : dDay;
 
+        List<String> hashtagNameList = new ArrayList<>();
+        String hashtagCodes = makeHashtagResponse(study, hashtagNameList);
+
         return StudyDetailDto.builder()
                 .id(study.getId())
                 .title(study.getTitle())
@@ -120,7 +127,8 @@ public class StudyService {
                 .expirationDate(study.getExpirationDate())
                 .dDay(dDay)
                 .isOnair(study.getIsOnair())
-                .hashtags(getHashtagDatas(study))
+                .hashtagCodes(hashtagCodes)
+                .hashtagNameList(hashtagNameList)
                 .participants(participants)
                 .build();
     }
@@ -224,11 +232,25 @@ public class StudyService {
                 .collect(Collectors.toList());
     }
 
+    private String makeHashtagResponse(Study study, List<String> hashtagNameList) {
+        List<HashtagDataDto> hashtagDatas = getHashtagDatas(study);
+
+        StringBuilder sb = new StringBuilder();
+        hashtagDatas.stream().forEach((dataDto) -> {
+            sb.append(dataDto.getCode());
+            hashtagNameList.add(dataDto.getName());
+        });
+        return sb.toString();
+    }
+
     private List<StudySummaryDto> makeResponseList(List<Participant> myStudyParticipants, boolean allFlag) {
         List<StudySummaryDto> studyResponseList = new ArrayList<>();
 
         for (Participant participant : myStudyParticipants) {
             Study study = participant.getStudy();
+
+            List<String> hashtagNameList = new ArrayList<>();
+            String hashtagCodes = makeHashtagResponse(study, hashtagNameList);
 
             StudySummaryDto studySummaryDto = StudySummaryDto.builder()
                     .id(study.getId())
@@ -236,7 +258,8 @@ public class StudyService {
                     .memberCapacity(study.getMemberCapacity())
                     .currentMember(study.getCurrentParticipantCount())
                     .status(study.getStatus())
-                    .hashtags(getHashtagDatas(study)).build();
+                    .hashtagCodes(hashtagCodes)
+                    .hashtagNameList(hashtagNameList).build();
             studyResponseList.add(studySummaryDto);
             if (!allFlag && studyResponseList.size() >= MY_STUDY_DEFAULT_SIZE) {
                 break;
