@@ -1,0 +1,99 @@
+.fb-container {
+  width: 350px;
+  padding: 10px 10px 0 10px;
+  border: 1px solid #ffffff;
+  box-shadow: 0px 0px 5px 1px rgba(175, 175, 175, 0.39);
+  box-sizing: border-box;
+  border-radius: 10px;
+  height: 370px;
+  overflow: scroll;
+}
+
+.fb-radio-label {
+  display: flex;
+  align-items: center;
+  margin-right: 30px;
+}
+
+.fb-radio-box {
+  display: flex;
+  justify-content: flex-start;
+}
+
+.fb-radio {
+  margin: 0;
+  display: flex;
+  align-items: center;
+}
+
+.fb-q-list {
+  list-style: none;
+  list-style-position: outside;
+}
+
+.fb-q-item {
+  margin: 3px 0;
+}
+
+#qna {
+  width: 320px;
+  height: 50px;
+  font-size: 14px;
+  border: 0;
+  border-radius: 5px;
+  outline: none;
+  padding: 5px 10px;
+  background-color: rgb(233, 233, 233);
+}
+
+#qna :focus {
+  background-color: yellow;
+}
+
+
+.save-box {
+  display: flex;
+  justify-content: flex-end;
+}
+.save-button {
+  color: white;
+  height: 25px;
+  width: 50px;
+  border: 0;
+  border-radius: 12px;
+  outline: none;
+  padding: 0 10px;
+  background-color: #01208F;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.save-loading-box {
+  height: 25px;
+  width: 50px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.save-loading {
+  height: 25px;
+  width: 25px;
+  background: #ffffff33;
+  border-radius: 50%;
+  border: 2px solid #01208F;
+  border-top-color: #fff;
+  border-bottom-color: #fff;
+  animation: spinner3 800ms ease infinite;
+}
+
+.save-loading :hover {
+  cursor: alias;
+}
+
+@keyframes spinner3 {
+  to {
+    transform: rotate(360deg);
+  }
+}
