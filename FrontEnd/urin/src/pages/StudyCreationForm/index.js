@@ -37,7 +37,7 @@ const StudyCreationForm = () => {
   const [form, setForm] = useState({
     title: "",
     notice: "",
-    expirationDate: "",
+    expirationDate: new Date(),
     memberCapacity: 2,
     hashtags: "",
   });
@@ -45,6 +45,8 @@ const StudyCreationForm = () => {
   const [disable, setDisable] = useState(false);
   const [errorStatement, setErrorStatement] = useState("");
   const [hashtags, setHashtags] = useState("");
+
+  console.log(formDate, "날짜");
 
   // popper관련
   const [anchorEl, setAnchorEl] = React.useState(null);

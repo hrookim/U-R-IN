@@ -24,7 +24,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import "react-widgets/styles.css";
 import { getStudy, updateStudy } from "../../store/studySlice";
 import CheckValidation from "../../components/CheckValidation";
-import SearchFilter from "../../components/SearchFilter";
+import StudyUpdateTag from "../../components/StudyUpdateTag";
 import "./index.css";
 
 const StudyUpdateForm = () => {
@@ -44,7 +44,6 @@ const StudyUpdateForm = () => {
   const [formDate, setFormDate] = useState(new Date());
   const [disable, setDisable] = useState(false);
   const [errorStatement, setErrorStatement] = useState("");
-  const [newHashtags, setNewHashtags] = useState("");
 
   // popper관련
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -82,7 +81,7 @@ const StudyUpdateForm = () => {
           notice,
           expirationDate: moment(formatDate).format("YYYY-MM-DD"),
           memberCapacity,
-          hashtagCodes,
+          hashtags: hashtagCodes,
         });
         setFormDate(formatDate);
         setDisable(true);
@@ -93,12 +92,11 @@ const StudyUpdateForm = () => {
           notice,
           expirationDate: moment(formatDate).format("YYYY-MM-DD"),
           memberCapacity,
-          hashtagCodes,
+          hashtags: hashtagCodes,
         });
         setFormDate(formatDate);
       }
     });
-    console.log("======111111");
   }, []);
 
   const onChange = (e) => {
@@ -107,13 +105,13 @@ const StudyUpdateForm = () => {
       ...form,
       [name]: value,
     });
-    console.log(form);
   };
 
   const onSubmit = (e) => {
     e.preventDefault();
     console.log("form", "newHashtags", form);
     if (form.hashtags) {
+      console.log("제출제출제출", form);
       dispatch(updateStudy({ studyId, form, navigate }));
     } else {
       alert("1개 이상 선택해주세요!");
@@ -121,13 +119,13 @@ const StudyUpdateForm = () => {
   };
 
   const getHashtags = (value) => {
-    setForm({
-      ...form,
-      hashtags: value,
-    });
+    if (value) {
+      setForm({
+        ...form,
+        hashtags: value,
+      });
+    }
   };
-
-  console.log("newHAsh", newHashtags);
 
   const getOverflowed = (value2) => {
     if (value2) {
@@ -306,7 +304,8 @@ const StudyUpdateForm = () => {
             </p>
           </div>
           <FormControl className="title" fullWidth sx={{ m: 1 }}>
-            <SearchFilter
+            {console.log("최상단 리턴 안 oldHashtags", form, form.hashtags)}
+            <StudyUpdateTag
               getHashtags={getHashtags}
               getOverflowed={getOverflowed}
               oldHashtags={form.hashtags}
@@ -322,7 +321,7 @@ const StudyUpdateForm = () => {
                 "&:hover": { backgroundColor: "#0037FA" },
               }}
             >
-              만들기
+              수정하기
             </Button>
             <Button
               variant="contained"

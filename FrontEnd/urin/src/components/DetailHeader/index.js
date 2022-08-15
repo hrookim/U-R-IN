@@ -61,7 +61,7 @@ const DetailHeader = ({
     <div>
       <div className="dh-container">
         <div className="dh-chips">
-          {/* {study.hashtagNameList.map((item) => (
+          {study.hashtagNameList.map((item) => (
             <button
               type="button"
               className="dh-chip-button font-30 font-xs"
@@ -70,7 +70,7 @@ const DetailHeader = ({
             >
               {item}
             </button>
-          ))} */}
+          ))}
         </div>
 
         <div className="dh-container-item">
@@ -81,6 +81,7 @@ const DetailHeader = ({
             </Link>
           )}
         </div>
+        {console.log("디데이", study.dday)}
         <div className="dh-container-item">
           {study.status === "TERMINATED" && (
             <span className="font-40 font-sm dh-tag">종료</span>
@@ -94,7 +95,7 @@ const DetailHeader = ({
           {study.dday > 0 && (
             <span className="font-40 font-sm dh-tag">{`D-${study.dday}`}</span>
           )}
-          {study.dday <= 0 && (
+          {study.dday == 0 && (
             <span className="font-40 font-sm dh-tag">D-day</span>
           )}
         </div>
