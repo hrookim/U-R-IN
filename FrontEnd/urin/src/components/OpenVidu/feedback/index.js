@@ -12,7 +12,7 @@ const Feedback = ({
   feedbackDisplay,
 }) => {
   const [type, setType] = useState("PERSONALITY");
-  const [newQuestion, setNewQuestion] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
   const [feedbackList, setFeedbackList] = useState([]);
 
   const handleFeedbackChange = (e, index) => {
@@ -23,25 +23,19 @@ const Feedback = ({
     console.log(feedbackList);
   };
 
-  // TODO: 질문삭제 버튼
-  // const handleFeedbackRemove = (index) => {
-  //   const list = [...feedbackList];
-  //   list.splice(index, 1);
-  //   setFeedbackList(list);
-  // };
-
-  const handleFeedbackAdd = () => {
-    setFeedbackList([...feedbackList, { question: newQuestion, answer: "" }]);
-  };
-
   const onSubmit = (e) => {
     e.preventDefault();
+    setIsLoading(true);
     const form = {
       type,
       feedbackList,
     };
     console.log(form);
-    updateFeedback({ meetingId, intervieweeId, form });
+    updateFeedback({ meetingId, intervieweeId, form }).then(() => {
+      setTimeout(() => {
+        setIsLoading(false);
+      }, 1800);
+    });
   };
 
   const onChangePersonality = () => {
@@ -77,18 +71,18 @@ const Feedback = ({
   const styleFeedback = { display: feedbackDisplay };
 
   useEffect(() => {
-    // getFeedback({ meetingId, intervieweeId }).then((res) => {
-    //   const { personalityList } = res;
-    //   if (personalityList.length >= 1) {
-    //     setFeedbackList(personalityList);
-    //   } else {
-    //     setFeedbackList([
-    //       { question: "지원자의 면접태도는 어떠한가요?", answer: "" },
-    //       { question: "지원자의 전달력은 어떠한가요?", answer: "" },
-    //       { question: "기타", answer: "" },
-    //     ]);
-    //   }
-    // });
+    getFeedback({ meetingId, intervieweeId }).then((res) => {
+      const { personalityList } = res;
+      if (personalityList.length >= 1) {
+        setFeedbackList(personalityList);
+      } else {
+        setFeedbackList([
+          { question: "지원자의 면접태도는 어떠한가요?", answer: "" },
+          { question: "지원자의 전달력은 어떠한가요?", answer: "" },
+          { question: "기타", answer: "" },
+        ]);
+      }
+    });
   }, []);
 
   return (
@@ -98,8 +92,8 @@ const Feedback = ({
       </div>
       <form onSubmit={onSubmit}>
         {/* 타입 선택 */}
-        <div className="font-sm font-50">면접 종류</div>
         <div className="fb-radio-box">
+          <div className="font-sm font-50 fb-radio-label">면접 종류</div>
           <div className="font-xs font-40 fb-radio">
             <label htmlFor="type-p">인성면접</label>
             <Radio
@@ -144,56 +138,35 @@ const Feedback = ({
                   <div className="fb-q-item">
                     <div>
                       {index + 1}. {singleFeedback.question}
-                      {/* {feedbackList.length >= 1 && (
-                          <button
-                            className="delete-button"
-                            type="button"
-                            onClick={() => handleFeedbackRemove(index)}
-                          >
-                            <span>-</span>
-                          </button> // TODO: 삭제 버튼
-                        )} */}
                     </div>
-                    {/* <label htmlFor="qna">평가란</label> */}
-                    <input
+                    <textarea
                       value={singleFeedback.answer}
                       id="qna"
-                      type="text"
+                      // type="textarea"
+                      rows="2"
+                      cols="30"
                       name="answer"
                       onChange={(e) => handleFeedbackChange(e, index)}
+                      required
                     />
                   </div>
                 )}
               </div>
             ))}
         </div>
-        {/* <div className="font-40 font-sm">
-            <button className="add-button font-40 font-xs">+ 항목추가</button>
-            <div>
-              <input
-                name="question"
-                type="text"
-                id="add-question"
-                value={newQuestion}
-                onChange={(e) => {
-                  setNewQuestion(e.target.value);
-                }}
-              />
-              <button
-                type="button"
-                onClick={(e) => {
-                  handleFeedbackAdd();
-                  setNewQuestion("");
-                }}
-              >
-                <span>질문 추가</span>
-              </button>
-            </div>
-          </div> */}
+
         {/* 저장 버튼 */}
-        <button type="submit" className="save-button font-sm font-40">
-          저장
-        </button>
+        <div className="save-box">
+          {!isLoading ? (
+            <button type="submit" className="save-button font-sm font-40">
+              저장
+            </button>
+          ) : (
+            <div className="save-loading-box">
+              <button className="save-loading"></button>
+            </div>
+          )}
+        </div>
       </form>
     </div>
   );
