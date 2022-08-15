@@ -14,7 +14,6 @@ export default class StreamComponent extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      id: this.props.user.getId(),
       mutedSound: false,
     };
     this.toggleSound = this.toggleSound.bind(this);
@@ -25,37 +24,43 @@ export default class StreamComponent extends Component {
   }
 
   render() {
-    const isInterviewee = this.props.intervieweeId === this.state.id;
+    const { mutedSound } = this.state;
+    const { user, intervieweeId, isInterviewing, isSomeoneShareScreen } =
+      this.props;
+    const { id, nickname } = user;
+    const isInterviewee = intervieweeId === id;
     let layout = "col-4";
-    if (!this.props.isSomeoneShareScreen && !this.props.intervieweeId) {
+    if (!isSomeoneShareScreen && !intervieweeId) {
       layout = "col-6";
     }
-    if (this.props.isSomeoneShareScreen && this.props.user.screenShareActive) {
+    if (isSomeoneShareScreen && user.screenShareActive) {
       layout = "order-first";
     }
-    if (!!this.props.intervieweeId && isInterviewee) {
+    if (!!intervieweeId && isInterviewee) {
       layout = "order-first";
     }
+
     return (
       <div className={"video-container p-1 " + layout}>
-        <div className="video-wrapper">
+        <div className="video-wrapper" style={{ display: "grid" }}>
           <div className="nickname">
-            <span id="nickname">{this.props.user.getNickname()}</span>
+            <span id="nickname">{nickname}</span>
           </div>
 
-          {this.props.user !== undefined &&
-          this.props.user.getStreamManager() !== undefined ? (
+          {user !== undefined && user.getStreamManager() !== undefined ? (
             <>
               <OvVideoComponent
-                user={this.props.user}
+                user={user}
                 isInterviewee={isInterviewee}
-                mutedSound={this.state.mutedSound}
+                intervieweeId={intervieweeId}
+                isInterviewing={isInterviewing}
+                mutedSound={mutedSound}
               />
 
               <div>
-                {!this.props.user.isLocal() && (
+                {!user.isLocal() && (
                   <IconButton id="volumeButton" onClick={this.toggleSound}>
-                    {this.state.mutedSound ? (
+                    {mutedSound ? (
                       <VolumeOffIcon color="secondary" />
                     ) : (
                       <VolumeUpIcon />
@@ -65,13 +70,13 @@ export default class StreamComponent extends Component {
               </div>
 
               <div id="statusIcons">
-                {!this.props.user.isVideoActive() ? (
+                {!user.isVideoActive() ? (
                   <div id="camIcon">
                     <VideocamOffIcon id="statusCam" />
                   </div>
                 ) : null}
 
-                {!this.props.user.isAudioActive() ? (
+                {!user.isAudioActive() ? (
                   <div id="micIcon">
                     <MicOffIcon id="statusMic" />
                   </div>

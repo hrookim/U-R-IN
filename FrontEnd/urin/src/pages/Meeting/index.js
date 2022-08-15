@@ -21,7 +21,7 @@ function withParams(Component) {
   return (props) => <Component {...props} params={useParams()} />;
 }
 
-class VideoRoomComponent extends Component {
+class Meeting extends Component {
   constructor(props) {
     super(props);
     this.REACT_APP_BACK_BASE_URL = process.env.REACT_APP_BACK_BASE_URL;
@@ -36,9 +36,10 @@ class VideoRoomComponent extends Component {
       // myuserId: Math.floor(Math.random() * 100),
       myNickname: this.props.member.nickname,
       studyId: Number(this.props.params.studyId),
-      //
+      isLeader: false,
       sessionId: "sessionA",
       meetingId: undefined,
+      //
       session: undefined,
       localUser: undefined,
       subscribers: [],
@@ -46,7 +47,6 @@ class VideoRoomComponent extends Component {
       currentVideoDevice: undefined,
       intervieweeId: 0,
       intervieweeNickname: "",
-      isLeader: false,
       isInterviewing: false,
       isSomeoneShareScreen: false,
     };
@@ -76,6 +76,7 @@ class VideoRoomComponent extends Component {
   }
 
   onbeforeunload(event) {
+    event.preventDefault();
     this.leaveSession();
   }
 
@@ -161,7 +162,7 @@ class VideoRoomComponent extends Component {
       videoSource: videoDevices[0].deviceId,
       publishAudio: localUser.isAudioActive(),
       publishVideo: localUser.isVideoActive(),
-      resolution: "480x360",
+      resolution: "640x360",
       frameRate: 30,
       insertMode: "APPEND",
     });
@@ -235,10 +236,7 @@ class VideoRoomComponent extends Component {
     if (this.props.leaveSession) {
       this.props.leaveSession();
     }
-    this.endMeeting().then(() => {
-      console.log(123);
-      window.close();
-    });
+    this.endMeeting();
   }
 
   // 면접모드 전환
@@ -379,14 +377,15 @@ class VideoRoomComponent extends Component {
             user.setNickname(data.nickname);
           }
           if (data.isScreenShareActive !== undefined) {
+            // TODO: 화면공유 한명만 가능하게
             user.setScreenShareActive(data.isScreenShareActive);
+            this.checkSomeoneShareScreen();
           }
         }
       });
       this.setState({
         subscribers: remoteUsers,
       });
-      this.checkSomeoneShareScreen();
     });
   }
 
@@ -510,7 +509,6 @@ class VideoRoomComponent extends Component {
     const {
       myuserId,
       myNickname,
-      sessionId,
       meetingId,
       localUser,
       subscribers,
@@ -521,26 +519,33 @@ class VideoRoomComponent extends Component {
       feedbackDisplay,
       messageReceived,
       showExtensionDialog,
+      title,
     } = this.state;
 
     return (
       <>
-        <div className="container" id="container" style={{ height: "85vh" }}>
-          <div className="row" style={{ width: "100%" }}>
+        <div
+          className="container-fluid"
+          style={{ height: "100vh", width: "100vw" }}
+        >
+          <div className="row" style={{ height: "100%", width: "100%" }}>
             {/* 왼쪽 영역 */}
             <div className="col-9" style={{ height: "100%" }}>
               {/* 면접 모드바 */}
-              <div>
-                <button
-                  onClick={() =>
-                    this.interviewModeChanged(myuserId, myNickname)
-                  }
-                >
-                  면접모드
-                </button>
-                <button onClick={() => this.interviewModeChanged(0, "")}>
-                  일반모드
-                </button>
+              <div style={{ height: "10%" }}>
+                {!!intervieweeId ? (
+                  <button onClick={() => this.interviewModeChanged(0, "")}>
+                    일반모드
+                  </button>
+                ) : (
+                  <button
+                    onClick={() =>
+                      this.interviewModeChanged(myuserId, myNickname)
+                    }
+                  >
+                    면접모드
+                  </button>
+                )}
                 {isInterviewing ? (
                   <button onClick={() => this.interviewingChanged(true)}>
                     면접종료
@@ -569,25 +574,49 @@ class VideoRoomComponent extends Component {
               </div>
 
               {/* 비디오 영역 */}
-              <div
-                className="row justify-content-center mx-auto"
-                style={
-                  intervieweeId || isSomeoneShareScreen
-                    ? { maxHeight: "65%", aspectRatio: "4 / 3" }
-                    : { maxHeight: "80%", aspectRatio: "4 / 3" }
-                }
-              >
-                {localUser !== undefined &&
-                  localUser.getStreamManager() !== undefined &&
-                  [localUser, ...subscribers].map((user, i) => (
-                    <StreamComponent
-                      key={i}
-                      user={user}
-                      intervieweeId={intervieweeId}
-                      isSomeoneShareScreen={isSomeoneShareScreen}
-                      streamId={user.streamManager.stream.streamId}
-                    />
-                  ))}
+              <div style={{ height: "80%", position: "relative" }}>
+                <div
+                  className="row mx-auto justify-content-center align-items-center"
+                  style={Object.assign(
+                    {},
+                    {
+                      maxHeight: "100%",
+                      position: "absolute",
+                      top: "50%",
+                      transform: "translate(0, -50%)",
+                    },
+                    isSomeoneShareScreen || !!intervieweeId
+                      ? { aspectRatio: "16/12" }
+                      : { aspectRatio: "16/9" }
+                  )}
+                >
+                  {localUser !== undefined &&
+                    localUser.getStreamManager() !== undefined &&
+                    [localUser, ...subscribers].map((user, i) => (
+                      <StreamComponent
+                        key={i}
+                        user={user}
+                        intervieweeId={intervieweeId}
+                        isInterviewing={isInterviewing}
+                        isSomeoneShareScreen={isSomeoneShareScreen}
+                        streamId={user.streamManager.stream.streamId}
+                      />
+                    ))}
+                </div>
+              </div>
+
+              {/* 툴바 영역 */}
+              <div className="toolBar" style={{ height: "10%" }}>
+                <ToolbarComponent
+                  localUser={localUser}
+                  intervieweeId={intervieweeId}
+                  showNotification={messageReceived}
+                  camStatusChanged={this.camStatusChanged}
+                  micStatusChanged={this.micStatusChanged}
+                  screenShare={this.screenShare}
+                  stopScreenShare={this.stopScreenShare}
+                  leaveSession={this.leaveSession}
+                />
               </div>
             </div>
 
@@ -600,6 +629,7 @@ class VideoRoomComponent extends Component {
                     <FeedbackComponent
                       meetingId={meetingId}
                       localUser={localUser}
+                      isInterviewing={isInterviewing}
                       intervieweeId={intervieweeId}
                       intervieweeNickname={intervieweeNickname}
                       feedbackDisplay={feedbackDisplay}
@@ -620,19 +650,6 @@ class VideoRoomComponent extends Component {
                     />
                   </div>
                 )}
-
-              {/* 툴바 영역 */}
-              <ToolbarComponent
-                sessionId={sessionId}
-                user={localUser}
-                showNotification={messageReceived}
-                intervieweeId={intervieweeId}
-                camStatusChanged={this.camStatusChanged}
-                micStatusChanged={this.micStatusChanged}
-                screenShare={this.screenShare}
-                stopScreenShare={this.stopScreenShare}
-                leaveSession={this.leaveSession}
-              />
             </div>
           </div>
         </div>
@@ -726,10 +743,15 @@ class VideoRoomComponent extends Component {
             },
           }
         )
-        .then(() => {
-          resolve();
+        .then(() => {})
+        .catch((error) => {
+          console.error(error);
         })
-        .catch((error) => console.error(error));
+        .finally(() => {
+          setTimeout(function () {
+            window.close();
+          }, 1000);
+        });
     });
   }
 
@@ -806,16 +828,16 @@ class VideoRoomComponent extends Component {
   }
 }
 
-// redux state => props로 전달
+// redux store => props로 전달
 const mapStateToProps = (state) => ({
   member: state.member,
   study: state.study,
 });
 
-// TODO: 나중에 dispatch 할 함수들 위치
+// redux store => dispatch 할 함수들 위치
 const mapDispatchToProps = (dispatch) => ({});
 
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(withParams(VideoRoomComponent));
+)(withParams(Meeting));

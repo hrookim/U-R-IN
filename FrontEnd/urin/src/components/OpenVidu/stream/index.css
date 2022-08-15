@@ -46,7 +46,7 @@ video {
 }
 
 .video-wrapper {
-    aspect-ratio: 4 / 3;
+    aspect-ratio: 16 / 9;
     position: relative;
 }
 
