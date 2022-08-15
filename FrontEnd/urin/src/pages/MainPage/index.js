@@ -75,20 +75,15 @@ const MainPage = () => {
     }
   };
 
-  const [anchorEl, setAnchorEl] = React.useState(null);
   const [open, setOpen] = React.useState(false);
 
-  const handleClick = (event) => {
-    setAnchorEl(anchorEl ? null : event.currentTarget);
+  const handleClick = () => {
+    setOpen((prev) => !prev);
   };
 
   const handleClickAway = () => {
     setOpen(false);
   };
-
-  // const open = Boolean(anchorEl);
-
-  const id = open ? "simple-popover" : undefined;
 
   useEffect(() => {
     dispatch(getStudyList([page - 1, checked, keyword, hashtags]));
@@ -111,15 +106,40 @@ const MainPage = () => {
             />
 
             <div className="search-condition">
-              <IconButton
-                aria-describedby={id}
-                variant="text"
-                onClick={handleClick}
-                className="font-30 font-xs search-icon-btn"
-                sx={{ color: "#0037FA" }}
-              >
-                <TagIcon />
-              </IconButton>
+              <ClickAwayListener onClickAway={handleClickAway}>
+                <Box sx={{ position: "relative" }}>
+                  <IconButton
+                    variant="text"
+                    onClick={handleClick}
+                    className="font-30 font-xs search-icon-btn"
+                    sx={{ color: "#0037FA" }}
+                  >
+                    <TagIcon />
+                  </IconButton>
+                  {open ? (
+                    <Box
+                      sx={{
+                        position: "absolute",
+                        right: "-50px",
+                        border: 1,
+                        padding: "15px",
+                        bgcolor: "rgba(240, 240, 240, 0.7)",
+                        width: "50vw",
+                        borderColor: "white",
+                        borderRadius: "20px",
+                        boxShadow: "2",
+                        zIndex: "1",
+                      }}
+                    >
+                      <SearchFilter
+                        getHashtags={getHashtags}
+                        getOverflowed={getOverflowed}
+                      />
+                    </Box>
+                  ) : null}
+                </Box>
+              </ClickAwayListener>
+
               <IconButton
                 type="submit"
                 className="search-btn"
@@ -127,27 +147,6 @@ const MainPage = () => {
               >
                 <SearchIcon className="btn-icon" sx={{ color: "rgb(0,0,0)" }} />
               </IconButton>
-
-              <Popper id={id} open={open} anchorEl={anchorEl}>
-                <Box
-                  sx={{
-                    border: 1,
-                    padding: "15px",
-                    bgcolor: "background.paper",
-                    maxWidth: "480px",
-                    minWidth: "200px",
-                    maxHeight: "400px",
-                    borderColor: "white",
-                    borderRadius: "20px",
-                    boxShadow: "2",
-                  }}
-                >
-                  <SearchFilter
-                    getHashtags={getHashtags}
-                    getOverflowed={getOverflowed}
-                  />
-                </Box>
-              </Popper>
             </div>
           </form>
         </div>
@@ -211,43 +210,45 @@ const MainPage = () => {
                 borderRadius: "20px",
                 maxWidth: "500px",
                 boxShadow: 0,
+                "&:hover": {
+                  transform: "scale(1.05)",
+                  transition: "all ease 0.3s",
+                },
               }}
             >
               <Link to={`/study/${item.id}`} className="card-link">
-                <CardActionArea>
-                  <CardMedia
-                    className="card-img"
-                    component="img"
-                    height="140"
-                    image={`/img/study_img${item.title.length % 10}.png`}
-                    alt="green iguana"
-                  />
-                  <CardContent
-                    className="card-content"
-                    sx={{ padding: "18px 4px 0 4px" }}
-                  >
-                    <p className="font-70 font-md card-title">{item.title}</p>
-                    {item.status === "RECRUITING" ? (
-                      <div className="card-status">
-                        <span className="font-50 font-xs card-status-recruiting">
-                          {item.status}&nbsp;&nbsp;&nbsp;&nbsp;
-                        </span>
-                        <span className="font-30 font-xs">
-                          {item.currentMember}/{item.memberCapacity}
-                        </span>
-                      </div>
-                    ) : (
-                      <div className="card-status">
-                        <span className="font-50 font-xs card-status-completed">
-                          {item.status}&nbsp;&nbsp;&nbsp;&nbsp;
-                        </span>
-                        <span className="font-30 font-xs">
-                          {item.currentMember}/{item.memberCapacity}
-                        </span>
-                      </div>
-                    )}
-                  </CardContent>
-                </CardActionArea>
+                <CardMedia
+                  className="card-img"
+                  component="img"
+                  height="140"
+                  image={`/img/study_img${item.title.length % 10}.png`}
+                  alt="green iguana"
+                />
+                <CardContent
+                  className="card-content"
+                  sx={{ padding: "18px 4px 0 4px" }}
+                >
+                  <p className="font-70 font-md card-title">{item.title}</p>
+                  {item.status === "RECRUITING" ? (
+                    <div className="card-status">
+                      <span className="font-50 font-xs card-status-recruiting">
+                        {item.status}&nbsp;&nbsp;&nbsp;&nbsp;
+                      </span>
+                      <span className="font-30 font-xs">
+                        {item.currentMember}/{item.memberCapacity}
+                      </span>
+                    </div>
+                  ) : (
+                    <div className="card-status">
+                      <span className="font-50 font-xs card-status-completed">
+                        {item.status}&nbsp;&nbsp;&nbsp;&nbsp;
+                      </span>
+                      <span className="font-30 font-xs">
+                        {item.currentMember}/{item.memberCapacity}
+                      </span>
+                    </div>
+                  )}
+                </CardContent>
               </Link>
             </Card>
           </Grid>

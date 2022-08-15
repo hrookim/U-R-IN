@@ -40,3 +40,17 @@
 .more-btn > p{
   margin: 0 0 0 0;
 }
+
+.report-btn {
+  text-decoration: none;
+}
+
+.card-btn {
+  display: flex;
+  justify-content: center;
+  margin: 15px 0 0 0;
+}
+
+.btn-hover:hover ~ .card-hover {
+  background-color: black;
+}

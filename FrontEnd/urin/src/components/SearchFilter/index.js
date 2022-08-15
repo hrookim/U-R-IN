@@ -3,11 +3,13 @@ import { css } from "@emotion/react";
 import { Grid } from "@mui/material";
 import SearchButton from "../SearchButton";
 
-const SearchFilter = ({ getHashtags, getOverflowed, oldHashtags }) => {
+const SearchFilter = ({ getHashtags, getOverflowed }) => {
   const [hashtags, setHashtags] = useState("");
   const [selected, setSelected] = useState(true);
+  const [oldChecked, setOldChecked] = useState("");
 
   useEffect(() => {
+    console.log("hashtags===============");
     getHashtags(hashtags);
     getOverflowed(false);
   }, [hashtags]);

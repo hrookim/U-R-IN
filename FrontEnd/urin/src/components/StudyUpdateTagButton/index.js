@@ -62,7 +62,6 @@ const StudyUpdateTagButton = ({
 
   const handleClick = (e) => {
     const value = e.target.id;
-    console.log("뭐 눌렀는지 아이디", value);
 
     if (selected) {
       setSelected(false);

@@ -3,6 +3,7 @@ import "./index.css";
 
 import {
   Avatar,
+  Box,
   Button,
   Card,
   CardActionArea,
@@ -107,43 +108,52 @@ const MyPage = () => {
                 borderRadius: "20px",
                 maxWidth: "500px",
                 boxShadow: 0,
+                "&:hover": {
+                  borderColor: "rgba(0, 55, 250, 0.5)",
+                },
               }}
             >
               <Link to={`/study/${item.id}`} className="card-link">
-                <CardActionArea>
-                  <CardMedia
-                    className="card-img"
-                    component="img"
-                    height="140"
-                    image={`/img/study_img${item.title.length % 10}.png`}
-                    alt="green iguana"
-                  />
-                  <CardContent
-                    className="card-content"
-                    sx={{ padding: "18px 4px 0 4px" }}
-                  >
-                    <p className="font-70 font-md card-title">{item.title}</p>
-                    {item.status === "RECRUITING" ? (
-                      <div className="card-status">
-                        <span className="font-50 font-xs card-status-recruiting">
-                          {item.status}&nbsp;&nbsp;&nbsp;&nbsp;
-                        </span>
-                        <span className="font-30 font-xs">
-                          {item.currentMember}/{item.memberCapacity}
-                        </span>
-                      </div>
-                    ) : (
-                      <div className="card-status">
-                        <span className="font-50 font-xs card-status-completed">
-                          {item.status}&nbsp;&nbsp;&nbsp;&nbsp;
-                        </span>
-                        <span className="font-30 font-xs">
-                          {item.currentMember}/{item.memberCapacity}
-                        </span>
-                      </div>
-                    )}
-                  </CardContent>
-                </CardActionArea>
+                <CardMedia
+                  className="card-img"
+                  component="img"
+                  height="140"
+                  image={`/img/study_img${item.title.length % 10}.png`}
+                  alt="green iguana"
+                />
+                <CardContent
+                  className="card-content"
+                  sx={{ padding: "18px 4px 0px 4px" }}
+                >
+                  <p className="font-70 font-md card-title">{item.title}</p>
+                  <div className="card-btn">
+                    <Link to="/" className="report-btn">
+                      <Button
+                        variant="contained"
+                        className="btn-hover"
+                        sx={{
+                          borderColor: "rgba(0, 55, 250, 0.5)",
+                          backgroundColor: "rgba(0, 55, 250, 0.1)",
+                          color: "#0037FA",
+                          height: "36px",
+                          width: "200px",
+                          boxShadow: "0",
+                          borderRadius: "10px",
+                          "&:hover": {
+                            borderColor: "#0037FA",
+                            color: "#0037FA",
+                            backgroundColor: "rgba(0, 55, 250, 0.1)",
+                            transform: "scale(1.08)",
+                            transition: "all ease 0.3s",
+                            boxShadow: "0",
+                          },
+                        }}
+                      >
+                        <span className="font-xs">리포트 보기</span>
+                      </Button>
+                    </Link>
+                  </div>
+                </CardContent>
               </Link>
             </Card>
           </Grid>
@@ -196,40 +206,19 @@ const MyPage = () => {
               }}
             >
               <Link to={`/study/${item.id}`} className="card-link">
-                <CardActionArea>
-                  <CardMedia
-                    className="card-img"
-                    component="img"
-                    height="140"
-                    image={`/img/study_img${item.title.length % 10}.png`}
-                    alt="green iguana"
-                  />
-                  <CardContent
-                    className="card-content"
-                    sx={{ padding: "18px 4px 0 4px" }}
-                  >
-                    <p className="font-70 font-md card-title">{item.title}</p>
-                    {item.status === "RECRUITING" ? (
-                      <div className="card-status">
-                        <span className="font-50 font-xs card-status-recruiting">
-                          {item.status}&nbsp;&nbsp;&nbsp;&nbsp;
-                        </span>
-                        <span className="font-30 font-xs">
-                          {item.currentMember}/{item.memberCapacity}
-                        </span>
-                      </div>
-                    ) : (
-                      <div className="card-status">
-                        <span className="font-50 font-xs card-status-completed">
-                          {item.status}&nbsp;&nbsp;&nbsp;&nbsp;
-                        </span>
-                        <span className="font-30 font-xs">
-                          {item.currentMember}/{item.memberCapacity}
-                        </span>
-                      </div>
-                    )}
-                  </CardContent>
-                </CardActionArea>
+                <CardMedia
+                  className="card-img"
+                  component="img"
+                  height="140"
+                  image={`/img/study_img${item.title.length % 10}.png`}
+                  alt="green iguana"
+                />
+                <CardContent
+                  className="card-content"
+                  sx={{ padding: "18px 4px 0px 4px" }}
+                >
+                  <p className="font-70 font-md card-title">{item.title}</p>
+                </CardContent>
               </Link>
             </Card>
           </Grid>
