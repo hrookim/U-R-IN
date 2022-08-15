@@ -62,7 +62,7 @@ const AnalysisChart = (props) => {
       options={chart.options}
       series={chart.series}
       type="bar"
-      width="1070"
+      width="1110"
       height="300"
     />
   );

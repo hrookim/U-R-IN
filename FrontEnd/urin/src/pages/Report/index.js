@@ -1,6 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Paper, Grid, Box, FormControl, MenuItem, Select } from "@mui/material";
+import {
+  Paper,
+  Grid,
+  Box,
+  FormControl,
+  MenuItem,
+  Select,
+  Button,
+} from "@mui/material";
 import "./index.css";
 import html2canvas from "html2canvas";
 import JSPDF from "jspdf";
@@ -161,7 +169,7 @@ const Report = () => {
         </div>
         {/* 리포트 선택 */}
         <Grid container className="report-select">
-          <Grid xs={9}>
+          <Grid xs={10}>
             <FormControl sx={{ m: 1, minWidth: 120 }} size="small">
               <Select
                 id="demo-select-small"
@@ -177,10 +185,8 @@ const Report = () => {
               </Select>
             </FormControl>
           </Grid>
-          <Grid xs={2}>
-            <button type="button" onClick={printDocument()}>
-              pdf
-            </button>
+          <Grid xs={1.2}>
+            <Button onClick={printDocument}>pdf 내보내기</Button>
           </Grid>
         </Grid>
 
@@ -240,7 +246,7 @@ const Report = () => {
                 backgroundColor: "#F2F2F2",
               },
             }}
-            className="report-content-box"
+            className="report-content-box-ai"
           >
             <Paper elevation={3} className="report-content-paper">
               <div
@@ -267,7 +273,7 @@ const Report = () => {
                 backgroundColor: "#F6F6F9",
               },
             }}
-            className="report-content-box"
+            className="report-content-box-ai"
           >
             <Paper elevation={3} className="report-content-paper">
               <div
@@ -292,7 +298,7 @@ const Report = () => {
                 backgroundColor: "#F6F6F9",
               },
             }}
-            className="report-content-box"
+            className="report-content-box-ai"
           >
             <Paper elevation={3} className="report-content-paper">
               <div
@@ -316,7 +322,8 @@ const Report = () => {
                     className="report-content-move-content font-40"
                   >
                     분당 7회 움직임이 감지되었습니다. 합격자 대비 20% 적은
-                    움직임이니 움직임에 많은 신경을 쏟을 필요는 없겠네요!
+                    움직임이니 움직임에 많은 신경을 쏟을 필요는
+                    없겠네요!ddddddddddddddddd
                   </Grid>
                 </Grid>
                 <Grid item container xs={6}>
@@ -339,24 +346,21 @@ const Report = () => {
                   <Grid
                     xs={9}
                     item
-                    className="report-content-move-content fonr-40"
+                    className="report-content-move-content font-40"
                   >
                     분당 7회 움직임이 감지되었습니다. 합격자 대비 20% 적은
                     움직임이니 움직임에 많은 신경을 쏟을 필요는 없겠네요!
+                    fffffffffff
                   </Grid>
                 </Grid>
                 <Grid item container xs={6}>
-                  <Grid
-                    xs={2}
-                    item
-                    className="report-content-move-title font-50"
-                  >
+                  <Grid xs={2} className="report-content-move-title font-50">
                     움직임 4
                   </Grid>
                   <Grid
                     xs={9}
                     item
-                    className="report-content-move-content fonr-40"
+                    className="report-content-move-content font-40"
                   >
                     분당 7회 움직임이 감지되었습니다. 합격자 대비 20% 적은
                     움직임이니 움직임에 많은 신경을 쏟을 필요는 없겠네요!

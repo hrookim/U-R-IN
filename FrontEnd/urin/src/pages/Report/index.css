@@ -63,9 +63,7 @@ a {
 .report-content {
 position: relative;
 }
-.report-content-box {
-  width: 1200
-}
+
 
 .report-content-title{
   margin: 20px 10px 10px 10px ;
@@ -75,6 +73,11 @@ position: relative;
 }
 .report-content-comment{
   margin: 10px 0 0 0 ;
+}
+.report-content-box-ai {
+  margin: 15px 0 0 0 ;
+ 
+width: 100%
 }
 .report-content-box {
   margin: 15px 0 0 0 ;
