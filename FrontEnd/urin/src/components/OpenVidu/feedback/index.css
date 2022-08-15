@@ -1,12 +1,18 @@
 .fb-container {
   width: 350px;
-  padding: 10px;
+  padding: 10px 10px 0 10px;
   border: 1px solid #ffffff;
   box-shadow: 0px 0px 5px 1px rgba(175, 175, 175, 0.39);
   box-sizing: border-box;
   border-radius: 10px;
-  height: 400px;
+  height: 370px;
   overflow: scroll;
+}
+
+.fb-radio-label {
+  display: flex;
+  align-items: center;
+  margin-right: 30px;
 }
 
 .fb-radio-box {
@@ -16,6 +22,8 @@
 
 .fb-radio {
   margin: 0;
+  display: flex;
+  align-items: center;
 }
 
 .fb-q-list {
@@ -29,50 +37,63 @@
 
 #qna {
   width: 320px;
-  height: 40px;
+  height: 50px;
   font-size: 14px;
   border: 0;
   border-radius: 5px;
   outline: none;
-  padding-left: 10px;
+  padding: 5px 10px;
   background-color: rgb(233, 233, 233);
 }
 
-.add-button {
-  width: 320px;
-  height: 25px;
-  border: 1px solid #d3d3d3;
-  background-color: white;
-  border-radius: 12px;
-
+#qna :focus {
+  background-color: yellow;
 }
 
-#add-question {
-  width: 200px;
-  height: 40px;
-  font-size: 14px;
-  border: 1px solid #d3d3d3;
-  background-color: white;
-  border-radius: 5px;
-  outline: none;
-  padding-left: 10px;
-}
 
+.save-box {
+  display: flex;
+  justify-content: flex-end;
+}
 .save-button {
-  text-align: center;
+  color: white;
   height: 25px;
+  width: 50px;
   border: 0;
   border-radius: 12px;
   outline: none;
-  padding-left: 10px;
-  background-color: rgb(233, 233, 233);
+  padding: 0 10px;
+  background-color: #01208F;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
-.delete-button {
-  height: 15px;
-  border: 1px solid rgb(255, 21, 21);
-  border-radius: 3px;
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  appearance: none;
+.save-loading-box {
+  height: 25px;
+  width: 50px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.save-loading {
+  height: 25px;
+  width: 25px;
+  background: #ffffff33;
+  border-radius: 50%;
+  border: 2px solid #01208F;
+  border-top-color: #fff;
+  border-bottom-color: #fff;
+  animation: spinner3 800ms ease infinite;
+}
+
+.save-loading :hover {
+  cursor: alias;
+}
+
+@keyframes spinner3 {
+  to {
+    transform: rotate(360deg);
+  }
 }
