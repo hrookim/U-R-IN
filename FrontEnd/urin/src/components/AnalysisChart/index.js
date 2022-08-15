@@ -9,8 +9,15 @@ const AnalysisChart = (props) => {
       },
       plotOptions: {
         bar: {
+          barHeight: "30%",
           horizontal: true,
           dataLabels: {
+            style: {
+              fontSize: "14px",
+              fontFamily: "Helvetica, Arial, sans-serif",
+              fontWeight: "bold",
+              colors: "fff",
+            },
             position: "top",
           },
         },
@@ -37,7 +44,7 @@ const AnalysisChart = (props) => {
       options={chart.options}
       series={chart.series}
       type="bar"
-      width="1200"
+      width="1070"
       height="300"
     />
   );

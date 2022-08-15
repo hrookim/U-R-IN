@@ -113,7 +113,7 @@ const Report = () => {
       ],
     },
   ]);
-
+  const [question, setQuestion] = useState(" ");
   const memberName = useSelector((state) => state.member.memberName);
   // /////////////////
 
@@ -167,36 +167,51 @@ const Report = () => {
         </div>
         <hr />
 
-        <div className="font-sm font-60 report-index">목차</div>
-        {/* 리포트 목차 */}
-        <div className="report-index-title">
-          {reports.map((item) => (
-            <a href={item.feedBackList.question}>
-              {item.feedBackList.map((item2) => (
-                <div className="font-sm font-60 report-index">
-                  {item2.question}
-                </div>
-              ))}
+        <div className="font-md font-60 report-index">목차</div>
+        <details>
+          <summary className="font-sm font-60 report-index-title">
+            AI 분석
+          </summary>
+          <div className="report-index-content">
+            <a href="#confidence" className="font-sm font-60">
+              &nbsp;자신감
             </a>
-          ))}
-        </div>
-        <div className="font-sm font-60 report-index">AI 분석</div>
-        <div>
-          <a href="#confidence" className="font-sm font-60 report-index">
-            자신감
-          </a>
-        </div>
-        <div>
-          <a href="#calmness" className="font-sm font-60 report-index">
-            침착함
-          </a>
-        </div>
-        <div>
-          <a href="#stability" className="font-sm font-60 report-index">
-            안정감
-          </a>
-        </div>
+          </div>
+          <div className="report-index-content">
+            <a href="#calmness" className="font-sm font-60 ">
+              &nbsp;침착함
+            </a>
+          </div>
+          <div className="report-index-content">
+            <a href="#stability" className="font-sm font-60 ">
+              &nbsp;안정감
+            </a>
+          </div>
+        </details>
 
+        <details>
+          <summary className="font-sm font-60 report-index-title">
+            피드백
+          </summary>
+          {/* 리포트 목차 */}
+
+          {reports[page].feedBackList.map((item) => (
+            <div className="report-index-content">
+              <a href={"#".concat(item.question)} className="font-sm font-60">
+                &nbsp;{item.question}
+              </a>
+            </div>
+
+            // to={format(item.question)}
+            // <MenuItem>
+            //   {item.feedBackList.map((item2) => (
+            //     <a href={item2.question} className="font-sm font-60">
+            //       {item2.question}
+            //     </a>
+            //   ))}
+            // </MenuItem>
+          ))}
+        </details>
         <div className="report-content">
           <div className="font-lg font-70 content-title">AI 분석</div>
           {/* 자신감 */}
@@ -209,11 +224,15 @@ const Report = () => {
               },
             }}
             className="report-content-box"
-            id="confidence"
           >
             <Paper elevation={3} className="report-content-paper">
-              <div className="font-md font-60 ">자신감</div>
-              <div className="font-sm font-40 ">
+              <div
+                className="font-md font-60 report-content-title"
+                id="confidence"
+              >
+                자신감
+              </div>
+              <div className="font-sm font-40 report-content-detail">
                 안정적인 눈동자의 움직임과 적절한 미소는 면접관에게 자신감 있는
                 인상을 심어줍니다.
               </div>
@@ -228,15 +247,19 @@ const Report = () => {
               display: "flex",
               flexWrap: "wrap",
               "& > :not(style)": {
-                backgroundColor: "#F2F2F2",
+                backgroundColor: "#F6F6F9",
               },
             }}
             className="report-content-box"
-            id="calmness"
           >
             <Paper elevation={3} className="report-content-paper">
-              <div className="font-md font-60 ">침착함</div>
-              <div className="font-sm font-40 ">
+              <div
+                className="font-md font-60 report-content-title"
+                id="calmness"
+              >
+                침착함
+              </div>
+              <div className="font-sm font-40 report-content-detail">
                 안정적인 눈동자의 움직임과 적절한 미소는 면접관에게 자신감 있는
                 인상을 심어줍니다.
               </div>
@@ -249,31 +272,46 @@ const Report = () => {
           <Box
             sx={{
               "& > :not(style)": {
-                backgroundColor: "#F2F2F2",
+                backgroundColor: "#F6F6F9",
               },
             }}
             className="report-content-box"
-            id="stability"
           >
-            {" "}
             <Paper elevation={3} className="report-content-paper">
-              <div className="font-md font-60 ">안정감</div>
-              <div className="font-sm font-40 ">
+              <div
+                className="font-md font-60 report-content-title"
+                id="stability"
+              >
+                안정감
+              </div>
+              <div className="font-sm font-40 report-content-detail">
                 안정적인 눈동자의 움직임과 적절한 미소는 면접관에게 자신감 있는
                 인상을 심어줍니다.
               </div>
-              <Grid container>
-                <Grid item xs={6}>
-                  움직임 1
+              <Grid container className="report-content-move">
+                <Grid item container xs={6}>
+                  <Grid xs={2} className="report-content-move-title">
+                    움직임 1
+                  </Grid>
+                  <Grid className="report-content-move-content">움직임 1</Grid>
                 </Grid>
-                <Grid item xs={6}>
-                  웅직임 2
+                <Grid item container xs={6}>
+                  <Grid xs={2} className="report-content-move-title">
+                    움직임 2
+                  </Grid>
+                  <Grid className="report-content-move-content">움직임 1</Grid>
                 </Grid>
-                <Grid item xs={6}>
-                  움직임 3
+                <Grid item container xs={6}>
+                  <Grid xs={2} className="report-content-move-title">
+                    움직임 3
+                  </Grid>
+                  <Grid className="report-content-move-content">움직임 1</Grid>
                 </Grid>
-                <Grid item xs={6}>
-                  움직임 4
+                <Grid item container xs={6}>
+                  <Grid xs={2} className="report-content-move-title">
+                    움직임 4
+                  </Grid>
+                  <Grid className="report-content-move-content">움직임 1</Grid>
                 </Grid>
               </Grid>
             </Paper>
@@ -288,10 +326,10 @@ const Report = () => {
               display: "flex",
               flexWrap: "wrap",
               "& > :not(style)": {
-                backgroundColor: "#F2F2F2",
+                backgroundColor: "#F6F6F9",
               },
             }}
-            className="report-content-box"
+            className="report-content-feedback-box"
           >
             {reports[page].feedBackList.map((item) => (
               <div className=" report-content-box" id={item.question}>

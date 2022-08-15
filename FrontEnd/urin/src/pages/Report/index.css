@@ -1,3 +1,8 @@
+a {
+  text-decoration: none;
+  color: black;
+}
+
 .report{
     margin: 0 auto;
     max-width: 1200px;
@@ -10,6 +15,8 @@
 .title-banner {
   position: relative;
 }
+
+
 
 .title-banner-title {
   position: absolute;
@@ -29,12 +36,19 @@
 
 
 .report-index {
-  margin: 40px 0 0 0;
+  margin: 20px 0 0 0;
   
 }
 .report-index-title {
-  margin: 5px 5px 5px 5px;
+  margin: 5px 5px 5px 10px;
   
+}
+.report-index-content {
+  margin: 5px 5px 5px 35px;
+
+    border-left-color: #0037FA;
+    border-left-style: solid;
+ 
 }
 .report-title {
   margin: 40px 0 0 0;
@@ -53,26 +67,38 @@ position: relative;
   width: 1200
 }
 
+.report-content-title{
+  margin: 20px 10px 10px 10px ;
+}
+.report-content-detail{
+  margin: 10px 10px 10px 10px ;
+}
 .report-content-comment{
   margin: 10px 0 0 0 ;
 }
 .report-content-box {
   margin: 15px 0 0 0 ;
- padding: 25px 15px 25px 25px;
+ padding: 0px 15px 25px 25px;
 width: 100%
 }
+
+.report-content-feedback-box{
+
+}
+.report-content-paper {
+  position: relative;
+  width: 1200;
+  padding: 10px 45px 45px 45px;
+}
+
 .report-content-question {
-  
+  margin: 15px 0 15px 0;
 }
 .report-content-comment {
   margin: 0 0 0 20px;
  
 }
 
-.report-content-paper {
-  position: relative;
-  width: 1200
-}
 
 .report-content-paper-chart {
     position: absolute;
@@ -115,4 +141,24 @@ width: 100%
 
 .content-title-group {
   margin: 20px 0 0 0;
+}
+
+.report-content-move-title{
+  width: 100px;
+    height: 100px;
+    margin: 10px;
+    font-size: 20px;
+    /* line-height: 100px; */
+    text-align: center;
+padding: 6% 0 0 0;
+    background: #ECECEC;
+    border-radius: 20px;
+}
+
+.report-content-move-content{
+    height: 100px;
+    margin: 10px;  
+    padding: 15px;
+    /* background: #ECECEC;
+    border-radius: 20px; */
 }
