@@ -104,12 +104,12 @@
   margin: 10px auto 10px auto;
 }
 
-.card-link{
+.card-link2{
   text-decoration: none;
   color: black;
 }
 
-.card-link:hover{
+.card-link2:hover{
   text-decoration: none;
   color: rgb(0,55,250);
 }

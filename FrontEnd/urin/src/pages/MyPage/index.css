@@ -43,14 +43,75 @@
 
 .report-btn {
   text-decoration: none;
+  margin: 10px 0;
 }
 
 .card-btn {
   display: flex;
   justify-content: center;
+  flex-direction: column;
   margin: 15px 0 0 0;
 }
 
-.btn-hover:hover ~ .card-hover {
-  background-color: black;
+
+.card-inner {
+  position: relative;
+}
+
+.card-item{
+  display: flex;
+  justify-content: center;  
+}
+
+.card-mypage{
+  position: absolute;
+  width: 250px;
+  padding: 20px 20px 0px 20px;
+  display: flex;
+  justify-content: center;
+  box-shadow: 0px 0px 10px rgba(50, 50, 50, 0.1);
+  margin: 10px auto 10px auto;
+}
+
+.card-link{
+  text-decoration: none;
+  color: black;
+  max-width: 177.18px;
+}
+
+.card-link:hover{
+  text-decoration: none;
+}
+
+
+.card-img{
+  padding: 10px 10px 10px 10px; 
+  box-shadow: 0px 0px 5px rgba(50, 50, 50, 0.2);
+}
+
+
+.card-title{
+  margin: 0 0 0 0;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.card-status-recruiting{
+  display: flex;
+  justify-content: end;
+  color: red;
+}
+
+.card-status-completed{
+  display: flex;
+  justify-content: end;
+  color: rgb(180, 180, 180)
+}
+
+.card-status {
+  display: flex;
+  justify-content: right;
+  align-items: center;
+  margin: 7px 2px 0 0;
 }

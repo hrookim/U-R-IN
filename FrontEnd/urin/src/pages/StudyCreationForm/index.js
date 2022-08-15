@@ -1,6 +1,6 @@
 /* eslint-disable react/jsx-props-no-spreading */
 
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import moment from "moment";
 import {
   Button,
@@ -24,7 +24,6 @@ import { useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { createStudy } from "../../store/studySlice";
 import CheckValidation from "../../components/CheckValidation";
-import { getMemberId } from "../../store/memberSlice";
 import SearchFilter from "../../components/SearchFilter";
 
 import "./index.css";
@@ -34,19 +33,18 @@ const StudyCreationForm = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const [form, setForm] = useState({
-    title: "",
-    notice: "",
-    expirationDate: new Date(),
-    memberCapacity: 2,
-    hashtags: "",
-  });
   const [formDate, setFormDate] = useState(new Date());
   const [disable, setDisable] = useState(false);
   const [errorStatement, setErrorStatement] = useState("");
   const [hashtags, setHashtags] = useState("");
 
-  console.log(formDate, "날짜");
+  const [form, setForm] = useState({
+    title: "",
+    notice: "",
+    expirationDate: moment(new Date()).format("YYYY-MM-DD"),
+    memberCapacity: 2,
+    hashtags: "",
+  });
 
   // popper관련
   const [anchorEl, setAnchorEl] = React.useState(null);

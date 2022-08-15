@@ -1,33 +1,26 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./index.css";
 
 import {
   Avatar,
-  Box,
   Button,
   Card,
-  CardActionArea,
   CardContent,
   CardMedia,
   Grid,
-  IconButton,
 } from "@mui/material";
 
-import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import WorkspacePremiumIcon from "@mui/icons-material/WorkspacePremium";
-import { useNavigate, Link } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { getMemberId } from "../../store/memberSlice";
 import { getMyPage } from "../../store/myPageSlice";
 import CheckValidation from "../../components/CheckValidation";
 import "../../assets/DesignSystem.css";
 
 const MyPage = () => {
-  const navigate = useNavigate();
   const dispatch = useDispatch();
 
   const memberName = useSelector((state) => state.member.nickname);
-  const memberId = useSelector((state) => state.member.id);
   const myPage = useSelector((state) => state.mypage);
 
   const [currentAllChecked, setCurrentAllChecked] = useState(false);
@@ -37,7 +30,7 @@ const MyPage = () => {
     dispatch(getMyPage({ currentAllChecked, pastAllChecked }));
   }, [currentAllChecked, pastAllChecked]);
 
-  const currentCheck = (e) => {
+  const currentCheck = () => {
     if (currentAllChecked) {
       setCurrentAllChecked(false);
     } else {
@@ -45,7 +38,7 @@ const MyPage = () => {
     }
   };
 
-  const pastCheck = (e) => {
+  const pastCheck = () => {
     if (pastAllChecked) {
       setPastAllChecked(false);
     } else {
@@ -100,62 +93,128 @@ const MyPage = () => {
             key={item.id}
             className="card-item"
           >
-            <Card
-              key={item.id}
-              className="card card-hover"
-              sx={{
-                borderColor: "#dedede",
-                borderRadius: "20px",
-                maxWidth: "500px",
-                boxShadow: 0,
-                "&:hover": {
-                  borderColor: "rgba(0, 55, 250, 0.5)",
-                },
-              }}
-            >
-              <Link to={`/study/${item.id}`} className="card-link">
-                <CardMedia
-                  className="card-img"
-                  component="img"
-                  height="140"
-                  image={`/img/study_img${item.title.length % 10}.png`}
-                  alt="green iguana"
-                />
-                <CardContent
-                  className="card-content"
-                  sx={{ padding: "18px 4px 0px 4px" }}
-                >
-                  <p className="font-70 font-md card-title">{item.title}</p>
-                  <div className="card-btn">
-                    <Link to="/" className="report-btn">
-                      <Button
-                        variant="contained"
-                        className="btn-hover"
-                        sx={{
-                          borderColor: "rgba(0, 55, 250, 0.5)",
-                          backgroundColor: "rgba(0, 55, 250, 0.1)",
+            <div className="card-inner">
+              <Card
+                key={item.id}
+                className="card-mypage"
+                sx={{
+                  borderStyle: "solid",
+                  borderColor: "rgba(0,0,0,0.05)",
+                  borderRadius: "20px",
+                  maxWidth: "500px",
+                  boxShadow: 0,
+                }}
+              >
+                <Link to={`/study/${item.id}`} className="card-link">
+                  <CardMedia
+                    className="card-img"
+                    component="img"
+                    height="140"
+                    image={`/img/study_img${item.title.length % 10}.png`}
+                    alt="green iguana"
+                  />
+                  <CardContent
+                    className="card-content"
+                    sx={{ padding: "18px 4px 0px 4px" }}
+                  >
+                    <p className="font-70 font-md card-title">{item.title}</p>
+                    {item.status === "RECRUITING" ? (
+                      <div className="card-status">
+                        <span className="font-50 font-xs card-status-recruiting">
+                          {item.status}&nbsp;&nbsp;&nbsp;&nbsp;
+                        </span>
+                        <span className="font-30 font-xs">
+                          {item.currentMember}/{item.memberCapacity}
+                        </span>
+                      </div>
+                    ) : (
+                      <div className="card-status">
+                        <span className="font-50 font-xs card-status-completed">
+                          {item.status}&nbsp;&nbsp;&nbsp;&nbsp;
+                        </span>
+                        <span className="font-30 font-xs">
+                          {item.currentMember}/{item.memberCapacity}
+                        </span>
+                      </div>
+                    )}
+                  </CardContent>
+                </Link>
+              </Card>
+              <Card
+                key={item.id}
+                className="card"
+                sx={{
+                  opacity: "0",
+                  backgroundColor: "rgba(255,255,255,0)",
+                  borderColor: "#dedede",
+                  borderRadius: "20px",
+                  maxWidth: "500px",
+                  height: "260.5px",
+                  boxShadow: 0,
+                  "&:hover": {
+                    opacity: "1",
+                    backgroundColor: "rgba(255,255,255,0.9)",
+                    borderColor: "rgba(0, 55, 250, 0.5)",
+                  },
+                }}
+              >
+                <div className="card-btn">
+                  <Link to={`/study/${item.id}`} className="report-btn">
+                    <Button
+                      variant="contained"
+                      className="btn-hover"
+                      sx={{
+                        borderColor: "#0037FA",
+                        color: "#0037FA",
+                        backgroundColor: "rgba(0, 55, 250, 0.2)",
+
+                        height: "36px",
+                        width: "200px",
+                        boxShadow: "0",
+                        borderRadius: "10px",
+
+                        "&:hover": {
+                          borderColor: "#0037FA",
                           color: "#0037FA",
-                          height: "36px",
-                          width: "200px",
+                          backgroundColor: "rgba(0, 55, 250, 0.3)",
+                          transform: "scale(1.08)",
+                          transition: "all ease 0.3s",
                           boxShadow: "0",
-                          borderRadius: "10px",
-                          "&:hover": {
-                            borderColor: "#0037FA",
-                            color: "#0037FA",
-                            backgroundColor: "rgba(0, 55, 250, 0.1)",
-                            transform: "scale(1.08)",
-                            transition: "all ease 0.3s",
-                            boxShadow: "0",
-                          },
-                        }}
-                      >
-                        <span className="font-xs">리포트 보기</span>
-                      </Button>
-                    </Link>
-                  </div>
-                </CardContent>
-              </Link>
-            </Card>
+                        },
+                      }}
+                    >
+                      <span className="font-xs font-50">스터디 정보 보기</span>
+                    </Button>
+                  </Link>
+                  <Link to="/" className="report-btn">
+                    <Button
+                      variant="contained"
+                      className="btn-hover"
+                      sx={{
+                        borderColor: "rgba(0, 55, 250, 0.5)",
+                        backgroundColor: "rgba(0, 55, 250, 0.8)",
+                        color: "white",
+
+                        height: "36px",
+                        width: "200px",
+                        boxShadow: "0",
+                        borderRadius: "10px",
+                        "&:hover": {
+                          borderColor: "#0037FA",
+                          color: "white",
+                          backgroundColor: "rgba(0, 55, 250, 0.9)",
+                          transform: "scale(1.08)",
+                          transition: "all ease 0.3s",
+                          boxShadow: "0",
+                        },
+                      }}
+                    >
+                      <span className="font-xs font-50">리포트 보기</span>
+                    </Button>
+                  </Link>
+                </div>{" "}
+              </Card>
+            </div>
           </Grid>
         ))}
       </Grid>
@@ -195,32 +254,129 @@ const MyPage = () => {
             key={item.id}
             className="card-item"
           >
-            <Card
-              key={item.id}
-              className="card"
-              sx={{
-                borderColor: "#dedede",
-                borderRadius: "20px",
-                maxWidth: "500px",
-                boxShadow: 0,
-              }}
-            >
-              <Link to={`/study/${item.id}`} className="card-link">
-                <CardMedia
-                  className="card-img"
-                  component="img"
-                  height="140"
-                  image={`/img/study_img${item.title.length % 10}.png`}
-                  alt="green iguana"
-                />
-                <CardContent
-                  className="card-content"
-                  sx={{ padding: "18px 4px 0px 4px" }}
-                >
-                  <p className="font-70 font-md card-title">{item.title}</p>
-                </CardContent>
-              </Link>
-            </Card>
+            <div className="card-inner">
+              <Card
+                key={item.id}
+                className="card-mypage"
+                sx={{
+                  borderStyle: "solid",
+                  borderColor: "rgba(0,0,0,0.05)",
+                  borderRadius: "20px",
+                  maxWidth: "500px",
+                  boxShadow: 0,
+                }}
+              >
+                <Link to={`/study/${item.id}`} className="card-link">
+                  <CardMedia
+                    className="card-img"
+                    component="img"
+                    height="140"
+                    image={`/img/study_img${item.title.length % 10}.png`}
+                    alt="green iguana"
+                  />
+
+                  <CardContent
+                    className="card-content"
+                    sx={{ padding: "18px 4px 0px 4px" }}
+                  >
+                    <p className="font-70 font-md card-title">{item.title}</p>
+                    {item.status === "RECRUITING" ? (
+                      <div className="card-status">
+                        <span className="font-50 font-xs card-status-recruiting">
+                          {item.status}&nbsp;&nbsp;&nbsp;&nbsp;
+                        </span>
+                        <span className="font-30 font-xs">
+                          {item.currentMember}/{item.memberCapacity}
+                        </span>
+                      </div>
+                    ) : (
+                      <div className="card-status">
+                        <span className="font-50 font-xs card-status-completed">
+                          {item.status}&nbsp;&nbsp;&nbsp;&nbsp;
+                        </span>
+                        <span className="font-30 font-xs">
+                          {item.currentMember}/{item.memberCapacity}
+                        </span>
+                      </div>
+                    )}
+                  </CardContent>
+                </Link>
+              </Card>
+              <Card
+                key={item.id}
+                className="card"
+                sx={{
+                  opacity: "0",
+                  backgroundColor: "rgba(255,255,255,0)",
+                  borderColor: "#dedede",
+                  borderRadius: "20px",
+                  maxWidth: "500px",
+                  height: "260.5px",
+                  boxShadow: 0,
+                  "&:hover": {
+                    opacity: "1",
+                    backgroundColor: "rgba(255,255,255,0.9)",
+                    borderColor: "rgba(0, 55, 250, 0.5)",
+                  },
+                }}
+              >
+                <div className="card-btn">
+                  <Link to={`/study/${item.id}`} className="report-btn">
+                    <Button
+                      variant="contained"
+                      className="btn-hover"
+                      sx={{
+                        borderColor: "#0037FA",
+                        color: "#0037FA",
+                        backgroundColor: "rgba(0, 55, 250, 0.2)",
+
+                        height: "36px",
+                        width: "200px",
+                        boxShadow: "0",
+                        borderRadius: "10px",
+
+                        "&:hover": {
+                          borderColor: "#0037FA",
+                          color: "#0037FA",
+                          backgroundColor: "rgba(0, 55, 250, 0.3)",
+                          transform: "scale(1.08)",
+                          transition: "all ease 0.3s",
+                          boxShadow: "0",
+                        },
+                      }}
+                    >
+                      <span className="font-xs font-50">스터디 정보 보기</span>
+                    </Button>
+                  </Link>
+                  <Link to="/" className="report-btn">
+                    <Button
+                      variant="contained"
+                      className="btn-hover"
+                      sx={{
+                        borderColor: "rgba(0, 55, 250, 0.5)",
+                        backgroundColor: "rgba(0, 55, 250, 0.8)",
+                        color: "white",
+
+                        height: "36px",
+                        width: "200px",
+                        boxShadow: "0",
+                        borderRadius: "10px",
+                        "&:hover": {
+                          borderColor: "#0037FA",
+                          color: "white",
+                          backgroundColor: "rgba(0, 55, 250, 0.9)",
+                          transform: "scale(1.08)",
+                          transition: "all ease 0.3s",
+                          boxShadow: "0",
+                        },
+                      }}
+                    >
+                      <span className="font-xs font-50">리포트 보기</span>
+                    </Button>
+                  </Link>
+                </div>{" "}
+              </Card>
+            </div>
           </Grid>
         ))}
       </Grid>

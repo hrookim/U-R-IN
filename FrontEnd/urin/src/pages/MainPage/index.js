@@ -1,6 +1,6 @@
 /* eslint-disable react/jsx-props-no-spreading */
 
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState } from "react";
 import "./index.css";
 import { useNavigate, Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
@@ -10,7 +10,6 @@ import {
   Box,
   Button,
   Card,
-  CardActionArea,
   CardContent,
   CardMedia,
   Checkbox,
@@ -18,9 +17,7 @@ import {
   Grid,
   IconButton,
   Pagination,
-  Popper,
   Stack,
-  Typography,
 } from "@mui/material";
 import ClickAwayListener from "@mui/base/ClickAwayListener";
 
@@ -39,8 +36,6 @@ const MainPage = () => {
   const [keyword, setKeyword] = useState("");
   const [checked, setChecked] = useState(true);
   const [hashtags, setHashtags] = useState("");
-
-  const mounted = useRef(false);
 
   const checkedChange = (e) => {
     setChecked(e.target.checked);
@@ -206,17 +201,19 @@ const MainPage = () => {
               key={item.id}
               className="card"
               sx={{
-                borderColor: "#dedede",
+                borderStyle: "solid",
+                borderColor: "rgba(0,0,0,0.1)",
                 borderRadius: "20px",
                 maxWidth: "500px",
                 boxShadow: 0,
+
                 "&:hover": {
                   transform: "scale(1.05)",
                   transition: "all ease 0.3s",
                 },
               }}
             >
-              <Link to={`/study/${item.id}`} className="card-link">
+              <Link to={`/study/${item.id}`} className="card-link2">
                 <CardMedia
                   className="card-img"
                   component="img"
