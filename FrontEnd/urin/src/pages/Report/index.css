@@ -92,10 +92,10 @@ width: 100%
 }
 
 .report-content-question {
-  margin: 15px 0 15px 0;
+  margin: 15px 0 25px 0;
 }
 .report-content-comment {
-  margin: 0 0 0 20px;
+  margin: 0 0 20px 20px;
  
 }
 
@@ -152,7 +152,7 @@ width: 100%
     text-align: center;
 padding: 6% 0 0 0;
     background: #ECECEC;
-    border-radius: 20px;
+    border-radius: 10px;
 }
 
 .report-content-move-content{

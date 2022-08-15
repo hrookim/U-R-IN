@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Paper, Grid, Box, FormControl, MenuItem, Select } from "@mui/material";
 import "./index.css";
+import html2canvas from "html2canvas";
+import JSPDF from "jspdf";
 import CheckValidation from "../../components/CheckValidation";
 import { getReport } from "../../store/reportSlice";
 import "../../assets/DesignSystem.css";
@@ -29,7 +31,7 @@ const Report = () => {
           ],
         },
         {
-          question: "기업이해도1",
+          question: "기업이해도1674",
           comment: [
             "회사1와 직무에 대해 잘 이해를 못하고 있다는 느낌을 받았습니다.",
             "사전조사1가 많이 부족하다는 느낌을 받았어요. 조금 더 리서치를 하고 이 분야에 관심이 많다는 것을 어필해야 할 것 같습니다. 기존의 경험들에서 이 직무와 회사와의 핏이 어떻게 연결되는지 그러한 부분들을 더 어필해주시면 더 좋은 점수를 받을 것 같습니다!",
@@ -37,7 +39,7 @@ const Report = () => {
           ],
         },
         {
-          question: "기업이해도1",
+          question: "기업이해도15475",
           comment: [
             "회사1와 직무에 대해 잘 이해를 못하고 있다는 느낌을 받았습니다.",
             "사전조사1가 많이 부족하다는 느낌을 받았어요. 조금 더 리서치를 하고 이 분야에 관심이 많다는 것을 어필해야 할 것 같습니다. 기존의 경험들에서 이 직무와 회사와의 핏이 어떻게 연결되는지 그러한 부분들을 더 어필해주시면 더 좋은 점수를 받을 것 같습니다!",
@@ -45,7 +47,7 @@ const Report = () => {
           ],
         },
         {
-          question: "기업이해도1",
+          question: "기업이해도14532",
           comment: [
             "회사1와 직무에 대해 잘 이해를 못하고 있다는 느낌을 받았습니다.",
             "사전조사1가 많이 부족하다는 느낌을 받았어요. 조금 더 리서치를 하고 이 분야에 관심이 많다는 것을 어필해야 할 것 같습니다. 기존의 경험들에서 이 직무와 회사와의 핏이 어떻게 연결되는지 그러한 부분들을 더 어필해주시면 더 좋은 점수를 받을 것 같습니다!",
@@ -53,7 +55,7 @@ const Report = () => {
           ],
         },
         {
-          question: "기업이해도1",
+          question: "기업이해도1136",
           comment: [
             "회사1와 직무에 대해 잘 이해를 못하고 있다는 느낌을 받았습니다.",
             "사전조사1가 많이 부족하다는 느낌을 받았어요. 조금 더 리서치를 하고 이 분야에 관심이 많다는 것을 어필해야 할 것 같습니다. 기존의 경험들에서 이 직무와 회사와의 핏이 어떻게 연결되는지 그러한 부분들을 더 어필해주시면 더 좋은 점수를 받을 것 같습니다!",
@@ -61,7 +63,7 @@ const Report = () => {
           ],
         },
         {
-          question: "기업이해도1",
+          question: "기업이해도13456",
           comment: [
             "회사1와 직무에 대해 잘 이해를 못하고 있다는 느낌을 받았습니다.",
             "사전조사1가 많이 부족하다는 느낌을 받았어요. 조금 더 리서치를 하고 이 분야에 관심이 많다는 것을 어필해야 할 것 같습니다. 기존의 경험들에서 이 직무와 회사와의 핏이 어떻게 연결되는지 그러한 부분들을 더 어필해주시면 더 좋은 점수를 받을 것 같습니다!",
@@ -69,7 +71,7 @@ const Report = () => {
           ],
         },
         {
-          question: "기업이해도1",
+          question: "기업이해도145",
           comment: [
             "회사1와 직무에 대해 잘 이해를 못하고 있다는 느낌을 받았습니다.",
             "사전조사1가 많이 부족하다는 느낌을 받았어요. 조금 더 리서치를 하고 이 분야에 관심이 많다는 것을 어필해야 할 것 같습니다. 기존의 경험들에서 이 직무와 회사와의 핏이 어떻게 연결되는지 그러한 부분들을 더 어필해주시면 더 좋은 점수를 받을 것 같습니다!",
@@ -115,7 +117,16 @@ const Report = () => {
   ]);
   const [question, setQuestion] = useState(" ");
   const memberName = useSelector((state) => state.member.memberName);
-  // /////////////////
+  // PDF용 /////////////////
+  const printDocument = () => {
+    const input = document.getElementById("report");
+    html2canvas(input).then((canvas) => {
+      const imgData = canvas.toDataURL("image/png");
+      const pdf = new JSPDF();
+      pdf.addImage(imgData, "JPEG", 0, 0);
+      pdf.save("report.pdf");
+    });
+  };
 
   const [page, setPage] = useState("0");
 
@@ -129,7 +140,7 @@ const Report = () => {
   return (
     <div>
       <CheckValidation />
-      <div className="report">
+      <div className="report" id="report">
         <div className="title-banner">
           <img
             src="/img/studyCreation.png"
@@ -149,23 +160,29 @@ const Report = () => {
           {reports[page].studyName}
         </div>
         {/* 리포트 선택 */}
-        <div className="report-select">
-          <FormControl sx={{ m: 1, minWidth: 120 }} size="small">
-            <Select
-              id="demo-select-small"
-              value={page}
-              label="Age"
-              onChange={pageChange}
-            >
-              {reports.map((item) => (
-                <MenuItem value={item.pageId}>
-                  Report {item.pageId + 1}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
-        </div>
-        <hr />
+        <Grid container className="report-select">
+          <Grid xs={9}>
+            <FormControl sx={{ m: 1, minWidth: 120 }} size="small">
+              <Select
+                id="demo-select-small"
+                value={page}
+                label="Age"
+                onChange={pageChange}
+              >
+                {reports.map((item) => (
+                  <MenuItem value={item.pageId}>
+                    Report {item.pageId + 1}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          </Grid>
+          <Grid xs={2}>
+            <button type="button" onClick={printDocument()}>
+              pdf
+            </button>
+          </Grid>
+        </Grid>
 
         <div className="font-md font-60 report-index">목차</div>
         <details>
@@ -227,7 +244,7 @@ const Report = () => {
           >
             <Paper elevation={3} className="report-content-paper">
               <div
-                className="font-md font-60 report-content-title"
+                className="font-md font-80 report-content-title"
                 id="confidence"
               >
                 자신감
@@ -254,7 +271,7 @@ const Report = () => {
           >
             <Paper elevation={3} className="report-content-paper">
               <div
-                className="font-md font-60 report-content-title"
+                className="font-md font-80 report-content-title"
                 id="calmness"
               >
                 침착함
@@ -279,7 +296,7 @@ const Report = () => {
           >
             <Paper elevation={3} className="report-content-paper">
               <div
-                className="font-md font-60 report-content-title"
+                className="font-md font-80 report-content-title"
                 id="stability"
               >
                 안정감
@@ -290,28 +307,60 @@ const Report = () => {
               </div>
               <Grid container className="report-content-move">
                 <Grid item container xs={6}>
-                  <Grid xs={2} className="report-content-move-title">
+                  <Grid xs={2} className="report-content-move-title font-50">
                     움직임 1
                   </Grid>
-                  <Grid className="report-content-move-content">움직임 1</Grid>
+                  <Grid
+                    xs={9}
+                    item
+                    className="report-content-move-content font-40"
+                  >
+                    분당 7회 움직임이 감지되었습니다. 합격자 대비 20% 적은
+                    움직임이니 움직임에 많은 신경을 쏟을 필요는 없겠네요!
+                  </Grid>
                 </Grid>
                 <Grid item container xs={6}>
-                  <Grid xs={2} className="report-content-move-title">
+                  <Grid xs={2} className="report-content-move-title font-50">
                     움직임 2
                   </Grid>
-                  <Grid className="report-content-move-content">움직임 1</Grid>
+                  <Grid
+                    xs={9}
+                    item
+                    className="report-content-move-content font-40"
+                  >
+                    분당 7회 움직임이 감지되었습니다. 합격자 대비 20% 적은
+                    움직임이니 움직임에 많은 신경을 쏟을 필요는 없겠네요!
+                  </Grid>
                 </Grid>
                 <Grid item container xs={6}>
-                  <Grid xs={2} className="report-content-move-title">
+                  <Grid xs={2} className="report-content-move-title font-50">
                     움직임 3
                   </Grid>
-                  <Grid className="report-content-move-content">움직임 1</Grid>
+                  <Grid
+                    xs={9}
+                    item
+                    className="report-content-move-content fonr-40"
+                  >
+                    분당 7회 움직임이 감지되었습니다. 합격자 대비 20% 적은
+                    움직임이니 움직임에 많은 신경을 쏟을 필요는 없겠네요!
+                  </Grid>
                 </Grid>
                 <Grid item container xs={6}>
-                  <Grid xs={2} className="report-content-move-title">
+                  <Grid
+                    xs={2}
+                    item
+                    className="report-content-move-title font-50"
+                  >
                     움직임 4
                   </Grid>
-                  <Grid className="report-content-move-content">움직임 1</Grid>
+                  <Grid
+                    xs={9}
+                    item
+                    className="report-content-move-content fonr-40"
+                  >
+                    분당 7회 움직임이 감지되었습니다. 합격자 대비 20% 적은
+                    움직임이니 움직임에 많은 신경을 쏟을 필요는 없겠네요!
+                  </Grid>
                 </Grid>
               </Grid>
             </Paper>
@@ -336,9 +385,16 @@ const Report = () => {
                 <p className="font-md font-70 report-content-question">
                   {item.question}
                 </p>
-                <div className="report-content-comment">
+                <div>
                   {item.comment.map((comments) => (
-                    <p className="font-sm font-30">{comments}</p>
+                    <Grid container className="report-content-comment">
+                      <Grid xs={1.2} item className="font-sm font-30">
+                        스터디원
+                      </Grid>
+                      <Grid xs={10.5} item className="font-sm font-50">
+                        {comments}
+                      </Grid>
+                    </Grid>
                   ))}
                 </div>
               </div>
