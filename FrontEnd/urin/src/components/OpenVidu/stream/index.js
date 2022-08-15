@@ -30,8 +30,13 @@ export default class StreamComponent extends Component {
 
   render() {
     const { mutedSound } = this.state;
-    const { user, intervieweeId, isInterviewing, isSomeoneShareScreen } =
-      this.props;
+    const {
+      user,
+      localUser,
+      intervieweeId,
+      isInterviewing,
+      isSomeoneShareScreen,
+    } = this.props;
     const { id, nickname } = user;
     const isInterviewee = intervieweeId === id;
     let layout = "col-4";
@@ -53,17 +58,18 @@ export default class StreamComponent extends Component {
           </div>
 
           {isInterviewee && (
-            <div className="upper-right">
+            <div className="upper-right d-flex align-items-center">
               <button
-                className="interview-button"
+                className="interview-button btn btn-sm btn-light fw-semibold rounded-pill px-3 mx-2"
                 onClick={() => {
                   this.interviewingChanged(isInterviewing);
                 }}
+                disabled={localUser.id !== intervieweeId}
               >
                 {isInterviewing ? "면접종료" : "면접시작"}
               </button>
               {/* TODO: 타이머 */}
-              <span>타이머</span>
+              <span className="timer mx-2">타이머</span>
             </div>
           )}
 

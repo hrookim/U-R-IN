@@ -9,15 +9,9 @@
 .upper-right {
     position: absolute;
     z-index: 999;
-    top: 2px;
-    right: 3px;
-    background-color: #ffffff;
+    top: 2%;
+    right: 2%;
 }
-
-.form-control {
-    color: black;
-}
-
 
 video {
     -o-object-fit: contain;
@@ -60,4 +54,9 @@ video {
 #input,
 #label {
     color: white;
+}
+
+.timer {
+    color: white;
+    background-color: transparent;
 }

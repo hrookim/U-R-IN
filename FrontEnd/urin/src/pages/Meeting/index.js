@@ -65,7 +65,8 @@ class Meeting extends Component {
   }
 
   // 마운트 관련 행동
-  componentDidMount() {
+  async componentDidMount() {
+    await navigator.mediaDevices.getUserMedia({ audio: true, video: true });
     window.addEventListener("beforeunload", this.onbeforeunload);
     this.joinSession();
   }
@@ -533,7 +534,7 @@ class Meeting extends Component {
             <div className="col-9" style={{ height: "100%" }}>
               {/* 면접 모드바 */}
               <div
-                className="d-flex justify-content-center align-items-center"
+                className="top-toolbar d-flex justify-content-center align-items-center"
                 style={{ height: "10%" }}
               >
                 {/* 버튼1: 면접모드 일반모드 전환 */}
@@ -616,6 +617,7 @@ class Meeting extends Component {
                     <StreamComponent
                       key={i}
                       user={user}
+                      localUser={localUser}
                       intervieweeId={intervieweeId}
                       isInterviewing={isInterviewing}
                       isSomeoneShareScreen={isSomeoneShareScreen}
@@ -629,7 +631,7 @@ class Meeting extends Component {
 
               {/* 툴바 영역 */}
               <div
-                className="toolBar d-flex justify-content-center align-items-center"
+                className="bottom-toolbar d-flex justify-content-center align-items-center"
                 style={{ height: "10%" }}
               >
                 <ToolbarComponent
