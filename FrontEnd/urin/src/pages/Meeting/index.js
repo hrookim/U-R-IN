@@ -2,18 +2,18 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { useParams } from "react-router-dom";
-import axios from "axios";
 import { OpenVidu } from "openvidu-browser";
+import axios from "axios";
 
+import UserModel from "./models/user-model";
 import ChatComponent from "../../components/OpenVidu/chat";
 import DialogExtensionComponent from "../../components/OpenVidu/dialog-extension";
 import FeedbackComponent from "../../components/OpenVidu/feedback";
 import StreamComponent from "../../components/OpenVidu/stream";
 import ToolbarComponent from "../../components/OpenVidu/toolbar";
 
-import UserModel from "./models/user-model";
-
 // import "./index.css";
+import Dropdown from "react-bootstrap/Dropdown";
 
 var localUser = new UserModel();
 
@@ -525,88 +525,113 @@ class Meeting extends Component {
     return (
       <>
         <div
-          className="container-fluid"
+          className="container-fluid p-3"
           style={{ height: "100vh", width: "100vw" }}
         >
           <div className="row" style={{ height: "100%", width: "100%" }}>
             {/* 왼쪽 영역 */}
             <div className="col-9" style={{ height: "100%" }}>
               {/* 면접 모드바 */}
-              <div style={{ height: "10%" }}>
-                {!!intervieweeId ? (
-                  <button onClick={() => this.interviewModeChanged(0, "")}>
-                    일반모드
-                  </button>
-                ) : (
-                  <button
-                    onClick={() =>
-                      this.interviewModeChanged(myuserId, myNickname)
-                    }
-                  >
-                    면접모드
-                  </button>
-                )}
-                {isInterviewing ? (
-                  <button onClick={() => this.interviewingChanged(true)}>
-                    면접종료
-                  </button>
-                ) : (
-                  <button onClick={() => this.interviewingChanged(false)}>
-                    면접시작
-                  </button>
-                )}
+              <div
+                className="d-flex justify-content-center align-items-center"
+                style={{ height: "10%" }}
+              >
+                {/* 버튼1: 면접모드 일반모드 전환 */}
+                <Dropdown style={{ marginRight: "5px" }}>
+                  <Dropdown.Toggle id="dropdown-basic">
+                    {!!intervieweeId ? "면접모드" : "일반모드"}
+                  </Dropdown.Toggle>
 
-                {/* 유저목록 */}
-                <ul>
-                  {localUser !== undefined &&
-                    localUser.getStreamManager() !== undefined &&
-                    [localUser, ...subscribers].map((user, i) => (
-                      <li
-                        key={i}
-                        onClick={() =>
-                          this.interviewModeChanged(user.id, user.nickname)
-                        }
-                      >
-                        {user.nickname}
-                      </li>
-                    ))}
-                </ul>
+                  <Dropdown.Menu style={{ minWidth: "100%" }}>
+                    <Dropdown.Item
+                      as="button"
+                      onClick={() => {
+                        !!intervieweeId
+                          ? this.interviewModeChanged(0, "")
+                          : this.interviewModeChanged(myuserId, myNickname);
+                      }}
+                    >
+                      {!!intervieweeId ? "일반모드" : "면접모드"}
+                    </Dropdown.Item>
+                  </Dropdown.Menu>
+                </Dropdown>
+
+                {/* 버튼2: 지원자 전환 */}
+                {!!intervieweeId && (
+                  <Dropdown>
+                    <Dropdown.Toggle
+                      id="dropdown-basic"
+                      style={{
+                        color: "black",
+                        borderColor: "white",
+                        backgroundColor: "white",
+                      }}
+                    >
+                      지원자: {intervieweeNickname}
+                    </Dropdown.Toggle>
+
+                    <Dropdown.Menu style={{ minWidth: "100%" }}>
+                      {localUser !== undefined &&
+                        localUser.getStreamManager() !== undefined &&
+                        [localUser, ...subscribers]
+                          .filter((user) => {
+                            return user.id !== intervieweeId;
+                          })
+                          .map((user, i) => (
+                            <Dropdown.Item
+                              as="button"
+                              key={i}
+                              onClick={() =>
+                                this.interviewModeChanged(
+                                  user.id,
+                                  user.nickname
+                                )
+                              }
+                            >
+                              {user.nickname}
+                            </Dropdown.Item>
+                          ))}
+                    </Dropdown.Menu>
+                  </Dropdown>
+                )}
               </div>
 
               {/* 비디오 영역 */}
-              <div style={{ height: "80%", position: "relative" }}>
-                <div
-                  className="row mx-auto justify-content-center align-items-center"
-                  style={Object.assign(
-                    {},
-                    {
-                      maxHeight: "100%",
-                      position: "absolute",
-                      top: "50%",
-                      transform: "translate(0, -50%)",
-                    },
-                    isSomeoneShareScreen || !!intervieweeId
-                      ? { aspectRatio: "16/12" }
-                      : { aspectRatio: "16/9" }
-                  )}
-                >
-                  {localUser !== undefined &&
-                    localUser.getStreamManager() !== undefined &&
-                    [localUser, ...subscribers].map((user, i) => (
-                      <StreamComponent
-                        key={i}
-                        user={user}
-                        intervieweeId={intervieweeId}
-                        isInterviewing={isInterviewing}
-                        isSomeoneShareScreen={isSomeoneShareScreen}
-                        streamId={user.streamManager.stream.streamId}
-                      />
-                    ))}
-                </div>
+              <div
+                className="row mx-auto justify-content-center align-items-center"
+                style={Object.assign(
+                  {},
+                  {
+                    height: "80%",
+                    maxWidth: "100%",
+                  },
+                  isSomeoneShareScreen || !!intervieweeId
+                    ? { aspectRatio: "16/12" }
+                    : { aspectRatio: "16/9" }
+                )}
+              >
+                {localUser !== undefined &&
+                  localUser.getStreamManager() !== undefined &&
+                  [localUser, ...subscribers].map((user, i) => (
+                    <StreamComponent
+                      key={i}
+                      user={user}
+                      intervieweeId={intervieweeId}
+                      isInterviewing={isInterviewing}
+                      isSomeoneShareScreen={isSomeoneShareScreen}
+                      streamId={user.streamManager.stream.streamId}
+                      interviewingChanged={(current) => {
+                        this.interviewingChanged(current);
+                      }}
+                    />
+                  ))}
               </div>
 
               {/* 툴바 영역 */}
-              <div className="toolBar" style={{ height: "10%" }}>
+              <div
+                className="toolBar d-flex justify-content-center align-items-center"
+                style={{ height: "10%" }}
+              >
                 <ToolbarComponent
                   localUser={localUser}
                   intervieweeId={intervieweeId}
@@ -625,7 +650,7 @@ class Meeting extends Component {
               {/* 피드백 영역 */}
               {localUser !== undefined &&
                 localUser.getStreamManager() !== undefined && (
-                  <div>
+                  <div style={!!intervieweeId ? { height: "50%" } : {}}>
                     <FeedbackComponent
                       meetingId={meetingId}
                       localUser={localUser}
@@ -642,7 +667,9 @@ class Meeting extends Component {
                 localUser.getStreamManager() !== undefined && (
                   <div
                     className="OT_root OT_publisher"
-                    style={{ height: "100%" }}
+                    style={
+                      !!intervieweeId ? { height: "50%" } : { height: "100%" }
+                    }
                   >
                     <ChatComponent
                       user={localUser}
@@ -701,7 +728,7 @@ class Meeting extends Component {
           console.error(error);
           // 1. 토큰 만료된 경우
           window.close();
-          // 2. URL을 치고 들어온 경우 MainPage로 이동
+          // 2. 스터디원이 아닌 사람이 URL을 치고 들어온 경우
           location.replace(location.origin);
         });
     });

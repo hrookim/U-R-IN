@@ -17,6 +17,11 @@ export default class StreamComponent extends Component {
       mutedSound: false,
     };
     this.toggleSound = this.toggleSound.bind(this);
+    this.interviewingChanged = this.interviewingChanged.bind(this);
+  }
+
+  interviewingChanged(current) {
+    this.props.interviewingChanged(current);
   }
 
   toggleSound() {
@@ -46,6 +51,21 @@ export default class StreamComponent extends Component {
           <div className="nickname">
             <span id="nickname">{nickname}</span>
           </div>
+
+          {isInterviewee && (
+            <div className="upper-right">
+              <button
+                className="interview-button"
+                onClick={() => {
+                  this.interviewingChanged(isInterviewing);
+                }}
+              >
+                {isInterviewing ? "면접종료" : "면접시작"}
+              </button>
+              {/* TODO: 타이머 */}
+              <span>타이머</span>
+            </div>
+          )}
 
           {user !== undefined && user.getStreamManager() !== undefined ? (
             <>
