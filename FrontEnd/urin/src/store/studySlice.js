@@ -23,7 +23,6 @@ export const getStudy = createAsyncThunk(
           },
         }
       );
-      console.log("여깅머리ㅏㅇ널매ㅑ;ㄴㅇ", response.data);
       return response.data;
     } catch (err) {
       navigate("/notfound");
@@ -137,17 +136,17 @@ export const joinStudy = createAsyncThunk("JOIN_STUDY", async (studyId) => {
 // 스터디 참가자 삭제 FIXME: 분기는 백에서 처리하고 있음!
 export const leaveStudy = createAsyncThunk(
   "LEAVE_STUDY",
-  async ({ studyId, participantId }) => {
+  async ({ studyId, deletedParticipantId }) => {
     try {
+      console.log("삭제삭제", studyId, deletedParticipantId);
       const response = await axios.delete(
-        `${process.env.REACT_APP_BACK_BASE_URL}studies/${studyId}/participants/${participantId}`,
+        `${process.env.REACT_APP_BACK_BASE_URL}studies/${studyId}/participants/${deletedParticipantId}`,
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
           },
         }
       );
-      alert("스티디원을 퇴장시켰습니다!");
 
       return response.data;
     } catch (err) {
@@ -164,24 +163,25 @@ const studySlice = createSlice({
   // 초기 상태, 백으로부터 데이터를 불러오는데 혹시라도 실패한다면 이 데이터가 보이기 때문에
   // 빈 객체 보다는 적당히 형태를 잡아두는게 좋음
   initialState: {
+    id: 0,
+    title: "string",
+    notice: "string",
+    memberCapacity: 0,
     currentMember: 0,
     expirationDate: "1996-08-28", // 예시
-    dday: 0,
-    id: 0,
-    memberCapacity: 0,
-    notice: "string",
-    onair: true,
+    dDay: 0,
+    isOnair: true,
+    status: "COMPLETED",
+    hashtagCodes: "string",
+    hashtagNameList: ["string", "string"],
     participants: [
       {
         id: 0,
-        isLeader: true,
+        memberId: 0,
         nickname: "string",
+        isLeader: true,
       },
     ],
-    status: "COMPLETED",
-    title: "string",
-    hashtagCodes: "string",
-    hashtagNameList: ["string", "string"],
   },
   // 비동기 통신이 없는 상황에서 사용 : 서버에 요청 없이 study의 상태를 바꿀 일이 없기 때문에 딱히 쓸 일이 없음
   reducers: {},

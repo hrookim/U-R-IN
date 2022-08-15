@@ -5,6 +5,7 @@ import "./index.css";
 import { useNavigate, Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import SearchIcon from "@mui/icons-material/Search";
+import TagIcon from "@mui/icons-material/Tag";
 import {
   Box,
   Button,
@@ -15,11 +16,14 @@ import {
   Checkbox,
   FormControlLabel,
   Grid,
+  IconButton,
   Pagination,
   Popper,
   Stack,
   Typography,
 } from "@mui/material";
+import ClickAwayListener from "@mui/base/ClickAwayListener";
+
 import { getStudyList } from "../../store/studyListSlice";
 import CheckValidation from "../../components/CheckValidation";
 import SearchFilter from "../../components/SearchFilter";
@@ -73,13 +77,16 @@ const MainPage = () => {
 
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [open, setOpen] = React.useState(false);
-  const [placement, setPlacement] = React.useState();
 
-  const handleClick = (newPlacement) => (event) => {
-    setAnchorEl(event.currentTarget);
-    setOpen((prev) => placement !== newPlacement || !prev);
-    setPlacement(newPlacement);
+  const handleClick = (event) => {
+    setAnchorEl(anchorEl ? null : event.currentTarget);
   };
+
+  const handleClickAway = () => {
+    setOpen(false);
+  };
+
+  // const open = Boolean(anchorEl);
 
   const id = open ? "simple-popover" : undefined;
 
@@ -102,19 +109,24 @@ const MainPage = () => {
               title="Search"
               onChange={inputwordChange}
             />
-            <Button type="submit" className="search-btn" onClick={searchBtn}>
-              <SearchIcon className="btn-icon" sx={{ color: "rgb(0,0,0)" }} />
-            </Button>
+
             <div className="search-condition">
-              <Button
+              <IconButton
                 aria-describedby={id}
                 variant="text"
-                onClick={handleClick("bottom-end")}
-                className="font-30 font-xs"
+                onClick={handleClick}
+                className="font-30 font-xs search-icon-btn"
                 sx={{ color: "#0037FA" }}
               >
-                검색 조건
-              </Button>
+                <TagIcon />
+              </IconButton>
+              <IconButton
+                type="submit"
+                className="search-btn"
+                onClick={searchBtn}
+              >
+                <SearchIcon className="btn-icon" sx={{ color: "rgb(0,0,0)" }} />
+              </IconButton>
 
               <Popper id={id} open={open} anchorEl={anchorEl}>
                 <Box
@@ -142,7 +154,7 @@ const MainPage = () => {
       </div>
       <div className="header">
         <Grid container>
-          <Grid item xs={12} md={6} className="header-grid-1">
+          <Grid item xs={12} sm={6} className="header-grid-1">
             <FormControlLabel
               label="모집 중인 스터디만 보기"
               control={
@@ -158,7 +170,7 @@ const MainPage = () => {
               }
             />
           </Grid>
-          <Grid item xs={12} md={6} className="header-grid-2">
+          <Grid item xs={12} sm={6} className="header-grid-2">
             <div>
               <Button
                 variant="outlined"

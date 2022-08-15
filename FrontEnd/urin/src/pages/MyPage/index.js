@@ -33,7 +33,7 @@ const MyPage = () => {
   const [pastAllChecked, setPastAllChecked] = useState(false);
 
   useEffect(() => {
-    dispatch(getMyPage([currentAllChecked, pastAllChecked]));
+    dispatch(getMyPage({ currentAllChecked, pastAllChecked }));
   }, [currentAllChecked, pastAllChecked]);
 
   const currentCheck = (e) => {
@@ -66,9 +66,8 @@ const MyPage = () => {
 
         <div className="my-page-member">
           <p className="font-60 font-md member-name">
-            {memberName}{" "}
-            {myPage.currentStudyList.length + myPage.pastStudyList.length <=
-            10 ? (
+            {memberName}
+            {myPage.totalCurrentStudies + myPage.totalPastStudies <= 10 ? (
               <WorkspacePremiumIcon
                 className="medal-icon"
                 sx={{ color: "#c49104" }}

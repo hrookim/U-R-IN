@@ -75,7 +75,7 @@ const DetailHeader = ({
 
         <div className="dh-container-item">
           <span className="font-xl font-70">{study.title}</span>
-          {isLeader && (
+          {isLeader && study.status != "TERMINATED" && (
             <Link to={`/study/${studyId}/edit`} className="dh-setting-icon">
               <SettingsIcon color="action" sx={{ fontSize: 30 }} />
             </Link>
@@ -105,7 +105,7 @@ const DetailHeader = ({
             {isLeader ? (
               <div className="font-40">
                 {study.status !== "TERMINATED" && (
-                  <div>
+                  <div className="btn-center">
                     {study.isOnair ? (
                       <button
                         type="button"

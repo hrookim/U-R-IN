@@ -38,6 +38,25 @@
   justify-content: right;
 }
 
+@media screen and (max-width: 960px) {
+  .search-font {
+    font-size: 32px;
+    text-align: center;
+
+  }
+}
+
+@media screen and (max-width: 600px) {
+  .search-font {
+    font-size: 24px;
+    text-align: center;
+    word-break: keep-all;
+
+  }
+}
+
+
+
 .search-bar-group {
   position: relative;
 }
@@ -55,15 +74,19 @@
   border-radius: 20px;
 }
 
+.search-icon-btn {
+  position: relative;
+}
+
 .search-btn{
-  position: absolute;
-  right: 60px;
-  padding: 0 0 0 0;
+  position: relative;
 }
 
 .search-condition {
   position: absolute;
-  right: 110px;
+  display: flex;
+  align-items: center;
+  right: 10px;
 }
 
 .card-item{
