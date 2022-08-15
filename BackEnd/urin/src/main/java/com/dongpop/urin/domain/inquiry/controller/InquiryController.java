@@ -1,18 +1,18 @@
 package com.dongpop.urin.domain.inquiry.controller;
 
 import com.dongpop.urin.domain.inquiry.dto.request.InquiryDataDto;
+import com.dongpop.urin.domain.inquiry.dto.request.InquiryUpdateDto;
 import com.dongpop.urin.domain.inquiry.dto.response.InquiryListDto;
 import com.dongpop.urin.domain.inquiry.service.InquiryService;
-import com.dongpop.urin.domain.member.repository.Member;
+import com.dongpop.urin.domain.member.entity.Member;
 import com.dongpop.urin.oauth.model.MemberPrincipal;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.NoSuchElementException;
 
 @RequiredArgsConstructor
 @RestController
@@ -22,7 +22,7 @@ public class InquiryController {
     private final InquiryService inquiryService;
 
     @GetMapping("/{studyId}/inquiry")
-    public ResponseEntity<InquiryListDto> getStudyInquiries(Pageable pageable, @PathVariable int studyId) {
+    public ResponseEntity<InquiryListDto> getStudyInquiries(@PageableDefault(size=5) Pageable pageable, @PathVariable int studyId) {
         return ResponseEntity.ok()
                 .body(inquiryService.getStudyInquiries(studyId, pageable));
     }
@@ -40,9 +40,10 @@ public class InquiryController {
 
     @PutMapping("/{studyId}/inquiry/{inquiryId}")
     public ResponseEntity<?> updateInquiry(@PathVariable int studyId, @PathVariable int inquiryId,
-                                           @Validated @RequestBody String contents, @AuthenticationPrincipal MemberPrincipal memberPrincipal) {
+                                           @Validated @RequestBody InquiryUpdateDto inquiryUpdateDto,
+                                           @AuthenticationPrincipal MemberPrincipal memberPrincipal) {
         Member member = memberPrincipal.getMember();
-        inquiryService.updateFeed(member, studyId, inquiryId, contents);
+        inquiryService.updateFeed(member, studyId, inquiryId, inquiryUpdateDto.getContents());
 
         return ResponseEntity.noContent().build();
     }

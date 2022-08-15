@@ -1,29 +1,38 @@
 package com.dongpop.urin.domain.study.service;
 
-import com.dongpop.urin.domain.member.repository.Member;
-import com.dongpop.urin.domain.participant.dto.ParticipantDto;
-import com.dongpop.urin.domain.participant.repository.Participant;
+import com.dongpop.urin.domain.hashtag.dto.HashtagDataDto;
+import com.dongpop.urin.domain.hashtag.entity.Hashtag;
+import com.dongpop.urin.domain.hashtag.repository.HashtagRepository;
+import com.dongpop.urin.domain.member.entity.Member;
+import com.dongpop.urin.domain.participant.dto.response.ParticipantDto;
+import com.dongpop.urin.domain.participant.entity.Participant;
 import com.dongpop.urin.domain.participant.repository.ParticipantRepository;
 import com.dongpop.urin.domain.study.dto.request.StudyDataDto;
+import com.dongpop.urin.domain.study.dto.request.StudyMyDto;
+import com.dongpop.urin.domain.study.dto.request.StudySearchDto;
 import com.dongpop.urin.domain.study.dto.response.*;
-import com.dongpop.urin.domain.study.repository.Study;
+import com.dongpop.urin.domain.study.entity.Study;
+import com.dongpop.urin.domain.study.entity.StudyStatus;
 import com.dongpop.urin.domain.study.repository.StudyRepository;
-import com.dongpop.urin.domain.study.repository.StudyStatus;
 import com.dongpop.urin.global.error.exception.CustomException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import javax.transaction.Transactional;
 import java.time.Duration;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
-import static com.dongpop.urin.global.error.errorcode.ParticipantErrorCode.*;
+import static com.dongpop.urin.domain.study.entity.StudyStatus.RECRUITING;
+import static com.dongpop.urin.domain.study.entity.StudyStatus.TERMINATED;
+import static com.dongpop.urin.global.error.errorcode.HashtagErrorCode.DUPLICATED_HASHTAG;
+import static com.dongpop.urin.global.error.errorcode.HashtagErrorCode.NO_SUCH_HASHTAG;
 import static com.dongpop.urin.global.error.errorcode.StudyErrorCode.*;
 
 
@@ -32,28 +41,55 @@ import static com.dongpop.urin.global.error.errorcode.StudyErrorCode.*;
 @Service
 public class StudyService {
 
+    private static final int MY_STUDY_DEFAULT_SIZE = 4;
+
     private final StudyRepository studyRepository;
     private final ParticipantRepository participantRepository;
+    private final HashtagRepository hashtagRepository;
+
+    @Transactional
+    @Scheduled(cron = "0 0 0 * * *")
+    public void checkTerminatedStudy() {
+        log.info("[Check Terminated Study]");
+        studyRepository.findAllByActive().forEach((study) -> {
+            if (study.getExpirationDate().isBefore(LocalDate.now())) {
+                log.info("Terminated Study : studyId = {}, ExpirationDate = {}, today = {}",
+                        study.getId(), study.getExpirationDate(), LocalDate.now());
+                study.updateStatus(TERMINATED);
+            }
+        });
+    }
 
     /**
      * 스터디 summary 리스트 (검색, 페이징)
      */
     @Transactional
-    public StudyListDto getStudyList(Pageable pageable, String keyword, Boolean isRecruiting) {
-        Page<Study> pages = studyRepository.findStudyList(keyword, isRecruiting, pageable);
+    public StudyListDto getStudyList(Pageable pageable, StudySearchDto studySearchDto) {
+        String hashtags = studySearchDto.getHashtags();
+        if (StringUtils.hasText(hashtags)) {
+            checkInputHashtags(hashtags);
+        }
 
+        Page<Study> pages = studyRepository.findStudyList(studySearchDto, pageable);
         if (pages.isEmpty()) {
             return new StudyListDto(0, new ArrayList<StudySummaryDto>());
         }
-        List<StudySummaryDto> studyList = pages.toList().stream().map(s ->
-                StudySummaryDto.builder()
-                        .id(s.getId())
-                        .memberCapacity(s.getMemberCapacity())
-                        .title(s.getTitle())
-                        .currentMember(s.getParticipants().size())
-                        .status(s.getStatus())
-                        .build()
-        ).collect(Collectors.toList());
+
+        List<StudySummaryDto> studyList = pages.toList().stream()
+                .map(s -> {
+                    List<String> hashtagNameList = new ArrayList<>();
+                    String hashtagCodes = makeHashtagResponse(s, hashtagNameList);
+
+                    return StudySummaryDto.builder()
+                            .id(s.getId())
+                            .memberCapacity(s.getMemberCapacity())
+                            .title(s.getTitle())
+                            .currentMember(s.getCurrentParticipantCount())
+                            .status(s.getStatus())
+                            .hashtagCodes(hashtagCodes)
+                            .hashtagNameList(hashtagNameList)
+                            .build();
+                }).collect(Collectors.toList());
 
         return new StudyListDto(pages.getTotalPages(), studyList);
     }
@@ -63,33 +99,56 @@ public class StudyService {
      */
     @Transactional
     public StudyDetailDto getStudyDetail(int studyId) {
-        Study study = studyRepository.findById(studyId)
-                .orElseThrow(() -> new CustomException(STUDY_DOES_NOT_EXIST));
+        Study study = getStudy(studyId);
 
-        List<ParticipantDto> dtos = study.getParticipants().stream()
+        List<ParticipantDto> participants = study.getParticipants().stream()
+                .filter((p) -> !p.getWithdrawal())
                 .map(p -> ParticipantDto.builder()
-                        .id(p.getId())
-                        .memberId(p.getMember().getId())
-                        .nickname(p.getMember().getNickname())
-                        .isLeader(p.isLeader())
-                        .build()).collect(Collectors.toList());
+                            .id(p.getId())
+                            .memberId(p.getMember().getId())
+                            .nickname(p.getMember().getNickname())
+                            .isLeader(p.isLeader())
+                            .build()).collect(Collectors.toList());
 
         int dDay = (int) Duration.between(LocalDate.now().atStartOfDay(),
                 study.getExpirationDate().atStartOfDay()).toDays();
         dDay = dDay > 36500 ? -1 : dDay;
+
+        List<String> hashtagNameList = new ArrayList<>();
+        String hashtagCodes = makeHashtagResponse(study, hashtagNameList);
 
         return StudyDetailDto.builder()
                 .id(study.getId())
                 .title(study.getTitle())
                 .notice(study.getNotice())
                 .memberCapacity(study.getMemberCapacity())
-                .currentMember(study.getParticipants().size())
+                .currentMember(study.getCurrentParticipantCount())
                 .status(study.getStatus())
                 .expirationDate(study.getExpirationDate())
                 .dDay(dDay)
-                .isOnair(study.isOnair())
-                .participants(dtos)
+                .isOnair(study.getIsOnair())
+                .hashtagCodes(hashtagCodes)
+                .hashtagNameList(hashtagNameList)
+                .participants(participants)
                 .build();
+    }
+
+    @Transactional
+    public StudyMyListDto getMyStudy(StudyMyDto studyMyDto, Member member) {
+        List<Participant> myCurrentStudyParticipants = participantRepository.findMyCurrentStudyParticipants(member);
+        List<Participant> myPastStudyParticipants = participantRepository.findMyPastStudyParticipants(member);
+
+        int totalCurrentStudies = myCurrentStudyParticipants.size();
+        int totalPastStudies = myPastStudyParticipants.size();
+
+        List<StudySummaryDto> currentStudyList = makeResponseList(myCurrentStudyParticipants, studyMyDto.getCurrentAll());
+        List<StudySummaryDto> pastStudyList = makeResponseList(myPastStudyParticipants, studyMyDto.getPastAll());
+
+        return StudyMyListDto.builder()
+                .totalCurrentStudies(totalCurrentStudies)
+                .totalPastStudies(totalPastStudies)
+                .currentStudyList(currentStudyList)
+                .pastStudyList(pastStudyList).build();
     }
 
     /**
@@ -97,21 +156,22 @@ public class StudyService {
      */
     @Transactional
     public StudyIdDto generateStudy(StudyDataDto studyData, Member member) {
-        log.info("memberId : {}, studyData : {}", member.getId(), studyData);
+        log.info("[Service GenerateStudy] : member_name = {}, studyData = {}", member.getMemberName(), studyData);
         LocalDate expirationDate = studyData.getExpirationDate() != null ?
                 studyData.getExpirationDate() : LocalDate.of(2222, 1, 1);
+        if (expirationDate.isBefore(LocalDate.now())) {
+            throw new CustomException(IMPOSSIBLE_SET_EXPIRATION_DATE_BEFORE_TODAY);
+        }
+
         Study study = studyRepository.save(Study.builder()
                 .title(studyData.getTitle())
                 .notice(studyData.getNotice())
                 .expirationDate(expirationDate)
                 .memberCapacity(studyData.getMemberCapacity())
-                .status(StudyStatus.RECRUITING)
+                .status(RECRUITING)
                 .build());
-
-        participantRepository.save(Participant.builder()
-                .member(member)
-                .study(study)
-                .isLeader(true).build());
+        participantRepository.save(Participant.makeParticipant(member, study, true));
+        setHashtags(study, studyData.getHashtags());
 
         return new StudyIdDto(study.getId());
     }
@@ -121,63 +181,25 @@ public class StudyService {
      */
     @Transactional
     public StudyIdDto editStudy(Member member, int studyId, StudyDataDto studyData) {
-        Study study = studyRepository.findById(studyId)
-                .orElseThrow(() -> new CustomException(STUDY_DOES_NOT_EXIST));
+        Study study = getStudy(studyId);
 
         if (study.getStudyLeader().getId() != member.getId()) {
             log.info("Edit can only leader, leaderId = {}, memberId = {}",
                     study.getStudyLeader().getId(), member.getId());
             throw new CustomException(POSSIBLE_ONLY_LEADER);
         }
-        if (study.getParticipants().size() > studyData.getMemberCapacity()) {
+        if (study.getCurrentParticipantCount() > studyData.getMemberCapacity()) {
             throw new CustomException(IMPOSSIBLE_SET_MEMBER_CAPACITY);
         }
-        if (study.getStatus().equals(StudyStatus.TERMINATED)) {
+        if (study.getStatus().equals(TERMINATED)) {
             throw new CustomException(CAN_NOT_EDITING_TERMINATED_STUDY);
         }
 
         study.updateStudyInfo(studyData.getTitle(), studyData.getNotice(),
                 studyData.getMemberCapacity(), studyData.getExpirationDate());
+        setHashtags(study, studyData.getHashtags());
+
         return new StudyIdDto(studyId);
-    }
-
-    /**
-     * 스터디 가입
-     */
-    @Transactional
-    public StudyJoinDto joinStudy(Member member, int studyId) {
-        Study study = studyRepository.findById(studyId)
-                .orElseThrow(() -> new CustomException(STUDY_DOES_NOT_EXIST));
-
-        if (study.getParticipants().size() >= study.getMemberCapacity()) {
-            throw new CustomException(STUDY_IS_FULL);
-        }
-        checkAlreadyRegistered(member, study);
-        checkStudyStatus(study);
-
-        Integer participantId = participantRepository.save(Participant.builder()
-                .study(study)
-                .member(member)
-                .isLeader(false)
-                .build()).getId();
-        return new StudyJoinDto(studyId, participantId);
-    }
-
-    /**
-     * 스터디 참가자 삭제
-     * - 내가 스스로 탈퇴
-     * - 방장이 다른 사람을 강퇴
-     */
-    @Transactional
-    public void removeStudyMember(Member member, int studyId, int participantsId) {
-        Study study = studyRepository.findById(studyId)
-                .orElseThrow(() -> new CustomException(STUDY_DOES_NOT_EXIST));
-        Participant deleteParticipant = participantRepository.findById(participantsId)
-                .orElseThrow(() -> new CustomException(PARTICIPANT_IS_NOT_EXIST));
-
-        if (isPossible(deleteParticipant, member.getId(), studyId)) {
-            deleteStudyParticipant(study, deleteParticipant);
-        }
     }
 
     /**
@@ -185,55 +207,92 @@ public class StudyService {
      */
     @Transactional
     public StudyStatusDto changeStudyStatus(Member member, int studyId, StudyStatus status) {
-        Study study = studyRepository.findById(studyId)
-                .orElseThrow(() -> new CustomException(STUDY_DOES_NOT_EXIST));
+        Study study = getStudy(studyId);
 
-        if (status.name().equals(StudyStatus.TERMINATED.name()) &&
+        if (status.name().equals(TERMINATED.name()) &&
                 study.getStudyLeader().getId() != member.getId()) {
             throw new CustomException(POSSIBLE_ONLY_LEADER);
         }
-        //TODO: 상태변경 가능한 지 체크
         study.updateStatus(status);
         return new StudyStatusDto(studyId, status.name());
     }
 
-    private void checkAlreadyRegistered(Member member, Study study) {
-        study.getParticipants().forEach((participant) -> {
-            if (participant.getMember().getId() == member.getId()) {
-                throw new CustomException(ALREADY_REGISTERED_MEMBER);
-            }
+    private Study getStudy(int studyId) {
+        Study study = studyRepository.findById(studyId)
+                .orElseThrow(() -> new CustomException(STUDY_DOES_NOT_EXIST));
+        return study;
+    }
+
+    private List<HashtagDataDto> getHashtagDatas(Study study) {
+        String[] hashtagCodes = study.getHashtagCodes().split("");
+        List<String> hashtagCodeList = new ArrayList<>(Arrays.asList(hashtagCodes));
+
+        return hashtagRepository.findAllByCodeIn(hashtagCodeList).stream()
+                .map(h -> new HashtagDataDto(h.getCode(), h.getName()))
+                .collect(Collectors.toList());
+    }
+
+    private String makeHashtagResponse(Study study, List<String> hashtagNameList) {
+        List<HashtagDataDto> hashtagDatas = getHashtagDatas(study);
+
+        StringBuilder sb = new StringBuilder();
+        hashtagDatas.stream().forEach((dataDto) -> {
+            sb.append(dataDto.getCode());
+            hashtagNameList.add(dataDto.getName());
         });
+        return sb.toString();
     }
 
-    private void checkStudyStatus(Study study) {
-        if (study.getParticipants().size() + 1 == study.getMemberCapacity()) {
-            study.updateStatus(StudyStatus.COMPLETED);
+    private List<StudySummaryDto> makeResponseList(List<Participant> myStudyParticipants, boolean allFlag) {
+        List<StudySummaryDto> studyResponseList = new ArrayList<>();
+
+        for (Participant participant : myStudyParticipants) {
+            Study study = participant.getStudy();
+
+            List<String> hashtagNameList = new ArrayList<>();
+            String hashtagCodes = makeHashtagResponse(study, hashtagNameList);
+
+            StudySummaryDto studySummaryDto = StudySummaryDto.builder()
+                    .id(study.getId())
+                    .title(study.getTitle())
+                    .memberCapacity(study.getMemberCapacity())
+                    .currentMember(study.getCurrentParticipantCount())
+                    .status(study.getStatus())
+                    .hashtagCodes(hashtagCodes)
+                    .hashtagNameList(hashtagNameList).build();
+            studyResponseList.add(studySummaryDto);
+            if (!allFlag && studyResponseList.size() >= MY_STUDY_DEFAULT_SIZE) {
+                break;
+            }
+        }
+        return studyResponseList;
+    }
+
+    private void setHashtags(Study study, String hashtags) {
+        checkInputHashtags(hashtags);
+        study.saveHashtagCodes(hashtags);
+    }
+
+    private void checkInputHashtags(String hashtags) {
+        String[] hashtagCodes = hashtags.split("");
+        checkDuplicatedHashtag(hashtagCodes);
+        checkExistHashtag(hashtagCodes);
+    }
+
+    private void checkExistHashtag(String[] hashtagCodes) {
+        List<String> hashtagCodeList = new ArrayList<>(Arrays.asList(hashtagCodes));
+        List<Hashtag> findHashtagList = hashtagRepository.findAllByCodeIn(hashtagCodeList);
+        if (hashtagCodes.length != findHashtagList.size()) {
+            throw new CustomException(NO_SUCH_HASHTAG);
         }
     }
 
-    private void deleteStudyParticipant(Study study, Participant deleteParticipant) {
-        participantRepository.delete(deleteParticipant);
-        if (study.getStatus().equals(StudyStatus.COMPLETED))
-            study.updateStatus(StudyStatus.RECRUITING);
-    }
-
-    private boolean isPossible(Participant deleteParticipant, int memberId, int studyId) {
-        //참가자는 방장 리스트가 아니어야함, 참가자와 내가 다르면 내가 방장이어야 함, 참가자와 내가 같으면 나는 방장이면 안됨
-        if (deleteParticipant.isLeader()) {
-            throw new CustomException(CAN_NOT_DELETE_LEADER_PARTICIPANT);
+    private void checkDuplicatedHashtag(String[] hashtagCodes) {
+        Set<String> checkDuplicateSet = new HashSet<>();
+        for (String hashtagCode : hashtagCodes) {
+            if (!checkDuplicateSet.add(hashtagCode)) {
+                throw new CustomException(DUPLICATED_HASHTAG);
+            }
         }
-
-        Participant leadersParticipant = participantRepository.findLeader(studyId)
-                .orElseThrow(() -> new CustomException(FAIL_TO_FIND_LEADER));
-        int studyLeaderId = leadersParticipant.getMember().getId();
-
-        if (deleteParticipant.getMember().getId() != memberId) {
-            if (studyLeaderId != memberId)
-                throw new CustomException(POSSIBLE_ONLY_LEADER);
-        } else {
-            if (studyLeaderId == memberId)
-                throw new CustomException(CAN_NOT_DELETE_LEADER_PARTICIPANT);
-        }
-        return true;
     }
 }

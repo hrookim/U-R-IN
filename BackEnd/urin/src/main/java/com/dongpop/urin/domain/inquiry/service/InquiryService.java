@@ -5,10 +5,10 @@ import com.dongpop.urin.domain.inquiry.dto.request.InquiryDataDto;
 import com.dongpop.urin.domain.inquiry.dto.response.InquiryDetailDto;
 import com.dongpop.urin.domain.inquiry.dto.response.InquiryDto;
 import com.dongpop.urin.domain.inquiry.dto.response.InquiryListDto;
-import com.dongpop.urin.domain.inquiry.repository.Inquiry;
+import com.dongpop.urin.domain.inquiry.entity.Inquiry;
 import com.dongpop.urin.domain.inquiry.repository.InquiryRepository;
-import com.dongpop.urin.domain.member.repository.Member;
-import com.dongpop.urin.domain.study.repository.Study;
+import com.dongpop.urin.domain.member.entity.Member;
+import com.dongpop.urin.domain.study.entity.Study;
 import com.dongpop.urin.domain.study.repository.StudyRepository;
 import com.dongpop.urin.global.error.exception.CustomException;
 import lombok.RequiredArgsConstructor;
@@ -24,6 +24,8 @@ import java.util.stream.Collectors;
 
 import static com.dongpop.urin.global.error.errorcode.CommonErrorCode.DO_NOT_HAVE_AUTHORIZATION;
 import static com.dongpop.urin.global.error.errorcode.CommonErrorCode.NO_SUCH_ELEMENTS;
+import static com.dongpop.urin.global.error.errorcode.InquiryErrorCode.DIFFRENT_STUDY;
+import static com.dongpop.urin.global.error.errorcode.InquiryErrorCode.PARENT_INQUIRY_IS_NOT_EXIST;
 import static com.dongpop.urin.global.error.errorcode.StudyErrorCode.STUDY_DOES_NOT_EXIST;
 
 @RequiredArgsConstructor
@@ -37,7 +39,9 @@ public class InquiryService {
 
     @Transactional
     public InquiryListDto getStudyInquiries(int studyId, Pageable pageable) {
-        Page<Inquiry> inquiryPage = inquiryRepository.findAllByStudyIdAndParentIsNull(studyId, pageable);
+        Study study = studyRepository.findById(studyId)
+                .orElseThrow(() -> new CustomException(STUDY_DOES_NOT_EXIST));
+        Page<Inquiry> inquiryPage = inquiryRepository.findAllByStudyAndParentIsNull(study, pageable);
 
         int totalPages = inquiryPage.getTotalPages();
         List<InquiryDto> inquiryList = new ArrayList<>();
@@ -46,10 +50,9 @@ public class InquiryService {
             InquiryDetailDto parent = InquiryDetailDto.builder()
                     .inquiryId(i.getId())
                     .contents(i.isDeleted() ? DELETE_MESSAGE : i.getContents())
-                    .writerId(i.getWriter().getId()) //TODO: 삭제된 댓글도 사용자 아이디는 보여주는지 다시 확인
+                    .writerId(i.getWriter().getId())
                     .writer(i.getWriter().getNickname())
-                    //TODO: 문자열 변환 TEST
-                    .createdAt(i.getCreatedAt().format(DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm:ss")))
+                    .createdAt(i.getCreatedAt().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")))
                     .isDeleted(i.isDeleted()).build();
 
             List<InquiryDetailDto> children = i.getChildren().stream()
@@ -78,27 +81,36 @@ public class InquiryService {
                 .writer(writer)
                 .study(study).build();
 
-        Inquiry parent = inquiryRepository.findById(inquiryDataDto.getParent())
-                .orElseGet(() -> null);
-        newInquiry.addParentInquiry(parent);
-
+        if (inquiryDataDto.getParent() != 0) {
+            Inquiry parent = inquiryRepository.findById(inquiryDataDto.getParent())
+                    .orElseThrow(() -> new CustomException(PARENT_INQUIRY_IS_NOT_EXIST));
+            if (parent.getStudy().getId() != study.getId()) {
+                throw new CustomException(DIFFRENT_STUDY);
+            }
+            newInquiry.addParentInquiry(parent);
+        }
         inquiryRepository.save(newInquiry);
     }
 
     @Transactional
     public void updateFeed(Member member, int studyId, int inquiryId, String contents) {
-        Inquiry inquiry = checkWriterAuthorizaion(member, inquiryId);
+        Inquiry inquiry = checkUpdateAuthorizaion(member, studyId, inquiryId);
         inquiry.updateInquiryData(contents);
     }
 
     @Transactional
     public void deleteInquiry(Member member, int studyId, int inquiryId) {
-        Inquiry inquiry = checkWriterAuthorizaion(member, studyId, inquiryId);
+        Inquiry inquiry = checkDeleteAuthorizaion(member, studyId, inquiryId);
         inquiry.deleteInquiry();
     }
-    private Inquiry checkWriterAuthorizaion(Member member, int inquiryId) {
+    private Inquiry checkUpdateAuthorizaion(Member member, int studyId, int inquiryId) {
         Inquiry inquiry = inquiryRepository.findById(inquiryId)
                 .orElseThrow(() -> new CustomException(NO_SUCH_ELEMENTS));
+        Study study = studyRepository.findById(studyId)
+                .orElseThrow(() -> new CustomException(STUDY_DOES_NOT_EXIST));
+        if (inquiry.getStudy().getId() != study.getId()) {
+            throw new CustomException(DIFFRENT_STUDY);
+        }
 
         if (member.getId() != inquiry.getWriter().getId()) {
             throw new CustomException(DO_NOT_HAVE_AUTHORIZATION);
@@ -106,11 +118,14 @@ public class InquiryService {
         return inquiry;
     }
 
-    private Inquiry checkWriterAuthorizaion(Member member, int studyId, int feedId) {
-        Inquiry inquiry = inquiryRepository.findById(feedId)
+    private Inquiry checkDeleteAuthorizaion(Member member, int studyId, int inquiryId) {
+        Inquiry inquiry = inquiryRepository.findById(inquiryId)
                 .orElseThrow(() -> new CustomException(NO_SUCH_ELEMENTS));
         Study study = studyRepository.findById(studyId)
                 .orElseThrow(() -> new CustomException(STUDY_DOES_NOT_EXIST));
+        if (inquiry.getStudy().getId() != studyId) {
+            throw new CustomException(DIFFRENT_STUDY);
+        }
 
         if (!(member.getId() == inquiry.getWriter().getId() || member.getId() == study.getStudyLeader().getId())) {
             throw new CustomException(DO_NOT_HAVE_AUTHORIZATION);

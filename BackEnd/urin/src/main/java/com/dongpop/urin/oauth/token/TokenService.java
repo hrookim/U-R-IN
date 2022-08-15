@@ -1,6 +1,6 @@
 package com.dongpop.urin.oauth.token;
 
-import com.dongpop.urin.domain.member.repository.Member;
+import com.dongpop.urin.domain.member.entity.Member;
 import com.dongpop.urin.domain.member.repository.MemberRepository;
 import io.jsonwebtoken.*;
 import lombok.RequiredArgsConstructor;
@@ -28,7 +28,7 @@ public class TokenService {
     @Scheduled(fixedRate = 600000)
     protected void clearBlackList() {
         blackList.forEach((token, id) -> {
-            if (!validateToken(token))
+            if (!validateToken(token, tokenProperties.getAccess().getName()))
                 blackList.remove(token);
         });
     }
@@ -40,7 +40,7 @@ public class TokenService {
     }
 
     public boolean isInBlackList(String accessToken) {
-        return blackList.get(accessToken) == null ? false : true;
+        return blackList.get(accessToken) != null;
     }
 
     @Transactional
@@ -66,7 +66,7 @@ public class TokenService {
         claims.put("type", tokenName);  //문자도 가능하고
         claims.put("id", member.getId());
         Date now = new Date();
-        long expiredDate = tokenName == tokenProperties.getAccess().getName()
+        long expiredDate = tokenName.equals(tokenProperties.getAccess().getName())
                 ? tokenProperties.getAccess().getExpiredTimeMilli()
                 : tokenProperties.getRefresh().getExpiredTimeMilli();
 
@@ -79,11 +79,19 @@ public class TokenService {
                 .compact(); // Token 생성
     }
 
-    public boolean validateToken(String token) {
+    public boolean validateToken(String token, String tokenType) {
+        if (!StringUtils.hasText(token) || !StringUtils.hasText(tokenType)) {
+            return false;
+        }
         try {
-            Jwts.parser().setSigningKey(tokenProperties.getSecret()).parseClaimsJws(token);
-            if (!isInBlackList(token))
+            Claims body = Jwts.parser().setSigningKey(tokenProperties.getSecret()).parseClaimsJws(token).getBody();
+            String getType = (String) body.get("type");
+            if (tokenType.equals(getType)) {
+                if (tokenType.equals(tokenProperties.getAccess().getName()) && isInBlackList(token)) {
+                    return false;
+                }
                 return true;
+            }
         } catch (SecurityException | MalformedJwtException e) {
             log.info("JWT Signature is wrong.");
         }  catch (UnsupportedJwtException e) {

@@ -2,6 +2,7 @@ package com.dongpop.urin.oauth.filter;
 
 import com.dongpop.urin.oauth.model.MemberPrincipal;
 import com.dongpop.urin.oauth.service.CustomUserDetailsService;
+import com.dongpop.urin.oauth.token.TokenProperties;
 import com.dongpop.urin.oauth.token.TokenService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+import javax.security.sasl.AuthenticationException;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -26,6 +28,7 @@ import java.io.IOException;
 public class TokenAuthenticationFilter extends OncePerRequestFilter {
 
     private final TokenService tokenService;
+    private final TokenProperties tokenProperties;
     private final CustomUserDetailsService customUserDetailsService;
 
     @Override
@@ -33,15 +36,20 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
         log.info("Request URI = {}", request.getRequestURI());
         String accessToken = getAccessTokenInRequestHeader(request);
         log.info("Request Access-Token = {}", accessToken);
-        if (StringUtils.hasText(accessToken) && tokenService.validateToken(accessToken)) {
-            Integer id = tokenService.getId(accessToken);
-            UserDetails userDetails = customUserDetailsService.loadMemberById(id);
-            MemberPrincipal memberPrincipal = (MemberPrincipal) userDetails;
-            log.info("Request Member name = {}", memberPrincipal.getMember().getMemberName());
-            UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
-            authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-            SecurityContextHolder.getContext().setAuthentication(authentication);
+        try {
+            if (StringUtils.hasText(accessToken) && tokenService.validateToken(accessToken, tokenProperties.getAccess().getName())) {
+                Integer id = tokenService.getId(accessToken);
+                UserDetails userDetails = customUserDetailsService.loadMemberById(id);
+                MemberPrincipal memberPrincipal = (MemberPrincipal) userDetails;
+                log.info("Request : MemberId = {}, MemberName = {}", memberPrincipal.getMember().getId(), memberPrincipal.getMember().getMemberName());
+                UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+                authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                SecurityContextHolder.getContext().setAuthentication(authentication);
+            }
+        } catch (Exception e) {
+            throw new AuthenticationException(e.getMessage());
         }
+
         filterChain.doFilter(request, response);
     }
 

@@ -1,7 +1,7 @@
 package com.dongpop.urin.domain.study.dto.response;
 
-import com.dongpop.urin.domain.participant.dto.ParticipantDto;
-import com.dongpop.urin.domain.study.repository.StudyStatus;
+import com.dongpop.urin.domain.participant.dto.response.ParticipantDto;
+import com.dongpop.urin.domain.study.entity.StudyStatus;
 import lombok.Builder;
 import lombok.Data;
 
@@ -20,5 +20,8 @@ public class StudyDetailDto {
     private LocalDate expirationDate;
     private int dDay;
     private Boolean isOnair;
+    private String hashtagCodes;
+    private List<String> hashtagNameList;
     private List<ParticipantDto> participants;
 }
+

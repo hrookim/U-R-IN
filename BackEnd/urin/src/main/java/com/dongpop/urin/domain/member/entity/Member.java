@@ -1,4 +1,4 @@
-package com.dongpop.urin.domain.member.repository;
+package com.dongpop.urin.domain.member.entity;
 
 import com.dongpop.urin.domain.common.entity.BaseTimeEntity;
 import lombok.AccessLevel;
@@ -25,6 +25,7 @@ public class Member extends BaseTimeEntity {
 
     private String refreshToken;
 
+    private Boolean isPassed;
     @Builder
     public Member(String identifier, String memberName, String nickname, String password, String role, String email, String profileImage) {
         this.identifier = identifier;
@@ -34,11 +35,21 @@ public class Member extends BaseTimeEntity {
         this.role = role;
     }
 
+    @PrePersist
+    public void prePersist() {
+        if (getIsPassed() == null)
+            isPassed = false;
+    }
+
     public void saveRefreshToken(String refreshToken) {
         this.refreshToken = refreshToken;
     }
 
     public void removeRefreshToken() {
         refreshToken = null;
+    }
+
+    public void changeMemberPassState(boolean isPassed) {
+        this.isPassed = isPassed;
     }
 }

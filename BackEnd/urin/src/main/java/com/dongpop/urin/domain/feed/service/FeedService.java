@@ -5,11 +5,13 @@ import com.dongpop.urin.domain.feed.dto.request.FeedDataDto;
 import com.dongpop.urin.domain.feed.dto.response.FeedDetailDto;
 import com.dongpop.urin.domain.feed.dto.response.FeedDto;
 import com.dongpop.urin.domain.feed.dto.response.FeedListDto;
-import com.dongpop.urin.domain.feed.repository.Feed;
+import com.dongpop.urin.domain.feed.entity.Feed;
 import com.dongpop.urin.domain.feed.repository.FeedRepository;
-import com.dongpop.urin.domain.member.repository.Member;
-import com.dongpop.urin.domain.study.repository.Study;
+import com.dongpop.urin.domain.member.entity.Member;
+import com.dongpop.urin.domain.participant.entity.Participant;
+import com.dongpop.urin.domain.study.entity.Study;
 import com.dongpop.urin.domain.study.repository.StudyRepository;
+import com.dongpop.urin.global.error.errorcode.FeedErrorCode;
 import com.dongpop.urin.global.error.exception.CustomException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -24,6 +26,9 @@ import java.util.stream.Collectors;
 
 import static com.dongpop.urin.global.error.errorcode.CommonErrorCode.DO_NOT_HAVE_AUTHORIZATION;
 import static com.dongpop.urin.global.error.errorcode.CommonErrorCode.NO_SUCH_ELEMENTS;
+import static com.dongpop.urin.global.error.errorcode.FeedErrorCode.*;
+import static com.dongpop.urin.global.error.errorcode.FeedErrorCode.DIFFRENT_STUDY;
+import static com.dongpop.urin.global.error.errorcode.FeedErrorCode.PARENT_FEED_IS_NOT_EXIST;
 import static com.dongpop.urin.global.error.errorcode.StudyErrorCode.STUDY_DOES_NOT_EXIST;
 
 @RequiredArgsConstructor
@@ -36,7 +41,10 @@ public class FeedService {
     private final StudyRepository studyRepository;
 
     @Transactional
-    public FeedListDto getStudyFeeds(int studyId, Pageable pageable) {
+    public FeedListDto getStudyFeeds(int studyId, Pageable pageable, Member member) {
+        Study study = getStudy(studyId);
+        checkRegistedMember(study, member);
+
         Page<Feed> feedPage = feedRepository.findAllByStudyIdAndParentIsNull(studyId, pageable);
 
         int totalPages = feedPage.getTotalPages();
@@ -46,20 +54,18 @@ public class FeedService {
             FeedDetailDto parent = FeedDetailDto.builder()
                     .feedId(f.getId())
                     .contents(f.isDeleted() ? DELETE_MESSAGE : f.getContents())
-                    .writerId(f.getWriter().getId()) //TODO: 삭제된 댓글도 사용자 아이디는 보여주는지 다시 확인
+                    .writerId(f.getWriter().getId())
                     .writer(f.getWriter().getNickname())
-                    //TODO: 문자열 변환 TEST
-                    .createdAt(f.getCreatedAt().format(DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm:ss")))
+                    .createdAt(f.getCreatedAt().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")))
                     .isDeleted(f.isDeleted()).build();
 
             List<FeedDetailDto> children = f.getChildren().stream()
-                    .map(c ->
-                            FeedDetailDto.builder()
+                    .map(c -> FeedDetailDto.builder()
                                     .feedId(c.getId())
                                     .contents(c.isDeleted() ? DELETE_MESSAGE : c.getContents())
                                     .writerId(c.getWriter().getId())
                                     .writer(c.getWriter().getNickname())
-                                    .createdAt(c.getCreatedAt().format(DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm:ss")))
+                                    .createdAt(c.getCreatedAt().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")))
                                     .isDeleted(c.isDeleted()).build()
                     ).collect(Collectors.toList());
 
@@ -71,34 +77,58 @@ public class FeedService {
 
     @Transactional
     public void writeFeed(Member writer, int studyId, FeedDataDto feedDataDto) {
-        Study study = studyRepository.findById(studyId)
-                .orElseThrow(() -> new CustomException(STUDY_DOES_NOT_EXIST));
+        Study study = getStudy(studyId);
+        checkRegistedMember(study, writer);
+
         Feed newFeed = Feed.builder()
                 .contents(feedDataDto.getContents())
                 .writer(writer)
                 .study(study).build();
 
-        Feed parent = feedRepository.findById(feedDataDto.getParent())
-                .orElseGet(() -> null);
-        newFeed.addParentFeed(parent);
-
+        if (feedDataDto.getParent() != 0) {
+            Feed parent = feedRepository.findById(feedDataDto.getParent())
+                    .orElseThrow(() -> new CustomException(PARENT_FEED_IS_NOT_EXIST));
+            if (parent.getStudy().getId() != study.getId()) {
+                throw new CustomException(DIFFRENT_STUDY);
+            }
+            newFeed.addParentFeed(parent);
+        }
         feedRepository.save(newFeed);
     }
 
     @Transactional
     public void updateFeed(Member member, int studyId, int feedId, String contents) {
-        Feed feed = checkWriterAuthorizaion(member, feedId);
+        Feed feed = checkUpdateAuthorizaion(member, studyId, feedId);
         feed.updateFeedData(contents);
     }
 
     @Transactional
     public void deleteFeed(Member member, int studyId, int feedId) {
-        Feed feed = checkWriterAuthorizaion(member, studyId, feedId);
+        Feed feed = checkDeleteAuthorizaion(member, studyId, feedId);
         feed.deleteFeed();
     }
-    private Feed checkWriterAuthorizaion(Member member, int feedId) {
+
+    private Study getStudy(int studyId) {
+        return studyRepository.findById(studyId)
+                .orElseThrow(() -> new CustomException(STUDY_DOES_NOT_EXIST));
+    }
+
+    private void checkRegistedMember(Study study, Member writer) {
+        for (Participant participant : study.getParticipants()) {
+            if (participant.getMember().getId() == writer.getId() && !participant.getWithdrawal()) {
+                return;
+            }
+        }
+        throw new CustomException(NOT_REGISTED_MEMBER);
+    }
+
+    private Feed checkUpdateAuthorizaion(Member member, int studyId, int feedId) {
         Feed feed = feedRepository.findById(feedId)
                 .orElseThrow(() -> new CustomException(NO_SUCH_ELEMENTS));
+        Study study = getStudy(studyId);
+        if (feed.getStudy().getId() != study.getId()) {
+            throw new CustomException(DIFFRENT_STUDY);
+        }
 
         if (member.getId() != feed.getWriter().getId()) {
             throw new CustomException(DO_NOT_HAVE_AUTHORIZATION);
@@ -106,11 +136,13 @@ public class FeedService {
         return feed;
     }
 
-    private Feed checkWriterAuthorizaion(Member member, int studyId, int feedId) {
+    private Feed checkDeleteAuthorizaion(Member member, int studyId, int feedId) {
         Feed feed = feedRepository.findById(feedId)
                 .orElseThrow(() -> new CustomException(NO_SUCH_ELEMENTS));
-        Study study = studyRepository.findById(studyId)
-                .orElseThrow(() -> new CustomException(STUDY_DOES_NOT_EXIST));
+        Study study = getStudy(studyId);
+        if (feed.getStudy().getId() != studyId) {
+            throw new CustomException(DIFFRENT_STUDY);
+        }
 
         if (!(member.getId() == feed.getWriter().getId() || member.getId() == study.getStudyLeader().getId())) {
             throw new CustomException(DO_NOT_HAVE_AUTHORIZATION);

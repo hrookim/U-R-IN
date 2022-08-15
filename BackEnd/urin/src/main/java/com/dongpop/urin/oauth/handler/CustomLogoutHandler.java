@@ -1,7 +1,8 @@
 package com.dongpop.urin.oauth.handler;
 
-import com.dongpop.urin.domain.member.repository.Member;
+import com.dongpop.urin.domain.member.entity.Member;
 import com.dongpop.urin.domain.member.repository.MemberRepository;
+import com.dongpop.urin.oauth.token.TokenProperties;
 import com.dongpop.urin.oauth.token.TokenService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,6 +23,7 @@ import java.util.NoSuchElementException;
 public class CustomLogoutHandler implements LogoutHandler {
 
     private final TokenService tokenService;
+    private final TokenProperties tokenProperties;
     private final MemberRepository memberRepository;
 
     @Transactional
@@ -32,7 +34,7 @@ public class CustomLogoutHandler implements LogoutHandler {
         if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {
             String accessToken = bearerToken.substring(7);
             //토큰이 유효하면 해당 Access토큰을 블랙리스트에 저장함
-            if (tokenService.validateToken(accessToken)) {
+            if (tokenService.validateToken(accessToken, tokenProperties.getAccess().getName())) {
                 Integer memberId = tokenService.getId(accessToken);
                 Member member = memberRepository.findById(memberId)
                         .orElseThrow(() -> new NoSuchElementException("해당 회원이 존재하지 않습니다."));
