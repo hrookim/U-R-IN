@@ -25,6 +25,8 @@ import { Link, useNavigate } from "react-router-dom";
 import { createStudy } from "../../store/studySlice";
 import CheckValidation from "../../components/CheckValidation";
 import { getMemberId } from "../../store/memberSlice";
+import SearchFilter from "../../components/SearchFilter";
+
 import "./index.css";
 import "../../assets/DesignSystem.css";
 
@@ -35,12 +37,16 @@ const StudyCreationForm = () => {
   const [form, setForm] = useState({
     title: "",
     notice: "",
-    expirationDate: "",
+    expirationDate: new Date(),
     memberCapacity: 2,
+    hashtags: "",
   });
   const [formDate, setFormDate] = useState(new Date());
   const [disable, setDisable] = useState(false);
   const [errorStatement, setErrorStatement] = useState("");
+  const [hashtags, setHashtags] = useState("");
+
+  console.log(formDate, "날짜");
 
   // popper관련
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -66,7 +72,6 @@ const StudyCreationForm = () => {
       ...form,
       [name]: value,
     });
-    console.log(form);
   };
   // popper 관련 함수
   const handleClick = (event) => {
@@ -76,7 +81,29 @@ const StudyCreationForm = () => {
 
   const onSubmit = (e) => {
     e.preventDefault();
-    dispatch(createStudy({ form, navigate }));
+
+    if (form.hashtags) {
+      dispatch(createStudy({ form, navigate }));
+    } else {
+      alert("1개 이상 선택해주세요!");
+    }
+  };
+
+  useEffect(() => {
+    setForm({
+      ...form,
+      hashtags,
+    });
+  }, [hashtags]);
+
+  const getHashtags = (value) => {
+    setHashtags(value);
+  };
+
+  const getOverflowed = (value2) => {
+    if (value2) {
+      alert("3개 이하로 선택해주세요.");
+    }
   };
 
   return (
@@ -226,13 +253,27 @@ const StudyCreationForm = () => {
             <TextField
               // style={{ width: "400px", margin: "5px" }}
               type="text"
-              label="공지"
+              label="공지사항을 적어주세요."
               name="notice"
               variant="outlined"
+              className="notice-form"
               multiline
               rows={15}
               onChange={onChange}
               required
+            />
+          </FormControl>
+          <div className="content-title">
+            <p className="font-lg font-70">태그</p>
+            <p className="create-grid-contents-title1 font-30 font-sm">
+              &nbsp;&nbsp;&nbsp;다른 스터디원들이 쉽게 검색할 수 있도록 태그를
+              설정해보세요! (최대 3개까지 가능)
+            </p>
+          </div>
+          <FormControl className="title" fullWidth sx={{ m: 1 }}>
+            <SearchFilter
+              getHashtags={getHashtags}
+              getOverflowed={getOverflowed}
             />
           </FormControl>
           <div className="btns">

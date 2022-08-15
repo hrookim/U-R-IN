@@ -32,8 +32,6 @@ const MyPage = () => {
   const [currentAllChecked, setCurrentAllChecked] = useState(false);
   const [pastAllChecked, setPastAllChecked] = useState(false);
 
-  const mounted = useRef(false);
-
   useEffect(() => {
     dispatch(getMyPage([currentAllChecked, pastAllChecked]));
   }, [currentAllChecked, pastAllChecked]);
@@ -104,7 +102,7 @@ const MyPage = () => {
           >
             <Card
               key={item.id}
-              className="card"
+              className="card card-hover"
               sx={{
                 borderColor: "#dedede",
                 borderRadius: "20px",
@@ -162,7 +160,8 @@ const MyPage = () => {
             펼치기
           </Button>
         </div>
-      ) : (
+      ) : null}
+      {myPage.totalCurrentStudies > 4 && currentAllChecked ? (
         <div className="more-btn">
           <Button
             sx={{ color: "#0037FA" }}
@@ -172,7 +171,7 @@ const MyPage = () => {
             접기
           </Button>
         </div>
-      )}
+      ) : null}
 
       <p className="font-80 font-lg">지난 스터디</p>
       <Grid container spacing={2} className="card-grid">
@@ -187,12 +186,11 @@ const MyPage = () => {
             key={item.id}
             className="card-item"
           >
-            {console.log("============", item.id)}
             <Card
               key={item.id}
               className="card"
               sx={{
-                border: "none",
+                borderColor: "#dedede",
                 borderRadius: "20px",
                 maxWidth: "500px",
                 boxShadow: 0,
@@ -244,13 +242,14 @@ const MyPage = () => {
             펼치기
           </Button>
         </div>
-      ) : (
+      ) : null}
+      {myPage.totalPastStudies > 4 && pastAllChecked ? (
         <div className="more-btn">
           <Button sx={{ color: "#0037FA" }} onClick={pastCheck} variant="text">
             접기
           </Button>
         </div>
-      )}
+      ) : null}
     </div>
   );
 };
