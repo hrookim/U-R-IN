@@ -119,22 +119,22 @@ const LandingPage = () => {
               시작하기
             </Button>
           </div>
-          <img src="/img/landingpage-img4.png" alt="img4" className="img4" />
+          <img src="img/landingpage-img4.png" alt="img4" className="img4" />
 
           <div className="img-group">
             <img
               className="img1 test"
-              src="/img/landingpage-img1.png"
+              src={`${process.env.PUBLIC_URL}img/landingpage-img1.png`}
               alt="landingpage-img1"
             />
             <img
               className="img2"
-              src="/img/landingpage-img2.png"
+              src="%PUBLIC_URL%/img/landingpage-img2.png"
               alt="landingpage-img2"
             />
             <img
               className="img3"
-              src="/img/landingpage-img3.png"
+              src={`${process.env.PUBLIC_URL}/img/landingpage-img3.png`}
               alt="landingpage-img3"
             />
             <div className="img-text">
