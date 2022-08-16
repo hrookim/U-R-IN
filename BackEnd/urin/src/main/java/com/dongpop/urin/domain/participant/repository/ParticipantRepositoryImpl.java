@@ -4,13 +4,15 @@ import com.dongpop.urin.domain.member.entity.Member;
 import com.dongpop.urin.domain.participant.entity.Participant;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import java.util.List;
 
-import static com.dongpop.urin.domain.participant.entity.QParticipant.*;
-import static com.dongpop.urin.domain.study.entity.StudyStatus.*;
+import static com.dongpop.urin.domain.participant.entity.QParticipant.participant;
+import static com.dongpop.urin.domain.study.entity.StudyStatus.TERMINATED;
 
+@Repository
 public class ParticipantRepositoryImpl implements ParticipantRepositoryCustom {
 
     private final JPAQueryFactory queryFactory;
@@ -23,7 +25,7 @@ public class ParticipantRepositoryImpl implements ParticipantRepositoryCustom {
     public List<Participant> findMyCurrentStudyParticipants(Member member) {
         return queryFactory.selectFrom(participant)
                 .where(participant.member.eq(member), isPastStudy().not())
-                .orderBy(participant.study.id.asc())
+                .orderBy(participant.study.id.desc())
                 .fetch();
     }
 
@@ -31,7 +33,7 @@ public class ParticipantRepositoryImpl implements ParticipantRepositoryCustom {
     public List<Participant> findMyPastStudyParticipants(Member member) {
         return queryFactory.selectFrom(participant)
                 .where(participant.member.eq(member), isPastStudy())
-                .orderBy(participant.study.updatedAt.asc())
+                .orderBy(participant.study.updatedAt.desc())
                 .fetch();
     }
 

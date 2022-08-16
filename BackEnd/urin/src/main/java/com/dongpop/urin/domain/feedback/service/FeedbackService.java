@@ -47,7 +47,7 @@ public class FeedbackService {
 //        }
 
         Feedback feedback = feedbackRepository.findByMeetingAndInterviewerAndInterviewee(meeting, interviewer, interviewee)
-                .orElseThrow(() -> new CustomException(FEEDBACK_IS_NOT_EXIST));
+                .orElseGet(() -> null);
         return makeResponseDto(feedback);
     }
 
@@ -65,9 +65,9 @@ public class FeedbackService {
 
         Feedback feedback = feedbackRepository.findByMeetingAndInterviewerAndInterviewee(meeting, interviewer, interviewee)
                 .orElseGet(() -> feedbackRepository.save(Feedback.builder()
-                                .meeting(meeting)
-                                .interviewee(interviewee)
-                                .interviewer(interviewer).build()));
+                        .meeting(meeting)
+                        .interviewee(interviewee)
+                        .interviewer(interviewer).build()));
 
         createOrUpdateContents(feedback, feedbackSetDataDto);
         deleteRemainContents(feedback, feedbackSetDataDto);
@@ -120,6 +120,11 @@ public class FeedbackService {
         List<FeedbackDataDto> techList = new ArrayList<>();
         List<FeedbackDataDto> personalityList = new ArrayList<>();
 
+        FeedbackResponseDto responseDto = new FeedbackResponseDto(techList, personalityList);
+        if (feedback == null) {
+            return responseDto;
+        }
+
         List<FeedbackContent> feedbackContents = feedback.getFeedbackContents();
         for (FeedbackContent feedbackContent : feedbackContents) {
             FeedbackDataDto dataDto = FeedbackDataDto.builder()
@@ -132,7 +137,6 @@ public class FeedbackService {
                 personalityList.add(dataDto);
             }
         }
-
-        return new FeedbackResponseDto(techList, personalityList);
+        return responseDto;
     }
 }
