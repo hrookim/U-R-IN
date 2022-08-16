@@ -35,8 +35,8 @@ class Meeting extends Component {
     this.localUserAccessAllowed = false;
     this.state = {
       title: this.props.study.title,
-      // myuserId: this.props.member.id,
-      myuserId: Math.floor(Math.random() * 100),
+      myuserId: this.props.member.id,
+      // myuserId: Math.floor(Math.random() * 100),
       myNickname: this.props.member.nickname,
       studyId: Number(this.props.params.studyId),
       isLeader: false,
@@ -768,15 +768,15 @@ class Meeting extends Component {
    */
 
   getToken() {
-    // return this.getSessionId(this.state.studyId)
-    //   .then((sessionId) => this.createSession(sessionId))
-    //   .then((sessionId) => this.createToken(sessionId))
-    //   .then((token) => this.createMeeting(token));
+    return this.getSessionId(this.state.studyId)
+      .then((sessionId) => this.createSession(sessionId))
+      .then((sessionId) => this.createToken(sessionId))
+      .then((token) => this.createMeeting(token));
 
     // Back에 요청 X
-    return this.createSession(this.state.sessionId).then((sessionId) =>
-      this.createToken(sessionId)
-    );
+    // return this.createSession(this.state.sessionId).then((sessionId) =>
+    //   this.createToken(sessionId)
+    // );
   }
 
   getSessionId(studyId) {
