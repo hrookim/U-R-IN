@@ -15,6 +15,7 @@ import JSPDF from "jspdf";
 import { useParams, useNavigate } from "react-router-dom";
 import CheckValidation from "../../components/CheckValidation";
 import { getReport } from "../../store/reportSlice";
+import { getMeeting } from "../../store/meetingSlice";
 import "../../assets/DesignSystem.css";
 import AnalysisChart from "../../components/AnalysisChart";
 
@@ -34,8 +35,27 @@ const Report = () => {
     const input = document.getElementById("report");
     html2canvas(input).then((canvas) => {
       const imgData = canvas.toDataURL("image/png");
-      const pdf = new JSPDF();
-      pdf.addImage(imgData, "JPEG", 0, 0);
+
+      const imgWidth = 210; // 이미지 가로 길이(mm) A4 기준
+      const pageHeight = imgWidth * 1.414; // 출력 페이지 세로 길이 계산 A4 기준
+      const imgHeight = (canvas.height * imgWidth) / canvas.width;
+      let heightLeft = imgHeight;
+
+      const pdf = new JSPDF("p", "mm");
+      let position = 0;
+
+      // 첫페이지
+      pdf.addImage(imgData, "JPEG", 0, position, imgWidth, imgHeight);
+      heightLeft -= pageHeight;
+
+      // 한페이지 이상
+      while (heightLeft >= 20) {
+        position = heightLeft - imgHeight;
+        pdf.addPage();
+        pdf.addImage(imgData, "JPEG", 0, position, imgWidth, imgHeight);
+        heightLeft -= pageHeight;
+      }
+
       pdf.save("report.pdf");
     });
   };
@@ -47,13 +67,13 @@ const Report = () => {
   };
 
   useEffect(() => {
-    dispatch(getReport({ studyId, navigate }));
+    dispatch(getMeeting({ studyId, navigate }));
     dispatch(getReport({ page, navigate }));
   });
   return (
-    <div>
+    <div id="report">
       <CheckValidation />
-      <div className="report" id="report">
+      <div className="report">
         <div className="title-banner">
           <img
             src="/img/studyCreation.png"
@@ -77,7 +97,7 @@ const Report = () => {
               <Select
                 id="demo-select-small"
                 value={meetingId}
-                label="Age"
+                label="meetingId"
                 onChange={pageChange}
               >
                 {meetingId.map((item) => (
@@ -232,59 +252,62 @@ const Report = () => {
                 안정적인 눈동자의 움직임과 적절한 미소는 면접관에게 자신감 있는
                 인상을 심어줍니다.
               </div>
+
               <Grid container className="report-content-move">
                 <Grid item container xs={6}>
                   <Grid xs={2} className="report-content-move-title font-50">
-                    움직임 1
+                    {reports.aiData.interviewee.pose[0].name}
                   </Grid>
                   <Grid
                     xs={9}
                     item
                     className="report-content-move-content font-40"
                   >
-                    분당 7회 움직임이 감지되었습니다. 합격자 대비 20% 적은
-                    움직임이니 움직임에 많은 신경을 쏟을 필요는
-                    없겠네요!ddddddddddddddddd
+                    분당 {reports.aiData.interviewee.pose[0].count}회 움직임이
+                    감지되었습니다. 합격자 대비 20% 적은 움직임이니 움직임에
+                    많은 신경을 쏟을 필요는 없겠네요!ddddddddddddddddd
                   </Grid>
                 </Grid>
                 <Grid item container xs={6}>
                   <Grid xs={2} className="report-content-move-title font-50">
-                    움직임 2
+                    {reports.aiData.interviewee.pose[1].name}
                   </Grid>
                   <Grid
                     xs={9}
                     item
                     className="report-content-move-content font-40"
                   >
-                    분당 7회 움직임이 감지되었습니다. 합격자 대비 20% 적은
-                    움직임이니 움직임에 많은 신경을 쏟을 필요는 없겠네요!
+                    분당 {reports.aiData.interviewee.pose[1].count}회 움직임이
+                    감지되었습니다. 합격자 대비 20% 적은 움직임이니 움직임에
+                    많은 신경을 쏟을 필요는 없겠네요!
                   </Grid>
                 </Grid>
                 <Grid item container xs={6}>
                   <Grid xs={2} className="report-content-move-title font-50">
-                    움직임 3
+                    {reports.aiData.interviewee.pose[2].name}
                   </Grid>
                   <Grid
                     xs={9}
                     item
                     className="report-content-move-content font-40"
                   >
-                    분당 7회 움직임이 감지되었습니다. 합격자 대비 20% 적은
-                    움직임이니 움직임에 많은 신경을 쏟을 필요는 없겠네요!
-                    fffffffffff
+                    분당 {reports.aiData.interviewee.pose[2].count}회 움직임이
+                    감지되었습니다. 합격자 대비 20% 적은 움직임이니 움직임에
+                    많은 신경을 쏟을 필요는 없겠네요! fffffffffff
                   </Grid>
                 </Grid>
                 <Grid item container xs={6}>
                   <Grid xs={2} className="report-content-move-title font-50">
-                    움직임 4
+                    {reports.aiData.interviewee.pose[3].name}
                   </Grid>
                   <Grid
                     xs={9}
                     item
                     className="report-content-move-content font-40"
                   >
-                    분당 7회 움직임이 감지되었습니다. 합격자 대비 20% 적은
-                    움직임이니 움직임에 많은 신경을 쏟을 필요는 없겠네요!
+                    분당 {reports.aiData.interviewee.pose[3].count}회 움직임이
+                    감지되었습니다. 합격자 대비 20% 적은 움직임이니 움직임에
+                    많은 신경을 쏟을 필요는 없겠네요!
                   </Grid>
                 </Grid>
               </Grid>
