@@ -17,6 +17,7 @@ import feedReducer from "./feedSlice";
 import memberReducer from "./memberSlice";
 import checkValidationReducer from "./checkValidationSlice";
 import myPageReducer from "./myPageSlice";
+import passValidationReduecer from "./passValidationSlice";
 
 const rootReducer = combineReducers({
   validation: checkValidationReducer,
@@ -26,6 +27,7 @@ const rootReducer = combineReducers({
   inquiry: inquiryReducer,
   feed: feedReducer,
   mypage: myPageReducer,
+  passValidation: passValidationReduecer,
 });
 
 const persistConfig = {

@@ -10,6 +10,7 @@ import com.dongpop.urin.oauth.repository.HttpCookieOAuth2AuthorizationRequestRep
 import com.dongpop.urin.oauth.service.CustomOAuth2AuthorizedClientService;
 import com.dongpop.urin.oauth.service.CustomOAuth2UserService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -25,6 +26,9 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
+import java.util.List;
+
+@Slf4j
 @RequiredArgsConstructor
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
@@ -87,18 +91,15 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         return new CustomOAuth2UserService(memberRepository, passwordEncoder);
     }
 
-//    @Bean
-//    public OAuth2AuthorizedClientService oAuth2AuthorizedClientService() {
-//        return new CustomOAuth2AuthorizedClientService(oAuth2AuthorizedClientRepository);
-//    }
-
     @Bean
     public CorsConfigurationSource corsConfigurationSource(CorsProperties corsProperties) {
         CorsConfiguration configuration = new CorsConfiguration();
 
-        corsProperties.getAllowOrigins().forEach((origin) -> {
-            configuration.addAllowedOrigin(origin);
-        });
+        List<String> allowOrigins = corsProperties.getAllowOrigins();
+        for (String allowOrigin : allowOrigins) {
+            log.info("[Security Config] : Allow-Origin = {}", allowOrigin);
+            configuration.addAllowedOrigin(allowOrigin);
+        }
         configuration.addAllowedHeader("*");
         configuration.addAllowedMethod("*");
         configuration.setAllowCredentials(true);

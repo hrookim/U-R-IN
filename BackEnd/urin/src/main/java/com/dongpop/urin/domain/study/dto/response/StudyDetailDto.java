@@ -20,5 +20,8 @@ public class StudyDetailDto {
     private LocalDate expirationDate;
     private int dDay;
     private Boolean isOnair;
+    private String hashtagCodes;
+    private List<String> hashtagNameList;
     private List<ParticipantDto> participants;
 }
+
