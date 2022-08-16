@@ -9,7 +9,6 @@ const SearchFilter = ({ getHashtags, getOverflowed }) => {
   const [oldChecked, setOldChecked] = useState("");
 
   useEffect(() => {
-    console.log("useeffect 중간");
     getHashtags(hashtags);
     getOverflowed(false);
   }, [hashtags]);

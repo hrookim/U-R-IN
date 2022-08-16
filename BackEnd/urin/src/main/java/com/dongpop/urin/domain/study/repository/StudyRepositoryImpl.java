@@ -1,5 +1,6 @@
 package com.dongpop.urin.domain.study.repository;
 
+import com.dongpop.urin.domain.study.dto.request.StudySearchDto;
 import com.dongpop.urin.domain.study.entity.Study;
 import com.querydsl.core.types.Order;
 import com.querydsl.core.types.OrderSpecifier;
@@ -29,11 +30,12 @@ public class StudyRepositoryImpl implements StudyRepositoryCustom {
     }
 
     @Override
-    public Page<Study> findStudyList(String keyword, boolean isRecruiting, Pageable pageable) {
+    public Page<Study> findStudyList(StudySearchDto studySearchDto, Pageable pageable) {
         JPAQuery<Study> query = queryFactory
                 .selectFrom(study)
-                .where(keywordLike(keyword),
-                        statusIsRecruiting(isRecruiting),
+                .where(keywordLike(studySearchDto.getKeyword()),
+                        statusIsRecruiting(studySearchDto.getIsRecruiting()),
+                        includeSearchHashtagCode(studySearchDto.getHashtags()),
                         statusNotInTerminated())
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize());
@@ -48,11 +50,24 @@ public class StudyRepositoryImpl implements StudyRepositoryCustom {
         JPAQuery<Long> countQuery = queryFactory
                 .select(study.count())
                 .from(study)
-                .where(keywordLike(keyword),
-                        statusIsRecruiting(isRecruiting),
+                .where(keywordLike(studySearchDto.getKeyword()),
+                        statusIsRecruiting(studySearchDto.getIsRecruiting()),
+                        includeSearchHashtagCode(studySearchDto.getHashtags()),
                         statusNotInTerminated());
 
         return PageableExecutionUtils.getPage(contents, pageable, countQuery::fetchOne);
+    }
+
+    private BooleanExpression includeSearchHashtagCode(String hashtags) {
+        if (!StringUtils.hasText(hashtags)) {
+            return null;
+        }
+        String[] hashtagCodes = hashtags.split("");
+        BooleanExpression conditions = study.hashtagCodes.contains(hashtagCodes[0]);
+        for (int i = 1; i < hashtagCodes.length; i++) {
+            conditions = conditions.or(study.hashtagCodes.contains(hashtagCodes[i]));
+        }
+        return conditions;
     }
 
     @Override

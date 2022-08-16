@@ -107,7 +107,8 @@
 }
 
 .website-rights {
-  color: rgb(100, 100, 100)
+  color: rgb(100, 100, 100);
+  width: 260px;
 }
 
 @media screen and (max-width:820px) {

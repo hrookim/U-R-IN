@@ -119,7 +119,7 @@ export default class StreamComponent extends Component {
               />
 
               {/* 비디오 내부 onoff표시 */}
-              <div>
+              {/* <div>
                 {!user.isLocal() && (
                   <IconButton id="volumeButton" onClick={this.toggleSound}>
                     {mutedSound ? (
@@ -129,7 +129,7 @@ export default class StreamComponent extends Component {
                     )}
                   </IconButton>
                 )}
-              </div>
+              </div> */}
 
               <div id="statusIcons">
                 {!user.isVideoActive() ? (

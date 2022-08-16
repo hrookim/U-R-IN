@@ -57,9 +57,10 @@ public class MeetingService {
         if (!meetingCreateDto.getSessionId().equals(study.getSessionId())) {
             throw new CustomException(SESSIONID_IS_NOT_VALID);
         }
-        if (study.getIsOnair()) {
-            throw new CustomException(MEETING_IS_ALREADY_ONAIR);
-        }
+        //TODO: 테스트를 쉽게 하기 위해 예외를 열어둠.
+//        if (study.getIsOnair()) {
+//            throw new CustomException(MEETING_IS_ALREADY_ONAIR);
+//        }
         study.changeOnairStatus(meetingCreateDto.getIsConnected());
 
         int meetingId = meetingRepository.save(new Meeting(study)).getId();
@@ -84,9 +85,8 @@ public class MeetingService {
     }
 
     private Study getStudy(int studyId) {
-        Study study = studyRepository.findById(studyId)
+        return studyRepository.findById(studyId)
                 .orElseThrow(() -> new CustomException(STUDY_DOES_NOT_EXIST));
-        return study;
     }
 
     private boolean isStudyLeader(Member member, Study study) {

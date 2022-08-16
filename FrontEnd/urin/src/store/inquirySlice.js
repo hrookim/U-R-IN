@@ -6,7 +6,6 @@ import {
 } from "@reduxjs/toolkit";
 
 export const getInquiry = createAsyncThunk("GET_INQUIRY", async (arr) => {
-  console.log("===axios INQUIERY 불러오기===");
   const response = await axios.get(
     `${process.env.REACT_APP_BACK_BASE_URL}studies/${arr[0]}/inquiry?page=${arr[1]}&size=5&sort=id,desc`,
     {
@@ -22,7 +21,6 @@ export const createInquiry = createAsyncThunk(
   "CREATE_INQUIRY",
   async ({ studyId, form, parentId }) => {
     try {
-      console.log("===axios INQUIERY 생성===", parentId);
       if (parentId) {
         const response = await axios.post(
           `${process.env.REACT_APP_BACK_BASE_URL}studies/${studyId}/inquiry`,
@@ -78,7 +76,6 @@ export const deleteInquiry = createAsyncThunk(
   "DELETE_INQUIRY",
   async ({ studyId, inquiryId }) => {
     try {
-      console.log("===axios INQUIERY 삭제===");
       const response = await axios.delete(
         `${process.env.REACT_APP_BACK_BASE_URL}studies/${studyId}/inquiry/${inquiryId}`,
         {

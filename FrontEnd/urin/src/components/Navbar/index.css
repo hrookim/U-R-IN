@@ -141,3 +141,45 @@
   text-decoration: none;
   color: black;
 }
+
+.btn-logout:hover {
+  text-decoration: none;
+  color: red;
+}
+
+.modal-form{
+ display: flex;
+ flex-direction: column;
+}
+
+.modal-title {
+  text-align: center;
+  margin-bottom: 5px;
+  font-size: 28px;
+}
+
+.modal-sub-title {
+  text-align: center;
+  margin-bottom: 15px;
+}
+
+.modal-contents {
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+.modal-contents {
+  text-align: center;
+  margin-top: 15px;
+  margin-right: 10px;
+}
+
+.modal-checkbox {
+  display: flex;
+  flex-direction: row;
+}
+
+.modal-btn {
+  display: flex;
+  justify-content: center;
+}
