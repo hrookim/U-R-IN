@@ -52,12 +52,14 @@ const StudyUpdateForm = () => {
   const [disable, setDisable] = useState(false);
   const [errorStatement, setErrorStatement] = useState("");
   const [deletedMembers, setDeletedMembers] = useState([]);
+  const [defaultChecked, setDefaultChecked] = useState(false);
 
   // popper관련
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [open, setOpen] = React.useState(false);
 
   useEffect(() => {
+    console.log("check disable", disable);
     if (disable) {
       setForm({
         ...form,
@@ -83,6 +85,8 @@ const StudyUpdateForm = () => {
       } = study;
 
       if (dday === -1) {
+        console.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!====");
+
         const formatDate = new Date();
         setForm({
           title,
@@ -93,7 +97,9 @@ const StudyUpdateForm = () => {
         });
         setFormDate(formatDate);
         setDisable(true);
+        setDefaultChecked(true);
       } else {
+        console.log("======================================");
         const formatDate = new Date(expirationDate);
         setForm({
           title,
@@ -170,7 +176,7 @@ const StudyUpdateForm = () => {
     // });
   };
 
-  console.log(form);
+  console.log("form", form);
 
   return (
     <div>
@@ -202,7 +208,6 @@ const StudyUpdateForm = () => {
           <FormControl className="title" fullWidth sx={{ m: 1 }}>
             <TextField
               value={form.title}
-              fullwidth
               autoFocus
               required
               id="title"
@@ -271,6 +276,7 @@ const StudyUpdateForm = () => {
                       onChange={() => {
                         setDisable(!disable);
                       }}
+                      checked={defaultChecked}
                     />
                   }
                 />

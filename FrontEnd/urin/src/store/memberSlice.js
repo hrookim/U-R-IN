@@ -1,4 +1,3 @@
-import React from "react";
 import axios from "axios";
 
 import {
@@ -24,7 +23,6 @@ export const getMemberId = createAsyncThunk(
       localStorage.clear();
       navigate("/intro");
       window.location.reload();
-      console.log("잘못된 접근입니다. 제대로 로그인해주세요.");
       return isRejectedWithValue(err.response.data);
     }
   }

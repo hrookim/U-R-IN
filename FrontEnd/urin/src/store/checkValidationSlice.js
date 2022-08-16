@@ -1,4 +1,3 @@
-import React from "react";
 import axios from "axios";
 import {
   createAsyncThunk,
@@ -11,7 +10,6 @@ export const checkValidation = createAsyncThunk(
   async (memberId, navigate) => {
     try {
       if (memberId === undefined) {
-        console.log("잘못된 요청입니다.");
         localStorage.clear();
         navigate("/intro");
       } else {
@@ -30,8 +28,6 @@ export const checkValidation = createAsyncThunk(
       localStorage.clear();
       navigate("/intro");
       window.location.reload();
-
-      console.log("잘못된 접근입니다. 제대로 로그인해주세요.");
       return isRejectedWithValue(err.response.data);
     }
   }

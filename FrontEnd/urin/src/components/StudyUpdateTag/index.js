@@ -21,13 +21,11 @@ const StudyUpdateTag = ({ getHashtags, getOverflowed, oldHashtags }) => {
   }, [oldChecked, hashtags]);
 
   const getHashtagCode = (value) => {
-    console.log("value===========", hashtags, value);
     if (value && !hashtags.includes(value)) {
       if (hashtags.length < 3) {
         setHashtags(hashtags + value);
         setSelected(true);
       } else {
-        console.log("====================", hashtags);
         getHashtags(hashtags);
         getOverflowed(true);
       }

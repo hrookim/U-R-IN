@@ -63,12 +63,13 @@ const DetailHeader = ({
     <div>
       <div className="dh-container">
         <div className="dh-chips">
+          {console.log(study.hashtagNameList)}
           {study.hashtagNameList.map((item) => (
             <button
               type="button"
               className="dh-chip-button font-30 font-xs"
               disabled
-              key={item.code}
+              key={item}
             >
               {item}
             </button>

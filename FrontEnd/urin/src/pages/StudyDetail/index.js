@@ -12,13 +12,11 @@ const StudyDetail = () => {
   const dispatch = useDispatch();
 
   const memberId = useSelector((state) => state.member.id);
-  // console.log("디테일 부르는중");
   const [isChanged, setIsChanged] = useState(false);
   const { studyId } = useParams();
 
   const study = useSelector((state) => state.study);
 
-  console.log("스터디디디디", study);
   const currentMemberId = useSelector((state) => state.member.id);
   useEffect(() => {
     dispatch(getStudy({ studyId, navigate }));
