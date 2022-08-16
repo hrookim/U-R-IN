@@ -24,6 +24,7 @@ import NavComponent from "./components/Navbar";
 import Footer from "./components/Footer";
 import NotFound from "./pages/NotFound";
 import MyPage from "./pages/MyPage";
+import Report from "./pages/Report";
 
 const App = () => {
   const [privateAccess, setPrivateAccess] = useState(false);
@@ -93,6 +94,7 @@ const App = () => {
             />
           }
         />
+        <Route path="/report" element={<Report />} />
 
         {/* validation이 필요 없는 페이지 */}
         <Route path="/study/:studyId/meeting/" element={<Meeting />} />
