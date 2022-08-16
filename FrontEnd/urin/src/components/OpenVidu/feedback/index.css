@@ -1,11 +1,12 @@
 .fb-container {
-  width: 350px;
+  /* FIXME: 최소 가로길이 필요! */
+  width: 100%; 
+  height: 100%;
   padding: 10px 10px 0 10px;
   border: 1px solid #ffffff;
   box-shadow: 0px 0px 5px 1px rgba(175, 175, 175, 0.39);
   box-sizing: border-box;
   border-radius: 10px;
-  height: 370px;
   overflow: scroll;
 }
 
@@ -36,7 +37,7 @@
 }
 
 #qna {
-  width: 320px;
+  width: 100%;
   height: 50px;
   font-size: 14px;
   border: 0;
