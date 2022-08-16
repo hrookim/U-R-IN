@@ -24,6 +24,7 @@ import NavComponent from "./components/Navbar";
 import Footer from "./components/Footer";
 import NotFound from "./pages/NotFound";
 import MyPage from "./pages/MyPage";
+import Report from "./pages/Report";
 
 const App = () => {
   const [privateAccess, setPrivateAccess] = useState(false);
@@ -84,13 +85,6 @@ const App = () => {
           }
         />
 
-        {/*
-        <Route
-          path="/study/:studyId/meeting/:meetingId"
-          element={<Meeting />}
-        /> */}
-        {/* FIXME: 임시 meeting 페이지 */}
-        <Route path="/meeting" element={<Meeting />} />
         <Route
           path="/intro"
           element={
@@ -100,6 +94,10 @@ const App = () => {
             />
           }
         />
+        <Route path="/report" element={<Report />} />
+
+        {/* validation이 필요 없는 페이지 */}
+        <Route path="/study/:studyId/meeting/" element={<Meeting />} />
         <Route path="/login" element={<Login />} />
         <Route path="/logout" element={<Logout />} />
         <Route path="/notfound" element={<NotFound />} />

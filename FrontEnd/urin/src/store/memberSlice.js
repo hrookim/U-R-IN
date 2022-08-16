@@ -11,7 +11,6 @@ export const getMemberId = createAsyncThunk(
   "GET_MEMBERID",
   async (navigate) => {
     try {
-      console.log("member");
       const response = await axios.get(
         `${process.env.REACT_APP_BACK_BASE_URL}member/me`,
         {
@@ -20,7 +19,6 @@ export const getMemberId = createAsyncThunk(
           },
         }
       );
-      console.log(response.data, "===========");
       return response.data;
     } catch (err) {
       localStorage.clear();

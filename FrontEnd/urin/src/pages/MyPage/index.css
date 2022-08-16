@@ -39,77 +39,34 @@
 
 .more-btn > p{
   margin: 0 0 0 0;
-
 }
 
-.main-page{
-  margin: 0 auto 0 auto;
-  max-width: 1200px;
+.report-btn {
+  text-decoration: none;
+  margin: 10px 0;
 }
 
-.top-header {
-  height: 40vh;
+.card-btn {
   display: flex;
-  flex-direction: column;
   justify-content: center;
-  align-items: center;
-  background-color: #0037FA;
-  background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)  ),url(../../../public/img/mainpage-img1.jpg);
-
-  background-size: cover;
-  border-radius: 10px;
+  flex-direction: column;
+  margin: 15px 0 0 0;
 }
 
-.top-header > span {
-  color: white;
-  margin: 0 0 30px 0;
-}
 
-.header{
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 20px 20px 20px 20px;
-  margin: 10px 0 0 0;
-}
-
-.header-grid-1{
-  display: flex;
-  align-items: center;
-}
-
-.header-grid-2 {
-  display: flex;
-  justify-content: right;
-}
-
-.searchbar-form{
+.card-inner {
   position: relative;
-  display: flex;
-  align-items: center;
-}
-
-.searchbar{
-  width: 30vw;
-  height: 35px;
-  border-radius: 20px;
-}
-
-.search-btn{
-  position: absolute;
-  right: -5px;
-  padding: 0 0 0 0;
 }
 
 .card-item{
   display: flex;
-  justify-content: center;
-  
+  justify-content: center;  
 }
 
-.card{
+.card-mypage{
+  position: absolute;
   width: 250px;
-  padding: 20px 20px 20px 20px;
+  padding: 20px 20px 0px 20px;
   display: flex;
   justify-content: center;
   box-shadow: 0px 0px 10px rgba(50, 50, 50, 0.1);
@@ -119,7 +76,13 @@
 .card-link{
   text-decoration: none;
   color: black;
+  max-width: 177.18px;
 }
+
+.card-link:hover{
+  text-decoration: none;
+}
+
 
 .card-img{
   padding: 10px 10px 10px 10px; 
@@ -152,24 +115,3 @@
   align-items: center;
   margin: 7px 2px 0 0;
 }
-
-.pagination{
-  display: flex;
-  justify-content: center;
-  margin: 30px 0 10px 0;
-}
-
-
-@media screen and (max-width: 1200px) {
-	.main-page {
-    margin: 0 90px 0 90px;
-	}
-}
-
-
-@media screen and (max-width: 720px) {
-	.main-page {
-    margin: 0 30px 0 30px;
-	}
-}
-
