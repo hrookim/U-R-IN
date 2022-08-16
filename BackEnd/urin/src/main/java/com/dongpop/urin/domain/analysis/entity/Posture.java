@@ -19,8 +19,8 @@ public class Posture {
     @JoinColumn(name = "data_id")
     private AnalysisData analysisData;
 
-    @Column(nullable = false)
-    private String name;
+    @Enumerated(EnumType.STRING)
+    private PostureType type;
 
     private int count;
 
@@ -28,8 +28,8 @@ public class Posture {
         this.analysisData = analysisData;
     }
 
-    public void setPostureData(String name, int count) {
-        this.name = name;
+    public void setPostureData(PostureType type, int count) {
+        this.type = type;
         this.count = count;
     }
 }

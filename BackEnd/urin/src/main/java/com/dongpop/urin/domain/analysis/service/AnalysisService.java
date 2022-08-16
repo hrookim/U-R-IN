@@ -1,10 +1,7 @@
 package com.dongpop.urin.domain.analysis.service;
 
 import com.dongpop.urin.domain.analysis.dto.request.*;
-import com.dongpop.urin.domain.analysis.entity.AnalysisData;
-import com.dongpop.urin.domain.analysis.entity.Emotion;
-import com.dongpop.urin.domain.analysis.entity.EmotionType;
-import com.dongpop.urin.domain.analysis.entity.Posture;
+import com.dongpop.urin.domain.analysis.entity.*;
 import com.dongpop.urin.domain.analysis.repository.AnalysisRepository;
 import com.dongpop.urin.domain.analysis.repository.EmotionRepository;
 import com.dongpop.urin.domain.analysis.repository.PostureRepository;
@@ -14,14 +11,12 @@ import com.dongpop.urin.domain.member.entity.Member;
 import com.dongpop.urin.global.error.exception.CustomException;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 
 import java.lang.reflect.Field;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -32,7 +27,6 @@ import static com.dongpop.urin.global.error.errorcode.MeetingErrorCode.MEETING_I
 
 @RequiredArgsConstructor
 @Service
-@Slf4j
 public class AnalysisService {
 
     private final AnalysisRepository analysisRepository;
@@ -64,25 +58,23 @@ public class AnalysisService {
         analysisRepository.save(analysisData);
 
         savePoseData(analysisData, countFromPoseData(aiData.getPoseDataList()));
-        saveEmotionData(analysisData, countFromEmotionData(aiData.getFaceDataList()));
+        saveEmotionData(analysisData, countFromEmotionData(aiData.getFaceDataList()), aiData.getFaceDataList().size());
     }
 
     @Transactional
-    private void savePoseData(AnalysisData analysisData, Map<String, Integer> poseMap) {
-        for(String poseName : poseMap.keySet()) {
-            Posture posture = postureRepository.findByAnalysisDataAndName(analysisData, poseName)
+    private void savePoseData(AnalysisData analysisData, Map<PostureType, Integer> poseMap) {
+        for(PostureType poseType : poseMap.keySet()) {
+            Posture posture = postureRepository.findByAnalysisDataAndType(analysisData, poseType)
                     .orElseGet(() -> new Posture());
 
             posture.setAnalysisData(analysisData);
-            posture.setPostureData(poseName, posture.getCount() + poseMap.get(poseName));
+            posture.setPostureData(poseType, posture.getCount() + poseMap.get(poseType));
             postureRepository.save(posture);
         }
     }
 
     @Transactional
-    private void saveEmotionData(AnalysisData analysisData, Map<EmotionType, Integer> emotionMap) {
-        int realAnalyzedTime = emotionMap.values().stream().mapToInt(Integer::intValue).sum();
-
+    private void saveEmotionData(AnalysisData analysisData, Map<EmotionType, Integer> emotionMap, int realAnalyzedTime) {
         for(EmotionType emotionType : emotionMap.keySet()) {
             Emotion emotion = emotionRepository.findByAnalysisDataAndType(analysisData, emotionType)
                     .orElseGet(() -> new Emotion());
@@ -94,8 +86,9 @@ public class AnalysisService {
         }
     }
 
-    private Map<String, Integer> countFromPoseData(List<PoseDataDto> postures) {
-        Map<String, Integer> poseMap = initMap(PostureName.values());
+    private Map<PostureType, Integer> countFromPoseData(List<PoseDataDto> postures) {
+        Map<PostureType, Integer> poseMap = Stream.of(PostureType.values())
+                .collect(Collectors.toMap(PostureType::getPostureType, i -> 0));
 
         for (PoseDataDto posture : postures) {
             poseMap.computeIfPresent(posture.getClassName(), (k, v) -> ++v);
@@ -116,9 +109,6 @@ public class AnalysisService {
             for (Field type : emotionTypes) {
                 type.setAccessible(true);
                 boolean isUnderCriteria = (type.getDouble(emotion) < EMOTION_COUNT_CRITERIA);
-
-                log.info("{} : {}",type.getName(), String.valueOf(isUnderCriteria));
-
                 emotionMap.computeIfPresent(type.getName(), (k, v) -> isUnderCriteria ? v : ++v);
             }
         }
@@ -136,14 +126,6 @@ public class AnalysisService {
     private void checkMemberExistenceInStudy(Meeting meeting, Member interviewee) {
         if (!meeting.getStudy().isRegistedMember(interviewee))
             throw new CustomException(DO_NOT_HAVE_AUTHORIZATION);
-    }
-
-    private Map<String, Integer> initMap(Enum[] enums) {
-        Map<String, Integer> map = new HashMap<>();
-        for(Enum type : enums) {
-            map.put(type.name(), 0);
-        }
-        return map;
     }
 
     private Meeting getMeetingFromId(int meetingId) {

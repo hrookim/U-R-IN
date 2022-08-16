@@ -1,11 +1,14 @@
 package com.dongpop.urin.domain.analysis.dto.request;
 
+import com.dongpop.urin.domain.analysis.entity.PostureType;
 import lombok.Getter;
+
+import javax.validation.constraints.NotNull;
 
 @Getter
 public class PoseDataDto {
 
-    // TODO : poseName 정의 후 ENUM으로 정의 + validation
-    private String className;
+    @NotNull
+    private PostureType className;
     private double probability;
 }
