@@ -33,6 +33,7 @@ export default class StreamComponent extends Component {
     const {
       user,
       localUser,
+      meetingId,
       intervieweeId,
       isInterviewing,
       isSomeoneShareScreen,
@@ -77,6 +78,8 @@ export default class StreamComponent extends Component {
             <>
               <OvVideoComponent
                 user={user}
+                localUser={localUser}
+                meetingId={meetingId}
                 isInterviewee={isInterviewee}
                 intervieweeId={intervieweeId}
                 isInterviewing={isInterviewing}

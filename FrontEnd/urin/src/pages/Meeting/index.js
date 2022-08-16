@@ -618,6 +618,7 @@ class Meeting extends Component {
                       key={i}
                       user={user}
                       localUser={localUser}
+                      meetingId={meetingId}
                       intervieweeId={intervieweeId}
                       isInterviewing={isInterviewing}
                       isSomeoneShareScreen={isSomeoneShareScreen}
