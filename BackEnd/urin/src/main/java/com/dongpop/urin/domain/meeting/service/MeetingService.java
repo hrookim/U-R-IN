@@ -66,7 +66,7 @@ public class MeetingService {
 //        }
 
         Meeting meeting = new Meeting(study);
-        if (study.getStudyLeader().equals(member)) {
+        if (study.getStudyLeader().getId() == member.getId()) {
             study.changeOnairStatus(meetingCreateDto.getIsConnected());
             meeting = meetingRepository.save(meeting);
         } else {
