@@ -169,7 +169,7 @@ const Report = () => {
         </div>
         {/* 리포트 선택 */}
         <Grid container className="report-select">
-          <Grid xs={10}>
+          <Grid xs={10.5}>
             <FormControl sx={{ m: 1, minWidth: 120 }} size="small">
               <Select
                 id="demo-select-small"
