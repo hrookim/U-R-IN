@@ -6,9 +6,6 @@ import java.util.List;
 
 @Getter
 public class AnalysisDataDto {
-
-    private int interviewTime;
-
     private List<FaceDataDto> faceDataList;
     private List<PoseDataDto> poseDataList;
 }
