@@ -14,7 +14,6 @@ export const getStudy = createAsyncThunk(
   "GET_STUDY",
   async ({ studyId, navigate }) => {
     try {
-      console.log("스터디 가져오는 중");
       const response = await axios.get(
         `${process.env.REACT_APP_BACK_BASE_URL}studies/${studyId}`,
         {
@@ -37,7 +36,6 @@ export const createStudy = createAsyncThunk(
   "CREATE_STUDY",
   async ({ form, navigate }) => {
     try {
-      console.log("form", form);
       const response = await axios.post(
         `${process.env.REACT_APP_BACK_BASE_URL}studies/`,
         form,
@@ -52,9 +50,6 @@ export const createStudy = createAsyncThunk(
       navigate(`/study/${studyId}`);
       return response.data;
     } catch (err) {
-      console.log(
-        "-==============================================================================i;"
-      );
       console.log(err);
       alert("오류입니다!");
       return isRejectedWithValue(err.response.data);
@@ -115,7 +110,6 @@ export const changeStudyStatus = createAsyncThunk(
 // 스터디 가입 FIXME: 내가 스터디원인지 확인 필요 detailHeader
 export const joinStudy = createAsyncThunk("JOIN_STUDY", async (studyId) => {
   try {
-    console.log(localStorage.getItem("accessToken"));
     const response = await axios.post(
       `${process.env.REACT_APP_BACK_BASE_URL}studies/${studyId}/participants`,
       {}, // post 두번째 인자는 payload이므로 비워서 보낸다!
@@ -138,7 +132,6 @@ export const leaveStudy = createAsyncThunk(
   "LEAVE_STUDY",
   async ({ studyId, deletedParticipantId }) => {
     try {
-      console.log("삭제삭제", studyId, deletedParticipantId);
       const response = await axios.delete(
         `${process.env.REACT_APP_BACK_BASE_URL}studies/${studyId}/participants/${deletedParticipantId}`,
         {

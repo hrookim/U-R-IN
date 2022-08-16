@@ -6,6 +6,7 @@ import { useSelector } from "react-redux";
 
 import { Container, Nav, Navbar } from "react-bootstrap/";
 import {
+  Badge,
   Box,
   Menu,
   MenuItem,
@@ -15,6 +16,7 @@ import {
   Tooltip,
   Avatar,
 } from "@mui/material";
+
 import { NotificationsNone, Logout } from "@mui/icons-material/";
 
 import logoImg from "../../assets/images/logo_img.png";
@@ -72,6 +74,9 @@ const NavComponent = () => {
                 내 스터디 보기
               </a>
             </div>
+            <Badge badgeContent={4} color="secondary">
+              <NotificationsNone />
+            </Badge>
             <div className="avatar">
               <Box
                 sx={{

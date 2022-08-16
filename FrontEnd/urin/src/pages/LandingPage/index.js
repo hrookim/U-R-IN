@@ -35,7 +35,6 @@ const LandingPage = () => {
           trigger: element.querySelector(".img-group"),
           start: "top center",
           end: "bottom bottom",
-          markers: true,
           scrub: 5,
         },
       }
@@ -53,7 +52,6 @@ const LandingPage = () => {
           trigger: element.querySelector(".img-group"),
           start: "top center",
           end: "bottom bottom",
-          markers: true,
           scrub: 2,
         },
       }
@@ -71,7 +69,6 @@ const LandingPage = () => {
           trigger: element.querySelector(".img-group"),
           start: "top top",
           end: "bottom bottom",
-          markers: true,
           scrub: 2,
           duration: 5,
         },
@@ -90,7 +87,6 @@ const LandingPage = () => {
           trigger: element.querySelector(".img-group"),
           start: "top top",
           end: "bottom bottom",
-          markers: true,
           scrub: 2,
         },
       }
@@ -99,11 +95,7 @@ const LandingPage = () => {
   return (
     <div ref={ref}>
       <div>
-        <img
-          src={`${process.env.PUBLIC_URL}img/logo_img.png`}
-          alt="hello"
-          className="title-logo"
-        />
+        <img src="/img/logo_img.png" alt="hello" className="title-logo" />
       </div>
       <div className="landingpage-body">
         <p className="font-70 centered main-text">
@@ -127,27 +119,22 @@ const LandingPage = () => {
               시작하기
             </Button>
           </div>
-          {console.log(process.env.PUBLIC_URL)}
-          <img
-            src={`${process.env.PUBLIC_URL}img/landingpage-img4.png`}
-            alt="img4"
-            className="img4"
-          />
+          <img src="/img/landingpage-img4.png" alt="img4" className="img4" />
 
           <div className="img-group">
             <img
               className="img1 test"
-              src={`${process.env.PUBLIC_URL}img/landingpage-img1.png`}
+              src="/img/landingpage-img1.png"
               alt="landingpage-img1"
             />
             <img
               className="img2"
-              src={`${process.env.PUBLIC_URL}img/landingpage-img2.png`}
+              src="/img/landingpage-img2.png"
               alt="landingpage-img2"
             />
             <img
               className="img3"
-              src={`${process.env.PUBLIC_URL}img/landingpage-img3.png`}
+              src="/img/landingpage-img3.png"
               alt="landingpage-img3"
             />
             <div className="img-text">
@@ -168,7 +155,7 @@ const LandingPage = () => {
           <div className="img-group2">
             <img
               className="img5"
-              src={`${process.env.PUBLIC_URL}img/landingpage-img5.png`}
+              src="/img/landingpage-img5.png"
               alt="landingpage-img5"
             />
             <div className="img-text">

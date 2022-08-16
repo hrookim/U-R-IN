@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { useParams } from "react-router-dom";
 import styled from "styled-components";
-import { Avatar, IconButton, Typography } from "@mui/material";
+import { Avatar, Typography } from "@mui/material";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCrown } from "@fortawesome/free-solid-svg-icons";
 import RemoveCircleOutlineIcon from "@mui/icons-material/RemoveCircleOutline";
