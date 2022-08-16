@@ -7,6 +7,7 @@ import com.dongpop.urin.domain.meeting.dto.response.MeetingIdDto;
 import com.dongpop.urin.domain.meetingParticipant.entity.MeetingParticipant;
 import com.dongpop.urin.domain.meetingParticipant.repository.MeetingParticipantRepository;
 import com.dongpop.urin.domain.member.entity.Member;
+import com.dongpop.urin.domain.notification.service.NotificationService;
 import com.dongpop.urin.domain.participant.dto.response.ParticipantDto;
 import com.dongpop.urin.domain.participant.entity.Participant;
 import com.dongpop.urin.domain.participant.repository.ParticipantRepository;
@@ -50,6 +51,8 @@ public class StudyService {
     private final ParticipantRepository participantRepository;
     private final HashtagRepository hashtagRepository;
     private final MeetingParticipantRepository meetingParticipantRepository;
+
+    private final NotificationService notificationService;
 
     @Transactional
     @Scheduled(cron = "0 0 0 * * *")

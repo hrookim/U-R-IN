@@ -13,18 +13,17 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/api/v1")
 public class NotificationController {
 
     private final NotificationService notificationService;
 
     @GetMapping(value = "/notification", produces = "text/event-stream")
-    public ResponseEntity<SseEmitter> subscribe(@AuthenticationPrincipal MemberPrincipal memberPrincipal,
+    public ResponseEntity<SseEmitter> subscribe(int memberId,
                                                 @RequestHeader(
                                                         value = "Last-Event-Id",
                                                         required = false,
                                                         defaultValue = "") String lastEventId) {
         return ResponseEntity.ok()
-                .body(notificationService.subscribe(memberPrincipal.getMember().getId(), lastEventId));
+                .body(notificationService.subscribe(memberId, lastEventId));
     }
 }
