@@ -83,7 +83,6 @@ const DetailHeader = ({
             </Link>
           )}
         </div>
-        {console.log("디데이", study.dday)}
         <div className="dh-container-item">
           {study.status === "TERMINATED" && (
             <span className="font-40 font-sm dh-tag">종료</span>
@@ -105,7 +104,7 @@ const DetailHeader = ({
           {study.status !== "TERMINATED" && (
             <div className="dh-container-item2">
               {isLeader ? (
-                <div className="font-40">
+                <div className="font-50">
                   {study.status !== "TERMINATED" && (
                     <div className="btn-center">
                       {study.isOnair ? (
@@ -136,9 +135,9 @@ const DetailHeader = ({
                   )}
                 </div>
               ) : (
-                <div className="font-40">
+                <div className="font-50">
                   {isParticipant ? (
-                    <div className="font-40">
+                    <div className="font-50">
                       {study.isOnair ? (
                         <button
                           type="button"
@@ -166,7 +165,7 @@ const DetailHeader = ({
                   ) : (
                     <button
                       type="button"
-                      className="dh-study-button font-50 font-md"
+                      className="dh-study-button font-50 font-sm"
                       onClick={onClickJoin}
                     >
                       스터디 참여하기

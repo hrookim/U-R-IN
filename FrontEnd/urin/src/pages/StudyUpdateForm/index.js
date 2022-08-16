@@ -117,7 +117,6 @@ const StudyUpdateForm = () => {
 
   const onSubmit = (e) => {
     e.preventDefault();
-    console.log("form", "newHashtags", form);
     if (form.hashtags) {
       dispatch(updateStudy({ studyId, form, navigate }));
 
@@ -153,9 +152,7 @@ const StudyUpdateForm = () => {
 
   const onClickLeave = (memberId) => {
     alert("수정하기 버튼을 눌러야 탈퇴 내역이 최종 반영됩니다!");
-    console.log(memberId);
     setDeletedMembers(...deletedMembers, [memberId]);
-    console.log(deletedMembers);
 
     // dispatch(leaveStudy([studyId, memberId])).then(() => {
     //   setIsChanged(true);
@@ -165,7 +162,6 @@ const StudyUpdateForm = () => {
 
   const onClickInclude = (memberId) => {
     alert("탈퇴 목록에서 제외되었습니다!");
-    console.log(memberId);
     setDeletedMembers(deletedMembers.filter((element) => element !== memberId));
 
     // dispatch(leaveStudy([studyId, memberId])).then(() => {
@@ -173,6 +169,8 @@ const StudyUpdateForm = () => {
     //   setInterval(() => setIsChanged(false), 100);
     // });
   };
+
+  console.log(form);
 
   return (
     <div>
@@ -308,7 +306,7 @@ const StudyUpdateForm = () => {
                 <MenuItem value={3}>3명</MenuItem>
                 <MenuItem value={4}>4명</MenuItem>
               </Select>
-              <small>{errorStatement}</small>{" "}
+              <small>{errorStatement}</small>
             </Grid>
           </Grid>
           <div className="content-title-group">
@@ -332,7 +330,6 @@ const StudyUpdateForm = () => {
                       backgroundColor: "rgba(0,0,0,0.3);",
                     }}
                   >
-                    {" "}
                     {participant.nickname[0]}
                   </Avatar>
                 ) : (
@@ -343,7 +340,6 @@ const StudyUpdateForm = () => {
                       backgroundColor: "#0037FA",
                     }}
                   >
-                    {" "}
                     {participant.nickname[0]}
                   </Avatar>
                 )}
@@ -361,11 +357,6 @@ const StudyUpdateForm = () => {
                     icon={faCrown}
                     style={{ margin: "0 0 0 8px" }}
                   />
-                )}
-                {console.log(
-                  !deletedMembers.includes(participant.id),
-                  participant.id,
-                  deletedMembers
                 )}
                 {!participant.isLeader &&
                 study.status != "TERMINATED" &&
