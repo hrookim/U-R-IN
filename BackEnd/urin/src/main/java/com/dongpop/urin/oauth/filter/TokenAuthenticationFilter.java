@@ -2,6 +2,7 @@ package com.dongpop.urin.oauth.filter;
 
 import com.dongpop.urin.oauth.model.MemberPrincipal;
 import com.dongpop.urin.oauth.service.CustomUserDetailsService;
+import com.dongpop.urin.oauth.token.TokenProperties;
 import com.dongpop.urin.oauth.token.TokenService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -27,6 +28,7 @@ import java.io.IOException;
 public class TokenAuthenticationFilter extends OncePerRequestFilter {
 
     private final TokenService tokenService;
+    private final TokenProperties tokenProperties;
     private final CustomUserDetailsService customUserDetailsService;
 
     @Override
@@ -35,7 +37,7 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
         String accessToken = getAccessTokenInRequestHeader(request);
         log.info("Request Access-Token = {}", accessToken);
         try {
-            if (StringUtils.hasText(accessToken) && tokenService.validateToken(accessToken)) {
+            if (StringUtils.hasText(accessToken) && tokenService.validateToken(accessToken, tokenProperties.getAccess().getName())) {
                 Integer id = tokenService.getId(accessToken);
                 UserDetails userDetails = customUserDetailsService.loadMemberById(id);
                 MemberPrincipal memberPrincipal = (MemberPrincipal) userDetails;
