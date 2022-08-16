@@ -16,6 +16,21 @@
   color: white
 }
 
+@media screen and (max-width: 640px) {
+  .title-banner-text1{
+    font-size: 24px;
+    margin: 0 0 0 0;
+    word-break: keep-all;
+  }
+
+  .title-banner-text2{
+    display: none;
+  }
+}  
+
+.title-banner-text2{
+  word-break: keep-all;
+}
 
 .create-wrap-img{
   width: 100%;

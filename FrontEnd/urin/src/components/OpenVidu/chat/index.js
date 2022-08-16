@@ -30,6 +30,7 @@ export default class ChatComponent extends Component {
           connectionId: event.from.connectionId,
           nickname: data.nickname,
           message: data.message,
+          createdAt: data.createdAt,
         });
         const document = window.document;
         setTimeout(() => {
@@ -61,10 +62,27 @@ export default class ChatComponent extends Component {
     if (this.props.user && this.state.message) {
       let message = this.state.message.replace(/ +(?= )/g, "");
       if (message !== "" && message !== " ") {
+        const now = new Date();
+        let nowMinute = now.getMinutes();
+        let nowHour = now.getHours();
+        let createdAt;
+        if (nowMinute < 10) {
+          nowMinute = `0${nowMinute}`;
+        }
+        if (nowHour >= 12) {
+          if (nowHour > 12) {
+            nowHour -= 12;
+          }
+          createdAt = `오후 ${nowHour}:${nowMinute}`;
+        } else {
+          createdAt = `오전 ${nowHour}:${nowMinute}`;
+        }
+
         const data = {
           message: message,
           nickname: this.props.user.getNickname(),
           streamId: this.props.user.getStreamManager().stream.streamId,
+          createdAt: createdAt,
         };
         this.props.user.getStreamManager().stream.session.signal({
           data: JSON.stringify(data),
@@ -88,9 +106,7 @@ export default class ChatComponent extends Component {
     return (
       <div id="chatComponent">
         <div id="chatToolbar">
-          <span>
-            {this.props.user.getStreamManager().stream.session.sessionId} - CHAT
-          </span>
+          <span>채팅</span>
         </div>
         <div className="message-wrap" ref={this.chatScroll}>
           {this.state.messageList.map((data, i) => (
@@ -119,6 +135,7 @@ export default class ChatComponent extends Component {
                   <p className="text">{data.message}</p>
                 </div>
               </div>
+              <span>{data.createdAt}</span>
             </div>
           ))}
         </div>

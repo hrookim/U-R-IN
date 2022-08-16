@@ -17,6 +17,8 @@ const StudyDetail = () => {
   const { studyId } = useParams();
 
   const study = useSelector((state) => state.study);
+
+  console.log("스터디디디디", study);
   const currentMemberId = useSelector((state) => state.member.id);
   useEffect(() => {
     dispatch(getStudy({ studyId, navigate }));

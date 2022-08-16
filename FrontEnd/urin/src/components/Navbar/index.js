@@ -61,13 +61,13 @@ const NavComponent = () => {
             <div className="nav-links">
               <a
                 className="font-30 font-md"
-                href={`${process.env.REACT_APP_MAIN_URL}`}
+                href={`${process.env.REACT_APP_PUBLIC_URL}`}
               >
                 스터디 찾기
               </a>
               <a
                 className="font-30 font-md"
-                href={`${process.env.REACT_APP_MAIN_URL}mypage`}
+                href={`${process.env.REACT_APP_PUBLIC_URL}mypage`}
               >
                 내 스터디 보기
               </a>
