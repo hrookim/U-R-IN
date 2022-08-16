@@ -1,25 +1,26 @@
 /* eslint-disable react/jsx-props-no-spreading */
 
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState } from "react";
 import "./index.css";
 import { useNavigate, Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import SearchIcon from "@mui/icons-material/Search";
+import TagIcon from "@mui/icons-material/Tag";
 import {
   Box,
   Button,
   Card,
-  CardActionArea,
   CardContent,
   CardMedia,
   Checkbox,
   FormControlLabel,
   Grid,
+  IconButton,
   Pagination,
-  Popper,
   Stack,
-  Typography,
 } from "@mui/material";
+import ClickAwayListener from "@mui/base/ClickAwayListener";
+
 import { getStudyList } from "../../store/studyListSlice";
 import CheckValidation from "../../components/CheckValidation";
 import SearchFilter from "../../components/SearchFilter";
@@ -35,8 +36,6 @@ const MainPage = () => {
   const [keyword, setKeyword] = useState("");
   const [checked, setChecked] = useState(true);
   const [hashtags, setHashtags] = useState("");
-
-  const mounted = useRef(false);
 
   const checkedChange = (e) => {
     setChecked(e.target.checked);
@@ -71,19 +70,18 @@ const MainPage = () => {
     }
   };
 
-  const [anchorEl, setAnchorEl] = React.useState(null);
   const [open, setOpen] = React.useState(false);
-  const [placement, setPlacement] = React.useState();
 
-  const handleClick = (newPlacement) => (event) => {
-    setAnchorEl(event.currentTarget);
-    setOpen((prev) => placement !== newPlacement || !prev);
-    setPlacement(newPlacement);
+  const handleClick = () => {
+    setOpen((prev) => !prev);
   };
 
-  const id = open ? "simple-popover" : undefined;
+  const handleClickAway = () => {
+    setOpen(false);
+  };
 
   useEffect(() => {
+    console.log("useeffect 최상단");
     dispatch(getStudyList([page - 1, checked, keyword, hashtags]));
   }, [page, checked, keyword, hashtags]);
 
@@ -102,47 +100,70 @@ const MainPage = () => {
               title="Search"
               onChange={inputwordChange}
             />
-            <Button type="submit" className="search-btn" onClick={searchBtn}>
-              <SearchIcon className="btn-icon" sx={{ color: "rgb(0,0,0)" }} />
-            </Button>
-            <div className="search-condition">
-              <Button
-                aria-describedby={id}
-                variant="text"
-                onClick={handleClick("bottom-end")}
-                className="font-30 font-xs"
-                sx={{ color: "#0037FA" }}
-              >
-                검색 조건
-              </Button>
 
-              <Popper id={id} open={open} anchorEl={anchorEl}>
-                <Box
-                  sx={{
-                    border: 1,
-                    padding: "15px",
-                    bgcolor: "background.paper",
-                    maxWidth: "480px",
-                    minWidth: "200px",
-                    maxHeight: "400px",
-                    borderColor: "white",
-                    borderRadius: "20px",
-                    boxShadow: "2",
-                  }}
-                >
-                  <SearchFilter
-                    getHashtags={getHashtags}
-                    getOverflowed={getOverflowed}
-                  />
+            <div className="search-condition">
+              <ClickAwayListener onClickAway={handleClickAway}>
+                <Box sx={{ position: "relative" }}>
+                  <IconButton
+                    variant="text"
+                    onClick={handleClick}
+                    className="font-30 font-xs search-icon-btn"
+                    sx={{ color: "#0037FA" }}
+                  >
+                    <TagIcon />
+                  </IconButton>
+                  <Box
+                    sx={
+                      open
+                        ? {
+                            position: "absolute",
+                            right: "-50px",
+                            border: 1,
+                            padding: "15px",
+                            bgcolor: "rgba(240, 240, 240, 0.7)",
+                            width: "50vw",
+                            borderColor: "white",
+                            borderRadius: "20px",
+                            boxShadow: "2",
+                            zIndex: "1",
+                          }
+                        : {
+                            display: "none",
+                            position: "absolute",
+                            right: "-50px",
+                            border: 1,
+                            padding: "15px",
+                            bgcolor: "rgba(240, 240, 240, 0.7)",
+                            width: "50vw",
+                            borderColor: "white",
+                            borderRadius: "20px",
+                            boxShadow: "2",
+                            zIndex: "1",
+                          }
+                    }
+                  >
+                    <SearchFilter
+                      getHashtags={getHashtags}
+                      getOverflowed={getOverflowed}
+                    />
+                  </Box>
                 </Box>
-              </Popper>
+              </ClickAwayListener>
+
+              <IconButton
+                type="submit"
+                className="search-btn"
+                onClick={searchBtn}
+              >
+                <SearchIcon className="btn-icon" sx={{ color: "rgb(0,0,0)" }} />
+              </IconButton>
             </div>
           </form>
         </div>
       </div>
       <div className="header">
         <Grid container>
-          <Grid item xs={12} md={6} className="header-grid-1">
+          <Grid item xs={12} sm={6} className="header-grid-1">
             <FormControlLabel
               label="모집 중인 스터디만 보기"
               control={
@@ -158,7 +179,7 @@ const MainPage = () => {
               }
             />
           </Grid>
-          <Grid item xs={12} md={6} className="header-grid-2">
+          <Grid item xs={12} sm={6} className="header-grid-2">
             <div>
               <Button
                 variant="outlined"
@@ -195,47 +216,51 @@ const MainPage = () => {
               key={item.id}
               className="card"
               sx={{
-                borderColor: "#dedede",
+                borderStyle: "solid",
+                borderColor: "rgba(0,0,0,0.1)",
                 borderRadius: "20px",
                 maxWidth: "500px",
                 boxShadow: 0,
+
+                "&:hover": {
+                  transform: "scale(1.05)",
+                  transition: "all ease 0.3s",
+                },
               }}
             >
-              <Link to={`/study/${item.id}`} className="card-link">
-                <CardActionArea>
-                  <CardMedia
-                    className="card-img"
-                    component="img"
-                    height="140"
-                    image={`/img/study_img${item.title.length % 10}.png`}
-                    alt="green iguana"
-                  />
-                  <CardContent
-                    className="card-content"
-                    sx={{ padding: "18px 4px 0 4px" }}
-                  >
-                    <p className="font-70 font-md card-title">{item.title}</p>
-                    {item.status === "RECRUITING" ? (
-                      <div className="card-status">
-                        <span className="font-50 font-xs card-status-recruiting">
-                          {item.status}&nbsp;&nbsp;&nbsp;&nbsp;
-                        </span>
-                        <span className="font-30 font-xs">
-                          {item.currentMember}/{item.memberCapacity}
-                        </span>
-                      </div>
-                    ) : (
-                      <div className="card-status">
-                        <span className="font-50 font-xs card-status-completed">
-                          {item.status}&nbsp;&nbsp;&nbsp;&nbsp;
-                        </span>
-                        <span className="font-30 font-xs">
-                          {item.currentMember}/{item.memberCapacity}
-                        </span>
-                      </div>
-                    )}
-                  </CardContent>
-                </CardActionArea>
+              <Link to={`/study/${item.id}`} className="card-link2">
+                <CardMedia
+                  className="card-img"
+                  component="img"
+                  height="140"
+                  image={`/img/study_img${item.title.length % 10}.png`}
+                  alt="green iguana"
+                />
+                <CardContent
+                  className="card-content"
+                  sx={{ padding: "18px 4px 0 4px" }}
+                >
+                  <p className="font-70 font-md card-title">{item.title}</p>
+                  {item.status === "RECRUITING" ? (
+                    <div className="card-status">
+                      <span className="font-50 font-xs card-status-recruiting">
+                        {item.status}&nbsp;&nbsp;&nbsp;&nbsp;
+                      </span>
+                      <span className="font-30 font-xs">
+                        {item.currentMember}/{item.memberCapacity}
+                      </span>
+                    </div>
+                  ) : (
+                    <div className="card-status">
+                      <span className="font-50 font-xs card-status-completed">
+                        {item.status}&nbsp;&nbsp;&nbsp;&nbsp;
+                      </span>
+                      <span className="font-30 font-xs">
+                        {item.currentMember}/{item.memberCapacity}
+                      </span>
+                    </div>
+                  )}
+                </CardContent>
               </Link>
             </Card>
           </Grid>

@@ -10,18 +10,18 @@ const StudyUpdateTagButton = ({
   oldChecked,
 }) => {
   const SelectedButtonStyle = css`
-    background-color: #0037fa;
+    background-color: rgb(255, 184, 2);
     color: white;
     font-size: 14px;
     border-radius: 20px;
     padding: 7px;
     text-align: center;
-    border-color: #0037fa;
+    border-color: rgb(255, 184, 2);
     margin: 5px 0 5px 0;
     &:hover {
       color: white;
-      background-color: rgba(0, 55, 250, 0.4);
-      border-color: #0037fa;
+      background-color: rgba(255, 184, 2, 0.4);
+      border-color: rgb(255, 184, 2);
       margin: 5px 0 5px 0;
     }
   `;
@@ -34,13 +34,13 @@ const StudyUpdateTagButton = ({
     border-radius: 20px;
     padding: 7px;
     text-align: center;
-    border-color: black;
+    border-color: rgba(0, 0, 0, 0.4);
     margin: 5px 0 5px 0;
 
     &:hover {
-      color: black;
-      background-color: rgba(255, 255, 255, 0.8);
-      border-color: rgba(255, 255, 255, 0.6);
+      color: white;
+      background-color: rgb(255, 184, 2);
+      border-color: rgb(255, 184, 2);
       margin: 5px 0 5px 0;
     }
   `;
@@ -62,7 +62,6 @@ const StudyUpdateTagButton = ({
 
   const handleClick = (e) => {
     const value = e.target.id;
-    console.log("뭐 눌렀는지 아이디", value);
 
     if (selected) {
       setSelected(false);

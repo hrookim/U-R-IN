@@ -2,13 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 import { css } from "@emotion/react";
 import { Button } from "@mui/material";
 
-const SearchButton = ({
-  id,
-  contents,
-  getHashtagCode,
-  hashtags,
-  oldChecked,
-}) => {
+const SearchButton = ({ id, contents, getHashtagCode, hashtags }) => {
   const SelectedButtonStyle = css`
     background-color: #0037fa;
     color: white;
@@ -34,13 +28,13 @@ const SearchButton = ({
     border-radius: 20px;
     padding: 7px;
     text-align: center;
-    border-color: black;
+    border-color: rgba(0, 0, 0, 0.4);
     margin: 5px 0 5px 0;
 
     &:hover {
-      color: black;
-      background-color: rgba(255, 255, 255, 0.8);
-      border-color: rgba(255, 255, 255, 0.6);
+      color: white;
+      background-color: rgba(0, 55, 250, 1);
+      border-color: rgba(0, 0, 0, 0.4);
       margin: 5px 0 5px 0;
     }
   `;

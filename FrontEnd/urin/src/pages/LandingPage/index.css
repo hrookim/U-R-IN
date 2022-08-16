@@ -1,3 +1,8 @@
+html,
+body{
+overflow-x:hidden;
+}
+
 .title-logo {
   height: 50px;
 }
@@ -12,25 +17,47 @@
   flex-direction: column;
 }
 
-.main-text {
-  margin: 30px 0 20px 0;
-  color: #0037FA;
+
+@media screen and (min-width: 640px) {
+  .main-text {
+    margin: 30px 0 20px 0;
+    color: #0037FA;
+    word-break: keep-all;
+    font-size: 48px;
+  }
+
+  .main-text2 {
+    width: 600px;
+    margin: 0 auto 30px auto;
+    text-align: center;
+    word-break: keep-all;
+  }
+  
 }
 
-.main-text2 {
-  width: 600px;
-  margin: 0 auto 30px auto;
-  text-align: left;
+@media screen and (max-width: 640px) {
+  .main-text {
+    margin: 30px 0 10px 0;
+    color: #0037FA;
+    word-break: keep-all;
+    font-size: 28px;
+  }
+
+  .main-text2 {
+    width: 300px;
+    margin: 0 auto 30px auto;
+    text-align: center;
+    word-break: keep-all;
+  }
+  
+
 }
+
 
 .centered {
   text-align: center;
 }
 
-.img4 {
-  width: 600px;
-  margin: 0 auto 0 auto;
-}
 
 .img-group {
   position: relative;
@@ -39,19 +66,61 @@
   height: 120vh;
 }
 
-.img-group > div > p {
-  position: absolute;
-  top: 82.5vh;
-  left: 10vw;
-  color: white;
-  width: 500px;
-  text-align: left;
+
+@media screen and (max-width: 1200px) {
+
+  .img-group > div > p {
+    position: absolute;
+    top: 82.5vh;
+    left: 10vw;
+    color: white;
+    text-align: left;
+    font-size: 28px;
+    word-break: keep-all;
+    width: 280px;
+  }
+  
+  .img-group > div > Button {
+    position: absolute;
+    top: 100vh;
+    left: 10vw;
+  }
+
 }
 
-.img-group > div > Button {
-  position: absolute;
-  top: 105vh;
-  left: 10vw;
+@media screen and (min-width: 1200px) {
+  .img-group > div > p {
+    position: absolute;
+    top: 75vh;
+    left: 10vw;
+    color: white;
+    width: 500px;
+    text-align: left;
+    font-size: 48px;
+
+  }
+  
+  .img-group > div > Button {
+    position: absolute;
+    top: 95vh;
+    left: 10vw;
+  }
+}
+
+@media screen and (max-width: 641px) {
+
+  .img4 {
+    width: 300px;
+    margin: 0 auto 0 auto;
+  }
+}
+
+@media screen and (min-width: 641px) {
+
+  .img4 {
+    width: 600px;
+    margin: 0 auto 0 auto;
+  }
 }
 
 .img1 {
@@ -87,7 +156,7 @@
 
 .img5 {
   position: absolute;
-  top: 75vh;
+  top: 62.5vh;
   right: 10vw;
   border: 1.5vw solid #18181a;
   box-shadow: 0 0 6px rgba(0, 0, 5, 0.3);
@@ -95,17 +164,93 @@
   width: 35vw;
 }
 
-.img-group2 > div > p {
-  position: absolute;
-  top: 80vh;
-  left: 10vw;
-  color: white;
-  width: 500px;
-  text-align: left;
+@media screen and (min-width: 1200px) {
+
+  .img-group2 > div > p {
+    position: absolute;
+    top: 65vh;
+    left: 10vw;
+    color: white;
+    width: 500px;
+    text-align: left;
+    word-break: keep-all;
+    font-size: 48px;
+  }
+
+  .img-group2 > div > Button {
+    position: absolute;
+    top: 85vh;
+    left: 10vw;
+  }
+
+  .img5 {
+    position: absolute;
+    top: 60vh;
+    right: 10vw;
+    border: 1.5vw solid #18181a;
+    box-shadow: 0 0 6px rgba(0, 0, 5, 0.3);
+    border-radius: 1.5vw;
+    width: 35vw;
+  }
 }
 
-.img-group2 > div > Button {
-  position: absolute;
-  top: 100vh;
-  left: 10vw;
+@media screen and (max-width: 1200px) {
+
+  .img-group2 > div > p {
+    position: absolute;
+    top: 75vh;
+    left: 10vw;
+    color: white;
+    width: 500px;
+    text-align: left;
+    word-break: keep-all;
+    font-size: 48px;
+  }
+
+  .img-group2 > div > Button {
+    position: absolute;
+    top: 95vh;
+    left: 10vw;
+  }
+
+  .img5 {
+    position: absolute;
+    top: 45vh;
+    right: 10vw;
+    border: 1.5vw solid #18181a;
+    box-shadow: 0 0 6px rgba(0, 0, 5, 0.3);
+    border-radius: 1.5vw;
+    width: 50vw;
+  }
 }
+
+@media screen and (max-width: 640px) {
+
+  .img-group2 > div > p {
+    position: absolute;
+    top: 75vh;
+    left: 10vw;
+    color: white;
+    width: 300px;
+    text-align: left;
+    word-break: keep-all;
+    font-size: 28px;
+  }
+
+  .img-group2 > div > Button {
+    position: absolute;
+    top: 90vh;
+    left: 10vw;
+  }
+
+  .img5 {
+    position: absolute;
+    top: 45vh;
+    right: 10vw;
+    border: 1.5vw solid #18181a;
+    box-shadow: 0 0 6px rgba(0, 0, 5, 0.3);
+    border-radius: 1.5vw;
+    width: 250px;
+  }
+}
+

@@ -7,7 +7,6 @@ import axios from "axios";
 
 export const getStudyList = createAsyncThunk("GET_STUDY_LIST", async (arr) => {
   try {
-    console.log(arr);
     const response = await axios.get(
       `${process.env.REACT_APP_BACK_BASE_URL}studies?page=${arr[0]}&size=24&sort=id,desc&isRecruiting=${arr[1]}&keyword=${arr[2]}&hashtags=${arr[3]}`,
       {
