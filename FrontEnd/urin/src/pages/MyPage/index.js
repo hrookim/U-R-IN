@@ -186,7 +186,7 @@ const MyPage = () => {
                       <span className="font-xs font-50">스터디 정보 보기</span>
                     </Button>
                   </Link>
-                  <Link to="/" className="report-btn">
+                  <Link to={`/report/${item.id}`} className="report-btn">
                     <Button
                       variant="contained"
                       className="btn-hover"

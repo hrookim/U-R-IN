@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import Chart from "react-apexcharts";
 
-const AnalysisChart = (props) => {
+const AnalysisChart = ({ interviewee, passUser }) => {
   const [chart, setChart] = useState({
     options: {
       colors: ["#0244FC", "#868686"],
@@ -48,11 +48,11 @@ const AnalysisChart = (props) => {
     series: [
       {
         name: "나의 평균(%)",
-        data: [56, 95],
+        data: { interviewee },
       },
       {
         name: "합격자 평균(%)",
-        data: [73, 42],
+        data: { passUser },
       },
     ],
   });

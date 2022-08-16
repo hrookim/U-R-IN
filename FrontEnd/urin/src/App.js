@@ -94,7 +94,7 @@ const App = () => {
             />
           }
         />
-        <Route path="/report" element={<Report />} />
+        <Route path="/report/:studyId" element={<Report />} />
 
         {/* validation이 필요 없는 페이지 */}
         <Route path="/study/:studyId/meeting/" element={<Meeting />} />
