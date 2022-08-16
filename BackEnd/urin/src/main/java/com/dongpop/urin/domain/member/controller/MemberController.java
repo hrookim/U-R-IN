@@ -4,14 +4,15 @@ import com.dongpop.urin.domain.member.dto.response.MemberInfoDto;
 import com.dongpop.urin.domain.member.dto.response.MemberValidDto;
 import com.dongpop.urin.domain.member.entity.Member;
 import com.dongpop.urin.domain.member.service.MemberService;
+import com.dongpop.urin.global.error.errorcode.CommonErrorCode;
+import com.dongpop.urin.global.error.exception.CustomException;
 import com.dongpop.urin.oauth.model.MemberPrincipal;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import static com.dongpop.urin.global.error.errorcode.CommonErrorCode.*;
 
 @RequiredArgsConstructor
 @RestController
@@ -41,5 +42,16 @@ public class MemberController {
             throw new RuntimeException();
         }
         return ResponseEntity.ok().body(new MemberValidDto(true));
+    }
+
+    @PatchMapping("/{memberId}/pass")
+    public ResponseEntity<?> changePassStatus(@PathVariable int memberId,
+                                              @AuthenticationPrincipal MemberPrincipal memberPrincipal) {
+        Member member = memberPrincipal.getMember();
+        if (memberId != member.getId()) {
+            throw new CustomException(DO_NOT_HAVE_AUTHORIZATION);
+        }
+        member.changeMemberPassState(true);
+        return ResponseEntity.ok().build();
     }
 }
