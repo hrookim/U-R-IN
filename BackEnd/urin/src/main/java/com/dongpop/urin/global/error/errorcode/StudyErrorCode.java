@@ -14,6 +14,7 @@ public enum StudyErrorCode implements ErrorCode {
     STUDY_IS_FULL(HttpStatus.CONFLICT, "Study is full."),
     IMPOSSIBLE_SET_EXPIRATION_DATE_BEFORE_TODAY(HttpStatus.CONFLICT, "Expiration Date can't be set before today."),
     ALREADY_REGISTERED_MEMBER(HttpStatus.BAD_REQUEST, "You are already a registered member."),
+    NOT_ENROLLED_MEMBER(HttpStatus.FORBIDDEN, "You are not a participant in the study."),
     ;
     private final HttpStatus httpStatus;
     private final String message;

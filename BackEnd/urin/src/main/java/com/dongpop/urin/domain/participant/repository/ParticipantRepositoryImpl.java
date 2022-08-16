@@ -4,6 +4,7 @@ import com.dongpop.urin.domain.member.entity.Member;
 import com.dongpop.urin.domain.participant.entity.Participant;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import java.util.List;
@@ -11,6 +12,7 @@ import java.util.List;
 import static com.dongpop.urin.domain.participant.entity.QParticipant.participant;
 import static com.dongpop.urin.domain.study.entity.StudyStatus.TERMINATED;
 
+@Repository
 public class ParticipantRepositoryImpl implements ParticipantRepositoryCustom {
 
     private final JPAQueryFactory queryFactory;
