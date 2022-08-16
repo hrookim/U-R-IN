@@ -1,5 +1,6 @@
 package com.dongpop.urin.domain.study.dto.request;
 
+import com.dongpop.urin.domain.hashtag.dto.HashtagCodeDto;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -7,6 +8,7 @@ import lombok.ToString;
 
 import javax.validation.constraints.*;
 import java.time.LocalDate;
+import java.util.List;
 
 @ToString
 @AllArgsConstructor
@@ -23,4 +25,7 @@ public class StudyDataDto {
     private LocalDate expirationDate;
     @Min(2) @Max(4)
     private int memberCapacity;
+    @NotBlank
+    @Size(min = 1, max = 3, message = "해시태그는 1개 이상, 3개 이하로 선택하세요.")
+    private String hashtags;
 }

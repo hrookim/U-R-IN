@@ -9,7 +9,6 @@ export const getMyPage = createAsyncThunk(
   "GET_MY_PAGE",
   async ({ currentAllChecked, pastAllChecked }) => {
     try {
-      console.log("디스패치 하는 것", { currentAllChecked, pastAllChecked });
       const response = await axios.get(
         `${process.env.REACT_APP_BACK_BASE_URL}studies/me?currentAll=${currentAllChecked}&pastAll=${pastAllChecked}`,
         {
@@ -18,7 +17,6 @@ export const getMyPage = createAsyncThunk(
           },
         }
       );
-      console.log(response.data);
       return response.data;
     } catch (err) {
       console.log(err);

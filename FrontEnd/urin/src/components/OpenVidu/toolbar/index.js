@@ -2,7 +2,7 @@
 import React, { Component } from "react";
 import "./index.css";
 
-import { Grid, Tooltip, IconButton } from "@mui/material";
+import { Grid, Tooltip, IconButton, Button } from "@mui/material";
 import MicIcon from "@mui/icons-material/Mic";
 import MicOffIcon from "@mui/icons-material/MicOff";
 import VideocamIcon from "@mui/icons-material/Videocam";
@@ -10,8 +10,7 @@ import VideocamOffIcon from "@mui/icons-material/VideocamOff";
 import PictureInPictureIcon from "@mui/icons-material/PictureInPicture";
 import ScreenShareIcon from "@mui/icons-material/ScreenShare";
 import StopScreenShareIcon from "@mui/icons-material/StopScreenShare";
-import PowerSettingsNewIcon from "@mui/icons-material/PowerSettingsNew";
-
+import CancelIcon from "@mui/icons-material/Cancel";
 export default class ToolbarComponent extends Component {
   constructor(props) {
     super(props);
@@ -45,65 +44,187 @@ export default class ToolbarComponent extends Component {
   render() {
     const { localUser, intervieweeId } = this.props;
     return (
-      <div className="buttonsContent d-flex justify-content-center">
-        <IconButton
-          color="inherit"
+      <div>
+        <Button
+          variant="outlined"
           className="navButton"
-          id="navMicButton"
           onClick={this.micStatusChanged}
+          sx={{
+            width: "120px",
+            borderRadius: "30px",
+            color: "black",
+            borderColor: "rgba(0,0,0,0.3)",
+            margin: "5px",
+
+            "&:hover": {
+              width: "120px",
+              borderRadius: "30px",
+              color: "black",
+              borderColor: "rgba(0,0,0,0.3)",
+              backgroundColor: "rgba(0,0,0,0.04)",
+              margin: "5px",
+            },
+          }}
         >
           {localUser !== undefined && localUser.isAudioActive() ? (
             <MicIcon />
           ) : (
-            <MicOffIcon color="secondary" />
+            <MicOffIcon sx={{ color: "red" }} />
           )}
-        </IconButton>
+          <span className="font-40 font-sm" style={{ marginLeft: "10px" }}>
+            마이크
+          </span>
+        </Button>
 
-        <IconButton
-          color="inherit"
-          className="navButton"
-          id="navCamButton"
-          onClick={this.camStatusChanged}
-        >
-          {localUser !== undefined && localUser.isVideoActive() ? (
+        {localUser !== undefined && localUser.isVideoActive() ? (
+          <Button
+            variant="outlined"
+            className="navButton"
+            onClick={this.camStatusChanged}
+            sx={{
+              width: "120px",
+              borderRadius: "30px",
+              color: "black",
+              borderColor: "rgba(0,0,0,0.3)",
+              margin: "5px",
+
+              "&:hover": {
+                width: "120px",
+                borderRadius: "30px",
+                color: "black",
+                borderColor: "rgba(0,0,0,0.3)",
+                backgroundColor: "rgba(0,0,0,0.04)",
+                margin: "5px",
+              },
+            }}
+          >
             <VideocamIcon />
-          ) : (
-            <VideocamOffIcon color="secondary" />
-          )}
-        </IconButton>
+            <span className="font-40 font-sm" style={{ marginLeft: "10px" }}>
+              비디오
+            </span>
+          </Button>
+        ) : (
+          <Button
+            variant="outlined"
+            className="navButton"
+            onClick={this.camStatusChanged}
+            sx={{
+              width: "120px",
+              borderRadius: "30px",
+              color: "black",
+              borderColor: "rgba(0,0,0,0.3)",
+              margin: "5px",
+              "&:hover": {
+                width: "120px",
+                borderRadius: "30px",
+                color: "black",
+                borderColor: "rgba(0,0,0,0.3)",
+                backgroundColor: "rgba(0,0,0,0.04)",
+                margin: "5px",
+              },
+            }}
+          >
+            <VideocamOffIcon sx={{ color: "red" }} />
+            <span className="font-40 font-sm" style={{ marginLeft: "10px" }}>
+              비디오
+            </span>
+          </Button>
+        )}
 
         {!intervieweeId ? (
           localUser !== undefined && localUser.isScreenShareActive() ? (
             <>
-              <IconButton
-                color="inherit"
+              <Button
+                variant="outlined"
                 className="navButton"
                 onClick={this.screenShare}
+                sx={{
+                  width: "130px",
+                  borderRadius: "30px",
+                  color: "black",
+                  borderColor: "rgba(0,0,0,0.3)",
+                  margin: "5px",
+                  "&:hover": {
+                    width: "130px",
+                    borderRadius: "30px",
+                    color: "black",
+                    borderColor: "rgba(0,0,0,0.3)",
+                    backgroundColor: "rgba(0,0,0,0.04)",
+                    margin: "5px",
+                  },
+                }}
               >
                 <PictureInPictureIcon />
-              </IconButton>
-              <IconButton onClick={this.stopScreenShare} id="navScreenButton">
-                <StopScreenShareIcon color="secondary" />
-              </IconButton>
+                <span
+                  className="font-40 font-sm"
+                  style={{ marginLeft: "10px" }}
+                >
+                  화면 변경
+                </span>
+              </Button>
+
+              <Button
+                variant="outlined"
+                className="navButton"
+                onClick={this.stopScreenShare}
+                sx={{
+                  width: "100px",
+                  borderRadius: "30px",
+                  color: "black",
+                  borderColor: "rgba(0,0,0,0.3)",
+                  margin: "5px",
+
+                  "&:hover": {
+                    width: "100px",
+                    borderRadius: "30px",
+                    color: "black",
+                    borderColor: "rgba(0,0,0,0.3)",
+                    backgroundColor: "rgba(0,0,0,0.04)",
+                    margin: "5px",
+                  },
+                }}
+              >
+                <StopScreenShareIcon sx={{ color: "red" }} />
+                <span
+                  className="font-40 font-sm"
+                  style={{ marginLeft: "10px" }}
+                >
+                  중지
+                </span>
+              </Button>
             </>
           ) : (
-            <IconButton
-              color="inherit"
+            <Button
+              variant="outlined"
               className="navButton"
               onClick={this.screenShare}
+              sx={{
+                width: "100px",
+                borderRadius: "30px",
+                color: "black",
+                borderColor: "rgba(0,0,0,0.3)",
+                margin: "5px",
+
+                "&:hover": {
+                  width: "100px",
+                  borderRadius: "30px",
+                  color: "black",
+                  borderColor: "rgba(0,0,0,0.3)",
+                  backgroundColor: "rgba(0,0,0,0.04)",
+                  margin: "5px",
+                },
+              }}
             >
               <ScreenShareIcon />
-            </IconButton>
+              <span className="font-40 font-sm" style={{ marginLeft: "10px" }}>
+                공유
+              </span>
+            </Button>
           )
         ) : null}
 
-        <IconButton
-          color="secondary"
-          className="navButton"
-          onClick={this.leaveSession}
-          id="navLeaveButton"
-        >
-          <PowerSettingsNewIcon />
+        <IconButton onClick={this.leaveSession} sx={{ color: "red" }}>
+          <CancelIcon fontSize="large" />
         </IconButton>
 
         {/* <IconButton color="inherit" id="navChatButton">

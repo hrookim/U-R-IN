@@ -86,17 +86,13 @@ export default class StreamComponent extends Component {
                 mutedSound={mutedSound}
               />
 
-              <div>
+              {/* <div>
                 {!user.isLocal() && (
                   <IconButton id="volumeButton" onClick={this.toggleSound}>
-                    {mutedSound ? (
-                      <VolumeOffIcon color="secondary" />
-                    ) : (
-                      <VolumeUpIcon />
-                    )}
+                    {mutedSound ? <VolumeOffIcon /> : <VolumeUpIcon />}
                   </IconButton>
                 )}
-              </div>
+              </div> */}
 
               <div id="statusIcons">
                 {!user.isVideoActive() ? (

@@ -81,7 +81,6 @@ const MainPage = () => {
   };
 
   useEffect(() => {
-    console.log("useeffect 최상단");
     dispatch(getStudyList([page - 1, checked, keyword, hashtags]));
   }, [page, checked, keyword, hashtags]);
 

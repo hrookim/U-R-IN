@@ -80,13 +80,14 @@ const Feedback = ({
 
   return (
     <div style={styleFeedback} className="fb-container">
-      <div className="font-md font-60">
+      <div className="font-md font-70">
         {intervieweeNickname}님을 위한 피드백
       </div>
       <form onSubmit={onSubmit}>
         {/* 타입 선택 */}
+        <p className="font-sm font-50 fb-radio-p">면접 종류</p>
+
         <div className="fb-radio-box">
-          <div className="font-sm font-50 fb-radio-label">면접 종류</div>
           <div className="font-xs font-40 fb-radio">
             <label htmlFor="type-p">인성면접</label>
             <Radio
@@ -129,9 +130,9 @@ const Feedback = ({
               <div key={index} className="font-xs font-40">
                 {singleFeedback.question && (
                   <div className="fb-q-item">
-                    <div>
+                    <span className="font-xs">
                       {index + 1}. {singleFeedback.question}
-                    </div>
+                    </span>
                     <textarea
                       value={singleFeedback.answer}
                       id="qna"
