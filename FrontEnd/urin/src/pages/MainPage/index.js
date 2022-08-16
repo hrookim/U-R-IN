@@ -81,6 +81,7 @@ const MainPage = () => {
   };
 
   useEffect(() => {
+    console.log("useeffect 최상단");
     dispatch(getStudyList([page - 1, checked, keyword, hashtags]));
   }, [page, checked, keyword, hashtags]);
 
@@ -111,27 +112,41 @@ const MainPage = () => {
                   >
                     <TagIcon />
                   </IconButton>
-                  {open ? (
-                    <Box
-                      sx={{
-                        position: "absolute",
-                        right: "-50px",
-                        border: 1,
-                        padding: "15px",
-                        bgcolor: "rgba(240, 240, 240, 0.7)",
-                        width: "50vw",
-                        borderColor: "white",
-                        borderRadius: "20px",
-                        boxShadow: "2",
-                        zIndex: "1",
-                      }}
-                    >
-                      <SearchFilter
-                        getHashtags={getHashtags}
-                        getOverflowed={getOverflowed}
-                      />
-                    </Box>
-                  ) : null}
+                  <Box
+                    sx={
+                      open
+                        ? {
+                            position: "absolute",
+                            right: "-50px",
+                            border: 1,
+                            padding: "15px",
+                            bgcolor: "rgba(240, 240, 240, 0.7)",
+                            width: "50vw",
+                            borderColor: "white",
+                            borderRadius: "20px",
+                            boxShadow: "2",
+                            zIndex: "1",
+                          }
+                        : {
+                            display: "none",
+                            position: "absolute",
+                            right: "-50px",
+                            border: 1,
+                            padding: "15px",
+                            bgcolor: "rgba(240, 240, 240, 0.7)",
+                            width: "50vw",
+                            borderColor: "white",
+                            borderRadius: "20px",
+                            boxShadow: "2",
+                            zIndex: "1",
+                          }
+                    }
+                  >
+                    <SearchFilter
+                      getHashtags={getHashtags}
+                      getOverflowed={getOverflowed}
+                    />
+                  </Box>
                 </Box>
               </ClickAwayListener>
 
