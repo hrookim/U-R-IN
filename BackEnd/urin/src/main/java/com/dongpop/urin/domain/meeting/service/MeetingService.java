@@ -5,6 +5,8 @@ import com.dongpop.urin.domain.meeting.dto.response.MeetingIdDto;
 import com.dongpop.urin.domain.meeting.dto.response.MeetingSessionDto;
 import com.dongpop.urin.domain.meeting.entity.Meeting;
 import com.dongpop.urin.domain.meeting.repository.MeetingRepository;
+import com.dongpop.urin.domain.meetingParticipant.entity.MeetingParticipant;
+import com.dongpop.urin.domain.meetingParticipant.repository.MeetingParticipantRepository;
 import com.dongpop.urin.domain.member.entity.Member;
 import com.dongpop.urin.domain.study.entity.Study;
 import com.dongpop.urin.domain.study.repository.StudyRepository;
@@ -27,6 +29,7 @@ public class MeetingService {
 
     private final StudyRepository studyRepository;
     private final MeetingRepository meetingRepository;
+    private final MeetingParticipantRepository meetingParticipantRepository;
 
     @Transactional
     public MeetingSessionDto issueSessionId(Member member, int studyId) {
@@ -61,10 +64,18 @@ public class MeetingService {
 //        if (study.getIsOnair()) {
 //            throw new CustomException(MEETING_IS_ALREADY_ONAIR);
 //        }
-        study.changeOnairStatus(meetingCreateDto.getIsConnected());
 
-        int meetingId = meetingRepository.save(new Meeting(study)).getId();
-        return new MeetingIdDto(meetingId);
+        Meeting meeting = new Meeting(study);
+        if (study.getStudyLeader().equals(member)) {
+            study.changeOnairStatus(meetingCreateDto.getIsConnected());
+            meeting = meetingRepository.save(meeting);
+        } else {
+            meeting = meetingRepository.findFirstByStudyOrderByIdDesc(study)
+                    .orElseThrow(() -> new CustomException(MEETING_IS_NOT_EXIST));
+        }
+        meetingParticipantRepository.save(new MeetingParticipant(meeting, member));
+
+        return new MeetingIdDto(meeting.getId());
     }
 
     @Transactional

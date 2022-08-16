@@ -3,6 +3,9 @@ package com.dongpop.urin.domain.study.service;
 import com.dongpop.urin.domain.hashtag.dto.HashtagDataDto;
 import com.dongpop.urin.domain.hashtag.entity.Hashtag;
 import com.dongpop.urin.domain.hashtag.repository.HashtagRepository;
+import com.dongpop.urin.domain.meeting.dto.response.MeetingIdDto;
+import com.dongpop.urin.domain.meetingParticipant.entity.MeetingParticipant;
+import com.dongpop.urin.domain.meetingParticipant.repository.MeetingParticipantRepository;
 import com.dongpop.urin.domain.member.entity.Member;
 import com.dongpop.urin.domain.participant.dto.response.ParticipantDto;
 import com.dongpop.urin.domain.participant.entity.Participant;
@@ -46,6 +49,7 @@ public class StudyService {
     private final StudyRepository studyRepository;
     private final ParticipantRepository participantRepository;
     private final HashtagRepository hashtagRepository;
+    private final MeetingParticipantRepository meetingParticipantRepository;
 
     @Transactional
     @Scheduled(cron = "0 0 0 * * *")
@@ -149,6 +153,33 @@ public class StudyService {
                 .totalPastStudies(totalPastStudies)
                 .currentStudyList(currentStudyList)
                 .pastStudyList(pastStudyList).build();
+    }
+
+    @Transactional
+    public MeetingIdResponseDto getMeetingId(int studyId, Member member) {
+        Study study = getStudy(studyId);
+
+        if (!checkEnrolledMember(study, member)) {
+            throw new CustomException(NOT_ENROLLED_MEMBER);
+        }
+
+        List<MeetingParticipant> meetingParticipantList = meetingParticipantRepository.findAllMeetingParticipantList(study, member);
+
+        List<MeetingIdDto> idList = new ArrayList<>();
+        meetingParticipantList.stream().forEach(mt -> {
+            idList.add(new MeetingIdDto(mt.getMeeting().getId()));
+        });
+
+        return new MeetingIdResponseDto(idList);
+    }
+
+    private boolean checkEnrolledMember(Study study, Member member) {
+        for (Participant participant : study.getParticipants()) {
+            if (participant.getMember().getId() == member.getId()) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
@@ -295,4 +326,6 @@ public class StudyService {
             }
         }
     }
+
+
 }

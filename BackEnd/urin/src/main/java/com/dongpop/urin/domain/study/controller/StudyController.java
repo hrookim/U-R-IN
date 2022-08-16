@@ -1,5 +1,6 @@
 package com.dongpop.urin.domain.study.controller;
 
+import com.dongpop.urin.domain.meeting.dto.response.MeetingIdDto;
 import com.dongpop.urin.domain.member.entity.Member;
 import com.dongpop.urin.domain.study.dto.request.StudyDataDto;
 import com.dongpop.urin.domain.study.dto.request.StudyMyDto;
@@ -46,6 +47,14 @@ public class StudyController {
                                           @AuthenticationPrincipal MemberPrincipal memberPrincipal) {
         StudyMyListDto studyMyListDto = studyService.getMyStudy(studyMyDto, memberPrincipal.getMember());
         return ResponseEntity.ok().body(studyMyListDto);
+    }
+
+    @GetMapping("/{studyId}/meeting/Id")
+    public ResponseEntity<MeetingIdResponseDto> getMeetingId(@PathVariable int studyId,
+                                                             @AuthenticationPrincipal MemberPrincipal memberPrincipal) {
+        MeetingIdResponseDto responseDto = studyService.getMeetingId(studyId, memberPrincipal.getMember());
+
+        return ResponseEntity.ok().body(responseDto);
     }
 
     @PostMapping
