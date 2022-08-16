@@ -5,11 +5,13 @@ import moment from "moment";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import {
+  Avatar,
   Button,
   Grid,
   TextField,
   Checkbox,
   FormControlLabel,
+  IconButton,
   Paper,
   Fade,
   Typography,
@@ -18,12 +20,17 @@ import {
   MenuItem,
   Select,
 } from "@mui/material";
+import RemoveCircleOutlineIcon from "@mui/icons-material/RemoveCircleOutline";
+import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCrown } from "@fortawesome/free-solid-svg-icons";
 import DatePicker from "react-datepicker";
 import { ko } from "date-fns/esm/locale";
 import "react-datepicker/dist/react-datepicker.css";
 import "react-widgets/styles.css";
-import { getStudy, updateStudy } from "../../store/studySlice";
+import { getStudy, leaveStudy, updateStudy } from "../../store/studySlice";
 import CheckValidation from "../../components/CheckValidation";
+import StudyUpdateTag from "../../components/StudyUpdateTag";
 import "./index.css";
 
 const StudyUpdateForm = () => {
@@ -33,15 +40,18 @@ const StudyUpdateForm = () => {
   const { studyId } = useParams();
 
   const study = useSelector((state) => state.study);
+
   const [form, setForm] = useState({
     title: "",
     notice: "",
     expirationDate: "",
     memberCapacity: "",
+    hashtags: "",
   });
   const [formDate, setFormDate] = useState(new Date());
   const [disable, setDisable] = useState(false);
   const [errorStatement, setErrorStatement] = useState("");
+  const [deletedMembers, setDeletedMembers] = useState([]);
 
   // popper관련
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -63,7 +73,14 @@ const StudyUpdateForm = () => {
 
   useEffect(() => {
     dispatch(getStudy({ studyId, navigate })).then(() => {
-      const { title, notice, expirationDate, memberCapacity, dday } = study;
+      const {
+        title,
+        notice,
+        expirationDate,
+        memberCapacity,
+        dday,
+        hashtagCodes,
+      } = study;
 
       if (dday === -1) {
         const formatDate = new Date();
@@ -72,6 +89,7 @@ const StudyUpdateForm = () => {
           notice,
           expirationDate: moment(formatDate).format("YYYY-MM-DD"),
           memberCapacity,
+          hashtags: hashtagCodes,
         });
         setFormDate(formatDate);
         setDisable(true);
@@ -82,6 +100,7 @@ const StudyUpdateForm = () => {
           notice,
           expirationDate: moment(formatDate).format("YYYY-MM-DD"),
           memberCapacity,
+          hashtags: hashtagCodes,
         });
         setFormDate(formatDate);
       }
@@ -94,18 +113,65 @@ const StudyUpdateForm = () => {
       ...form,
       [name]: value,
     });
-    console.log(form);
   };
 
   const onSubmit = (e) => {
     e.preventDefault();
-    dispatch(updateStudy({ studyId, form, navigate }));
+    console.log("form", "newHashtags", form);
+    if (form.hashtags) {
+      dispatch(updateStudy({ studyId, form, navigate }));
+
+      for (let i = 0; i < deletedMembers.length; i += 1) {
+        const deletedParticipantId = deletedMembers[i];
+        dispatch(leaveStudy({ studyId, deletedParticipantId }));
+      }
+    } else {
+      alert("1개 이상 선택해주세요!");
+    }
+  };
+
+  const getHashtags = (value) => {
+    if (value) {
+      setForm({
+        ...form,
+        hashtags: value,
+      });
+    }
+  };
+
+  const getOverflowed = (value2) => {
+    if (value2) {
+      alert("3개 이하로 선택해주세요.");
+    }
   };
 
   // popper 관련 함수
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
     setOpen((prev) => !prev);
+  };
+
+  const onClickLeave = (memberId) => {
+    alert("수정하기 버튼을 눌러야 탈퇴 내역이 최종 반영됩니다!");
+    console.log(memberId);
+    setDeletedMembers(...deletedMembers, [memberId]);
+    console.log(deletedMembers);
+
+    // dispatch(leaveStudy([studyId, memberId])).then(() => {
+    //   setIsChanged(true);
+    //   setInterval(() => setIsChanged(false), 100);
+    // });
+  };
+
+  const onClickInclude = (memberId) => {
+    alert("탈퇴 목록에서 제외되었습니다!");
+    console.log(memberId);
+    setDeletedMembers(deletedMembers.filter((element) => element !== memberId));
+
+    // dispatch(leaveStudy([studyId, memberId])).then(() => {
+    //   setIsChanged(true);
+    //   setInterval(() => setIsChanged(false), 100);
+    // });
   };
 
   return (
@@ -246,6 +312,84 @@ const StudyUpdateForm = () => {
             </Grid>
           </Grid>
           <div className="content-title-group">
+            <p className="font-lg font-70">스터디원</p>
+            <p className="create-grid-contents-title font-30 font-sm">
+              &nbsp;&nbsp;&nbsp;여러분과 함께하는 스터디원을 관리하세요!
+            </p>
+          </div>
+          <div className="member-control">
+            {study.participants.map((participant) => (
+              <div
+                key={participant.id}
+                className="member-info"
+                style={{ margin: "0 0 15px 0" }}
+              >
+                {deletedMembers.includes(participant.id) ? (
+                  <Avatar
+                    sx={{
+                      width: "30px",
+                      height: "30px",
+                      backgroundColor: "rgba(0,0,0,0.3);",
+                    }}
+                  >
+                    {" "}
+                    {participant.nickname[0]}
+                  </Avatar>
+                ) : (
+                  <Avatar
+                    sx={{
+                      width: "30px",
+                      height: "30px",
+                      backgroundColor: "#0037FA",
+                    }}
+                  >
+                    {" "}
+                    {participant.nickname[0]}
+                  </Avatar>
+                )}
+
+                {deletedMembers.includes(participant.id) ? (
+                  <span className="member-disabled">
+                    {participant.nickname}
+                  </span>
+                ) : (
+                  <span>{participant.nickname}</span>
+                )}
+
+                {participant.isLeader && (
+                  <FontAwesomeIcon
+                    icon={faCrown}
+                    style={{ margin: "0 0 0 8px" }}
+                  />
+                )}
+                {console.log(
+                  !deletedMembers.includes(participant.id),
+                  participant.id,
+                  deletedMembers
+                )}
+                {!participant.isLeader &&
+                study.status != "TERMINATED" &&
+                !deletedMembers.includes(participant.id) ? (
+                  <IconButton onClick={() => onClickLeave(participant.id)}>
+                    <RemoveCircleOutlineIcon
+                      sx={{ fontSize: "small", color: "#f44336" }}
+                    />
+                  </IconButton>
+                ) : null}
+
+                {!participant.isLeader &&
+                study.status != "TERMINATED" &&
+                deletedMembers.includes(participant.id) ? (
+                  <IconButton onClick={() => onClickInclude(participant.id)}>
+                    <AddCircleOutlineIcon
+                      sx={{ fontSize: "small", color: "rgba(0,0,0,0.8)" }}
+                    />
+                  </IconButton>
+                ) : null}
+              </div>
+            ))}
+          </div>
+          <div className="content-title-group">
             <p className="font-lg font-70">공지사항</p>
             <p className="create-grid-contents-title font-30 font-sm">
               &nbsp;&nbsp;&nbsp;스터디원들이 알아야 할 사항들을 미리 적어주세요!
@@ -265,17 +409,31 @@ const StudyUpdateForm = () => {
               required
             />
           </FormControl>
+          <div className="content-title-group">
+            <p className="font-lg font-70">태그</p>
+            <p className="create-grid-contents-title font-30 font-sm">
+              &nbsp;&nbsp;&nbsp;다른 스터디원들이 쉽게 검색할 수 있도록 태그를
+              설정해보세요! (최대 3개까지 가능)
+            </p>
+          </div>
+          <FormControl className="title" fullWidth sx={{ m: 1 }}>
+            <StudyUpdateTag
+              getHashtags={getHashtags}
+              getOverflowed={getOverflowed}
+              oldHashtags={form.hashtags}
+            />
+          </FormControl>
           <div className="btns">
             <Button
               variant="contained"
               type="submit"
               sx={{
-                backgroundColor: "#0037FA",
+                backgroundColor: "rgb(255, 184, 2)",
                 margin: "10px",
-                "&:hover": { backgroundColor: "#0037FA" },
+                "&:hover": { backgroundColor: "rgb(255, 184, 2)" },
               }}
             >
-              만들기
+              수정하기
             </Button>
             <Button
               variant="contained"

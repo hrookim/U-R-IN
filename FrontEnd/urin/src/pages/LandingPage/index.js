@@ -99,16 +99,20 @@ const LandingPage = () => {
   return (
     <div ref={ref}>
       <div>
-        <img src="/img/logo_img.png" alt="hello" className="title-logo" />
+        <img
+          src={`${process.env.PUBLIC_URL}img/logo_img.png`}
+          alt="hello"
+          className="title-logo"
+        />
       </div>
       <div className="landingpage-body">
-        <p className="font-70 font-xl centered main-text">
+        <p className="font-70 centered main-text">
           면접스터디를 위한 새로운 솔루션
         </p>
         <span className="font-30 font-sm main-text2">
-          UR IN은 면접스터디를 찾아 헤메는 취준생 여러분을 위해 제공되는 최상의
-          면접스터디 플랫폼입니다. 이 서비스는 면접스터디의 효율을 극대화시켜줄
-          화상 서비스부터 AI 레포트까지 제공합니다.
+          UR IN은 면접스터디를 찾아 헤메는 취준생 여러분을 위한 최상의
+          면접스터디 플랫폼입니다. 면접스터디의 효율을 극대화시켜줄 화상
+          서비스부터 AI 리포트까지 제공해드리겠습니다.
         </span>
         {/* 카카오로그인 버튼 */}
         <div className="centered">
@@ -123,27 +127,31 @@ const LandingPage = () => {
               시작하기
             </Button>
           </div>
-
-          <img src="/img/landingpage-img4.png" alt="img4" className="img4" />
+          {console.log(process.env.PUBLIC_URL)}
+          <img
+            src={`${process.env.PUBLIC_URL}img/landingpage-img4.png`}
+            alt="img4"
+            className="img4"
+          />
 
           <div className="img-group">
             <img
               className="img1 test"
-              src="/img/landingpage-img1.png"
+              src={`${process.env.PUBLIC_URL}img/landingpage-img1.png`}
               alt="landingpage-img1"
             />
             <img
               className="img2"
-              src="/img/landingpage-img2.png"
+              src={`${process.env.PUBLIC_URL}img/landingpage-img2.png`}
               alt="landingpage-img2"
             />
             <img
               className="img3"
-              src="/img/landingpage-img3.png"
+              src={`${process.env.PUBLIC_URL}img/landingpage-img3.png`}
               alt="landingpage-img3"
             />
             <div className="img-text">
-              <p className="font-60 font-xl">
+              <p className="font-60 main-text">
                 취업으로 가는 길, 새로운 경험을 해보세요!
               </p>
               <Button
@@ -160,11 +168,11 @@ const LandingPage = () => {
           <div className="img-group2">
             <img
               className="img5"
-              src="/img/landingpage-img5.png"
+              src={`${process.env.PUBLIC_URL}img/landingpage-img5.png`}
               alt="landingpage-img5"
             />
             <div className="img-text">
-              <p className="font-60 font-xl">
+              <p className="font-60">
                 여러분에게 필요한 스터디원을 찾아보세요.
               </p>
               <Button

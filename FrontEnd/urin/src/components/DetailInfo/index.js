@@ -4,7 +4,7 @@ import { useParams } from "react-router-dom";
 import styled from "styled-components";
 import { Avatar, IconButton, Typography } from "@mui/material";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCrown, faSquareXmark } from "@fortawesome/free-solid-svg-icons";
+import { faCrown } from "@fortawesome/free-solid-svg-icons";
 import RemoveCircleOutlineIcon from "@mui/icons-material/RemoveCircleOutline";
 import { leaveStudy } from "../../store/studySlice";
 import "../../assets/DesignSystem.css";
@@ -50,6 +50,21 @@ const DetailInfo = ({ study, isLeader, isParticipant, setIsChanged }) => {
             {participant.isLeader && (
               <FontAwesomeIcon icon={faCrown} style={{ margin: "0 0 0 8px" }} />
             )}
+          </div>
+        ))}
+        {/* {study.participants.map((participant) => (
+          <div
+            key={participant.id}
+            className="member-info"
+            style={{ margin: "0 0 15px 0" }}
+          >
+            <Avatar sx={{ width: "30px", height: "30px" }}>
+              {participant.nickname[0]}
+            </Avatar>
+            <span>{participant.nickname}</span>
+            {participant.isLeader && (
+              <FontAwesomeIcon icon={faCrown} style={{ margin: "0 0 0 8px" }} />
+            )}
             {console.log(isLeader, study.status)}
             {isLeader &&
             !participant.isLeader &&
@@ -61,7 +76,7 @@ const DetailInfo = ({ study, isLeader, isParticipant, setIsChanged }) => {
               </IconButton>
             ) : null}
           </div>
-        ))}
+        ))} */}
       </div>
     </div>
   );

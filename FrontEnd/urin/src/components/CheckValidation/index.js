@@ -13,12 +13,10 @@ const CheckValidation = () => {
   const mounted = useRef(false);
 
   useEffect(() => {
-    console.log("컴포넌트 안 id");
     dispatch(getMemberId(navigate));
   }, []);
 
   useEffect(() => {
-    console.log("컴포넌트 안 validation");
     if (!mounted.current && !memberId) {
       mounted.current = true;
     } else {
@@ -26,7 +24,7 @@ const CheckValidation = () => {
     }
   }, [memberId]);
 
-  return <div>{console.log("컴포넌트")}</div>;
+  return <div></div>;
 };
 
 export default CheckValidation;

@@ -11,7 +11,6 @@
   align-items: center;
   background-color: #0037FA;
   background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)  ),url(../../../public/img/mainpage-img1.jpg);
-
   background-size: cover;
   border-radius: 10px;
 }
@@ -39,6 +38,29 @@
   justify-content: right;
 }
 
+@media screen and (max-width: 960px) {
+  .search-font {
+    font-size: 32px;
+    text-align: center;
+
+  }
+}
+
+@media screen and (max-width: 600px) {
+  .search-font {
+    font-size: 24px;
+    text-align: center;
+    word-break: keep-all;
+
+  }
+}
+
+
+
+.search-bar-group {
+  position: relative;
+}
+
 .searchbar-form{
   position: relative;
   display: flex;
@@ -46,15 +68,25 @@
 }
 
 .searchbar{
-  width: 30vw;
+  position: relative;
+  width: 50vw;
   height: 35px;
   border-radius: 20px;
 }
 
+.search-icon-btn {
+  position: relative;
+}
+
 .search-btn{
+  position: relative;
+}
+
+.search-condition {
   position: absolute;
-  right: -5px;
-  padding: 0 0 0 0;
+  display: flex;
+  align-items: center;
+  right: 10px;
 }
 
 .card-item{
@@ -65,17 +97,23 @@
 
 .card{
   width: 250px;
-  padding: 20px 20px 20px 20px;
+  padding: 20px 20px 0px 20px;
   display: flex;
   justify-content: center;
   box-shadow: 0px 0px 10px rgba(50, 50, 50, 0.1);
   margin: 10px auto 10px auto;
 }
 
-.card-link{
+.card-link2{
   text-decoration: none;
   color: black;
 }
+
+.card-link2:hover{
+  text-decoration: none;
+  color: rgb(0,55,250);
+}
+
 
 .card-img{
   padding: 10px 10px 10px 10px; 
@@ -128,4 +166,3 @@
     margin: 0 30px 0 30px;
 	}
 }
-

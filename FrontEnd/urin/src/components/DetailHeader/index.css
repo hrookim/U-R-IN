@@ -8,46 +8,75 @@
 .dh-container-item {
   display: flex;
   justify-content: center;
-  margin: 15px;
+  flex-direction: row;
+
+}
+
+.dh-container-item2 {
+  display: flex;
+  justify-content: center;
+  flex-direction: row;
 }
 
 .dh-tag {
   display: inline-block;
-  height: 40px; width: 150px;
-  border-radius: 20px;
-  border: 1px solid #4d4d4d;
-  box-sizing: border-box;
   text-align: center;
-  line-height: 40px;
-  margin: 0 10px;
+  margin: 10px 5px 20px 5px;
 }
 
 .dh-setting-icon {
   display: flex;
   align-items: center;
+  margin-left: 10px;
 }
 
 .dh-meeting-button {
   background-color: #0037FA;
   color: white;
-  height: 50px; width: 180px;
+  height: 50px; width: 145px;
   box-sizing: border-box;
   text-align: center;
   line-height: 50px;
   border: none;
   border-radius: 25px;
-  margin: 0 10px;
+  margin: 15px 10px 20px 10px;
 }
 
 .dh-study-button {
   background-color: white;
   border: 1px solid #0037FA;
-  
-  height: 50px; width: 180px;
+  height: 50px; width: 145px;
   box-sizing: border-box;
   text-align: center;
   color: #0037FA;
   line-height: 50px;
   border-radius: 25px;
-  margin: 0 10px;
+  margin: 15px 10px 20px 10px;
+}
+
+.dh-study-button:hover {
+  color: red;
+  background-color: rgba(250, 0,0,0.1);
+  border-color: red;
+}
+
+.dh-chips {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.dh-chip-button {
+  background-color: rgba(0, 55,250, 0.1);
+  color: rgb(0,55,250);
+  height: 30px;
+  border-radius: 20px;
+  padding: 0 10px;
+  margin: 10px 5px 5px 5px;
+  border: none;
+}
+
+.btn-center {
+  display:flex;
+  justify-content: center;
 }

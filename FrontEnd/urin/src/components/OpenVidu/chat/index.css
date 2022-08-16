@@ -113,11 +113,19 @@
     background-color: #f0f0f0;
     float: left;
   }
+
   .message.left .msg-detail .msg-content span.triangle {
     background-color: #f0f0f0;
     border-bottom-width: 0;
     border-left-width: 0;
     left: -5px;
+  }
+  
+  .message.left>span {
+    font-size: small;
+    position: absolute;
+    right: 0;
+    bottom: 7px;
   }
   
   /* End message from other user */
@@ -127,6 +135,7 @@
   .message.right .msg-detail .msg-info {
     text-align: right;
   }
+
   .message.right .user-img {
     right: -5px;
     border: 1px solid #c8ffe8ab;
@@ -136,11 +145,23 @@
     background-color: #c8ffe8;
     float: right;
   }
+
   .message.right .msg-detail .msg-content span.triangle {
     background-color: #c8ffe8;
     border-bottom-width: 0;
     border-left-width: 0;
     right: -5px;
+  }
+
+  .message.right .msg-content {
+    max-width: 70%;
+  }
+
+  .message.right>span {
+    font-size: small;
+    position: absolute;
+    left: 0;
+    bottom: 7px;
   }
   
   /* End my messages */
