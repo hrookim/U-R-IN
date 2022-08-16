@@ -380,13 +380,13 @@ class Meeting extends Component {
           if (data.isScreenShareActive !== undefined) {
             // TODO: 화면공유 한명만 가능하게
             user.setScreenShareActive(data.isScreenShareActive);
-            this.checkSomeoneShareScreen();
           }
         }
       });
       this.setState({
         subscribers: remoteUsers,
       });
+      this.checkSomeoneShareScreen();
     });
   }
 
@@ -780,7 +780,7 @@ class Meeting extends Component {
         .finally(() => {
           setTimeout(function () {
             window.close();
-          }, 1000);
+          }, 700);
         });
     });
   }
