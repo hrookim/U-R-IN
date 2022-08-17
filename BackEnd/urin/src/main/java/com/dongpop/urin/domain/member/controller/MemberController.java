@@ -1,5 +1,6 @@
 package com.dongpop.urin.domain.member.controller;
 
+import com.dongpop.urin.domain.analysis.service.AnalysisService;
 import com.dongpop.urin.domain.member.dto.response.MemberInfoDto;
 import com.dongpop.urin.domain.member.dto.response.MemberValidDto;
 import com.dongpop.urin.domain.member.entity.Member;
@@ -22,6 +23,7 @@ import static com.dongpop.urin.global.error.errorcode.CommonErrorCode.*;
 public class MemberController {
 
     private final MemberService memberService;
+    private final AnalysisService analysisService;
 
     @GetMapping("/me")
     public ResponseEntity<MemberInfoDto> getMyMemberData(@AuthenticationPrincipal MemberPrincipal memberPrincipal) {
@@ -55,6 +57,7 @@ public class MemberController {
         }
 
         memberService.changeMemberPassState(memberId);
+        analysisService.calculatePassData(memberId);
         return ResponseEntity.ok().build();
     }
 }
