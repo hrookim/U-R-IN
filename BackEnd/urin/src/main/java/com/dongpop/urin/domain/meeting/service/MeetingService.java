@@ -72,7 +72,7 @@ public class MeetingService {
         if (study.getStudyLeader().getId() == member.getId()) {
             study.changeOnairStatus(meetingCreateDto.getIsConnected());
             meeting = meetingRepository.save(meeting);
-            System.out.println("====== 알람 보내는 요청 ======");
+            log.info("Create Meeting, Send Notification to Participants");
             sendNotificationToParticipants(study);
         } else {
             meeting = meetingRepository.findFirstByStudyOrderByIdDesc(study)
@@ -103,6 +103,7 @@ public class MeetingService {
     private void sendNotificationToParticipants(Study study) {
         String content = "[" + study.getTitle() + "] 스터디의 미팅이 시작되었습니다.";
         String url = "https://i7a504.p.ssafy.io/study/" + study.getId();
+        log.info("Make participants event.");
         study.sendEvent(publisher, content, url);
     }
 

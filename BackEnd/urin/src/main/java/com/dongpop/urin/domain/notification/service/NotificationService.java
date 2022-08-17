@@ -50,6 +50,7 @@ public class NotificationService {
         String receiverId = String.valueOf(receiver.getId());
         String eventId = makeTimeIncludeId(receiver.getId());
 
+        log.info("send Notification : receiver = {} {}", receiver.getId(), receiver.getMemberName());
         Map<String, SseEmitter> emitters = emitterRepository.findAllEmitterStartWithByMemberId(receiverId);
         for (Map.Entry<String, SseEmitter> entry : emitters.entrySet()) {
             NotificationResponseDto event = NotificationResponseDto.create(notification);
