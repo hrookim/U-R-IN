@@ -36,6 +36,7 @@ const DetailFeedInput = ({ studyId, setIsInputSubmitted }) => {
           onKeyPress={onKeyPress}
           value={form}
           className="feed-input"
+          style={{ padding: "20px" }}
         />
         {/* <Button
           onClick={onSubmit}
