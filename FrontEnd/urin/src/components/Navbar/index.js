@@ -108,7 +108,8 @@ const NavComponent = () => {
   return (
     <div>
       {!location.pathname.includes("/intro") &&
-      !location.pathname.includes("/meeting") ? (
+      !location.pathname.includes("/meeting") &&
+      !location.pathname.includes("/report") ? (
         <div className="nav">
           <input type="checkbox" id="nav-check" />
           <div className="nav-header">
