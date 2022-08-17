@@ -51,7 +51,8 @@ public class MemberController {
         if (memberId != member.getId()) {
             throw new CustomException(DO_NOT_HAVE_AUTHORIZATION);
         }
-        member.changeMemberPassState(true);
+
+        memberService.changeMemberPassState(member);
         return ResponseEntity.ok().build();
     }
 }

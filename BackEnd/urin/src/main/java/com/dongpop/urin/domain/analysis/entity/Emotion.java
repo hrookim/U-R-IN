@@ -9,9 +9,9 @@ import javax.persistence.*;
 
 @Getter
 @NoArgsConstructor
-@Table(name = "postures")
+@Table(name = "emotions")
 @Entity
-public class Posture {
+public class Emotion {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
@@ -20,16 +20,19 @@ public class Posture {
     private AnalysisData analysisData;
 
     @Enumerated(EnumType.STRING)
-    private PostureType type;
+    private EmotionType type;
 
     private int count;
+
+    private int realAnalyzedTime;
 
     public void setAnalysisData(AnalysisData analysisData) {
         this.analysisData = analysisData;
     }
 
-    public void setPostureData(PostureType type, int count) {
+    public void setEmotionData(EmotionType type, int count, int realAnalyzedTime) {
         this.type = type;
         this.count = count;
+        this.realAnalyzedTime = realAnalyzedTime;
     }
 }
