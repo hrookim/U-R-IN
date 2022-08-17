@@ -9,6 +9,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -27,6 +29,12 @@ public class AnalysisData extends BaseTimeEntity {
     private Member interviewee;
 
     private int time;
+
+    @OneToMany(mappedBy = "analysisData")
+    private List<Emotion> emotionList = new ArrayList<>();
+
+    @OneToMany(mappedBy = "analysisData")
+    private List<Posture> postureList = new ArrayList<>();
 
     @Builder
     public AnalysisData(Meeting meeting, Member interviewee, int time) {
