@@ -63,7 +63,10 @@ export default class OvVideoComponent extends Component {
 
   startDetection = async () => {
     console.log("this.props", this.props);
-    if (this.props.intervieweeId === this.props.localUser.id) {
+    if (
+      this.props.intervieweeId === this.props.user.id &&
+      this.props.intervieweeId === this.props.localUser.id
+    ) {
       console.log("감지시작");
       const modelURL = `${URL}model.json`;
       const metadataURL = `${URL}metadata.json`;
@@ -86,28 +89,33 @@ export default class OvVideoComponent extends Component {
 
   stopDetection = () => {
     this.state.isDetectioning = false;
-    console.log("저장된 faceAPI 결과:", this.state.face);
-    console.log("저장된 TM 결과:", this.state.pose);
+    if (
+      this.props.intervieweeId === this.props.user.id &&
+      this.props.intervieweeId === this.props.localUser.id
+    ) {
+      console.log("저장된 faceAPI 결과:", this.state.face);
+      console.log("저장된 TM 결과:", this.state.pose);
 
-    const { meetingId } = this.props;
-    axios
-      .put(
-        `${this.REACT_APP_BACK_BASE_URL}meeting/${meetingId}/analysis`,
-        {
-          faceDataList: this.state.face,
-          poseDataList: this.state.pose,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+      const { meetingId } = this.props;
+      axios
+        .put(
+          `${this.REACT_APP_BACK_BASE_URL}meeting/${meetingId}/analysis`,
+          {
+            faceDataList: this.state.face,
+            poseDataList: this.state.pose,
           },
-        }
-      )
-      .then(() => {})
-      .catch((err) => {
-        alert("서버에 데이터를 전달하지 못했습니다.");
-        console.log(err);
-      });
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+            },
+          }
+        )
+        .then(() => {})
+        .catch((err) => {
+          alert("서버에 데이터를 전달하지 못했습니다.");
+          console.log(err);
+        });
+    }
     this.state.face = [];
     this.state.pose = [];
   };
