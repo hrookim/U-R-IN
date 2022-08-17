@@ -45,8 +45,20 @@ const reportSlice = createSlice({
         },
         poseDataList: [
           {
-            name: "기준자세",
-            count: 0,
+            name: "기준자세1",
+            count: 1,
+          },
+          {
+            name: "기준자세2",
+            count: 2,
+          },
+          {
+            name: "기준자세3",
+            count: 3,
+          },
+          {
+            name: "기준자세4",
+            count: 4,
           },
         ],
       },
@@ -58,8 +70,20 @@ const reportSlice = createSlice({
         },
         poseDataList: [
           {
-            name: "기준자세0",
-            count: 0,
+            name: "기준자세1",
+            count: 1,
+          },
+          {
+            name: "기준자세2",
+            count: 2,
+          },
+          {
+            name: "기준자세3",
+            count: 3,
+          },
+          {
+            name: "기준자세4",
+            count: 4,
           },
         ],
       },

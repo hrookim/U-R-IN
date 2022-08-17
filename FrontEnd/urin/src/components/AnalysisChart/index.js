@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import Chart from "react-apexcharts";
 
-const AnalysisChart = ({ interviewee, passUser }) => {
+const AnalysisChart = ({ category, interviewee, passUser, height }) => {
   const [chart, setChart] = useState({
     options: {
       colors: ["#0244FC", "#868686"],
@@ -33,7 +33,7 @@ const AnalysisChart = ({ interviewee, passUser }) => {
         axisTicks: {
           show: false,
         },
-        categories: ["category1", "category2"],
+        categories: category,
         max: 100,
       },
       dataLabels: {
@@ -63,7 +63,7 @@ const AnalysisChart = ({ interviewee, passUser }) => {
       series={chart.series}
       type="bar"
       width="1110"
-      height="300"
+      height={height}
     />
   );
 };

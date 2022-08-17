@@ -35,7 +35,7 @@ export const getMeeting = createAsyncThunk(
 
 const meetingSlice = createSlice({
   name: "meeting",
-  initialState: { id: [0] },
+  initialState: { meetingIdList: [{ meetingId: 0 }] },
   reducers: {},
   extraReducers: {
     [getMeeting.fulfilled]: (state, { payload }) => payload,
