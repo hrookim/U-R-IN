@@ -13,6 +13,7 @@ import com.dongpop.urin.domain.study.repository.StudyRepository;
 import com.dongpop.urin.global.error.exception.CustomException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -31,6 +32,7 @@ public class MeetingService {
     private final StudyRepository studyRepository;
     private final MeetingRepository meetingRepository;
     private final MeetingParticipantRepository meetingParticipantRepository;
+    private final ApplicationEventPublisher publisher;
 
     @Transactional
     public MeetingSessionDto issueSessionId(Member member, int studyId) {
@@ -70,6 +72,7 @@ public class MeetingService {
         if (study.getStudyLeader().getId() == member.getId()) {
             study.changeOnairStatus(meetingCreateDto.getIsConnected());
             meeting = meetingRepository.save(meeting);
+            sendNotificationToParticipants(study);
         } else {
             meeting = meetingRepository.findFirstByStudyOrderByIdDesc(study)
                     .orElseThrow(() -> new CustomException(MEETING_IS_NOT_EXIST));
@@ -94,6 +97,12 @@ public class MeetingService {
 
         study.closeMeeting();
         meeting.closeMeeting();
+    }
+
+    private void sendNotificationToParticipants(Study study) {
+        String content = "[" + study.getTitle() + "] 스터디의 미팅이 시작되었습니다.";
+        String url = "https://i7a504.p.ssafy.io/study/" + study.getId();
+        study.sendEvent(publisher, content, url);
     }
 
     private Study getStudy(int studyId) {

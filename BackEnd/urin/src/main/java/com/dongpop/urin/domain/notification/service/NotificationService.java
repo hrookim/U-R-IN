@@ -90,7 +90,7 @@ public class NotificationService {
     }
 
     private void sendLostData(String lastEventId, Integer memberId, String emitterId, SseEmitter emitter) {
-        log.info("====== [잃은 데이터 전송] =======");
+        log.info("Send Lost Notification : lastEventId = {}, data = {}", emitterId, lastEventId);
         Map<String, Object> eventCaches = emitterRepository.findAllEventCacheStartWithByMemberId(String.valueOf(memberId));
         eventCaches.entrySet().stream()
                 .filter(entry -> lastEventId.compareTo(entry.getKey()) < 0)

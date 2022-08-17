@@ -9,18 +9,15 @@ import com.dongpop.urin.domain.meeting.entity.Meeting;
 import com.dongpop.urin.domain.meeting.repository.MeetingRepository;
 import com.dongpop.urin.domain.member.entity.Member;
 import com.dongpop.urin.domain.member.repository.MemberRepository;
-import com.dongpop.urin.global.error.errorcode.CommonErrorCode;
 import com.dongpop.urin.global.error.exception.CustomException;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.springframework.stereotype.Service;
-import org.yaml.snakeyaml.util.EnumUtils;
 
 import javax.transaction.Transactional;
 
 import java.lang.reflect.Field;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -94,8 +91,11 @@ public class AnalysisService {
     }
 
     @Transactional
-    public void setAnalysisData(int meetingId, Member interviewee, AnalysisDataDto aiData) {
+    public void setAnalysisData(int meetingId, int intervieweeId, AnalysisDataDto aiData) {
         Meeting meeting = getMeetingFromId(meetingId);
+
+        Member interviewee = memberRepository.findById(intervieweeId)
+                .orElseThrow(() -> new CustomException(NO_SUCH_ELEMENTS));
 
         checkMemberExistenceInStudy(meeting, interviewee);
 
