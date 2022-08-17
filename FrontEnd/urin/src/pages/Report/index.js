@@ -67,9 +67,13 @@ const Report = () => {
   };
 
   useEffect(() => {
+    console.log("getMeeting working");
     dispatch(getMeeting({ studyId, navigate }));
+  }, []);
+  useEffect(() => {
+    console.log("getRport working");
     dispatch(getReport({ page, navigate }));
-  });
+  }, [page]);
   return (
     <div id="report">
       <CheckValidation />
@@ -256,58 +260,58 @@ const Report = () => {
               <Grid container className="report-content-move">
                 <Grid item container xs={6}>
                   <Grid xs={2} className="report-content-move-title font-50">
-                    {reports.aiData.interviewee.pose[0].name}
+                    {reports.aiData.interviewee.poseDataList[0].name}
                   </Grid>
                   <Grid
                     xs={9}
                     item
                     className="report-content-move-content font-40"
                   >
-                    분당 {reports.aiData.interviewee.pose[0].count}회 움직임이
-                    감지되었습니다. 합격자 대비 20% 적은 움직임이니 움직임에
-                    많은 신경을 쏟을 필요는 없겠네요!ddddddddddddddddd
+                    분당 {reports.aiData.interviewee.poseDataList[0].count}회
+                    움직임이 감지되었습니다. 합격자 대비 20% 적은 움직임이니
+                    움직임에 많은 신경을 쏟을 필요는 없겠네요!ddddddddddddddddd
                   </Grid>
                 </Grid>
                 <Grid item container xs={6}>
                   <Grid xs={2} className="report-content-move-title font-50">
-                    {reports.aiData.interviewee.pose[1].name}
+                    {reports.aiData.interviewee.poseDataList[1].name}
                   </Grid>
                   <Grid
                     xs={9}
                     item
                     className="report-content-move-content font-40"
                   >
-                    분당 {reports.aiData.interviewee.pose[1].count}회 움직임이
-                    감지되었습니다. 합격자 대비 20% 적은 움직임이니 움직임에
-                    많은 신경을 쏟을 필요는 없겠네요!
+                    분당 {reports.aiData.interviewee.poseDataList[1].count}회
+                    움직임이 감지되었습니다. 합격자 대비 20% 적은 움직임이니
+                    움직임에 많은 신경을 쏟을 필요는 없겠네요!
                   </Grid>
                 </Grid>
                 <Grid item container xs={6}>
                   <Grid xs={2} className="report-content-move-title font-50">
-                    {reports.aiData.interviewee.pose[2].name}
+                    {reports.aiData.interviewee.poseDataList[2].name}
                   </Grid>
                   <Grid
                     xs={9}
                     item
                     className="report-content-move-content font-40"
                   >
-                    분당 {reports.aiData.interviewee.pose[2].count}회 움직임이
-                    감지되었습니다. 합격자 대비 20% 적은 움직임이니 움직임에
-                    많은 신경을 쏟을 필요는 없겠네요! fffffffffff
+                    분당 {reports.aiData.interviewee.poseDataList[2].count}회
+                    움직임이 감지되었습니다. 합격자 대비 20% 적은 움직임이니
+                    움직임에 많은 신경을 쏟을 필요는 없겠네요! fffffffffff
                   </Grid>
                 </Grid>
                 <Grid item container xs={6}>
                   <Grid xs={2} className="report-content-move-title font-50">
-                    {reports.aiData.interviewee.pose[3].name}
+                    {reports.aiData.interviewee.poseDataList[3].name}
                   </Grid>
                   <Grid
                     xs={9}
                     item
                     className="report-content-move-content font-40"
                   >
-                    분당 {reports.aiData.interviewee.pose[3].count}회 움직임이
-                    감지되었습니다. 합격자 대비 20% 적은 움직임이니 움직임에
-                    많은 신경을 쏟을 필요는 없겠네요!
+                    분당 {reports.aiData.interviewee.poseDataList[3].count}회
+                    움직임이 감지되었습니다. 합격자 대비 20% 적은 움직임이니
+                    움직임에 많은 신경을 쏟을 필요는 없겠네요!
                   </Grid>
                 </Grid>
               </Grid>

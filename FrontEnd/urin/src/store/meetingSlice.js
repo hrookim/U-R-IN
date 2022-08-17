@@ -20,6 +20,10 @@ export const getMeeting = createAsyncThunk(
           },
         }
       );
+      console.log(response);
+      if (response.data === []) {
+        navigate("/notfound");
+      }
       return response.data;
     } catch (err) {
       console.log(err);

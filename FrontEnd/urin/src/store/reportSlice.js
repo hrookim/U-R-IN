@@ -11,13 +11,18 @@ export const getReport = createAsyncThunk(
     try {
       console.log("리포트 생성 중");
       const response = await axios.get(
-        `${process.env.REACT_APP_BACK_BASW_URL}meeting/${meetingId}/analysis`,
+        `${process.env.REACT_APP_BACK_BASW_URL}meeting/${meetingId}/report`,
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
           },
         }
       );
+      console.log(response.data);
+      if (response.data === []) {
+        console.log("비었는디?");
+        navigate("/notfound");
+      }
       return response.data;
     } catch (err) {
       navigate("/notfound");
@@ -50,7 +55,7 @@ const reportSlice = createSlice({
           calm: 100,
           nervous: 0,
         },
-        pose: [
+        poseDataList: [
           {
             name: "기준자세0",
             count: 0,
@@ -61,10 +66,10 @@ const reportSlice = createSlice({
     feedback: {
       personality: [
         {
-          questionContent: "인성면접",
+          questionContent: "인성면접질문",
           answerContentList: [
             {
-              interviewer: "인성면접질문",
+              interviewer: "인성면접관",
               content: "인성면접답변",
             },
           ],
@@ -72,10 +77,10 @@ const reportSlice = createSlice({
       ],
       tech: [
         {
-          questionContent: "적성면접",
+          questionContent: "적성면접질문",
           answerContentList: [
             {
-              interviewer: "적성면접질문",
+              interviewer: "적성면접관",
               content: "적성면접답변",
             },
           ],
