@@ -43,7 +43,12 @@ const DetailInfo = ({ study, isLeader, isParticipant, setIsChanged }) => {
             className="member-info"
             style={{ margin: "0 0 15px 0" }}
           >
-            <Avatar sx={{ width: "30px", height: "30px" }}>
+            <Avatar
+              sx={{
+                width: "30px",
+                height: "30px",
+              }}
+            >
               {participant.nickname[0]}
             </Avatar>
             <span>{participant.nickname}</span>
