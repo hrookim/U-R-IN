@@ -46,6 +46,16 @@ const MyPage = () => {
     }
   };
 
+  const openReport = (id) => {
+    const screenWidth = window.screen.width * 0.75;
+    const screenHeight = window.screen.height * 0.75;
+    window.open(
+      `${window.location.origin}/report/${id}/`,
+      "Popup",
+      `width=${screenWidth}px, height=${screenHeight}px`
+    );
+  };
+
   return (
     <div className="my-page">
       <CheckValidation />
@@ -186,32 +196,33 @@ const MyPage = () => {
                       <span className="font-xs font-50">스터디 정보 보기</span>
                     </Button>
                   </Link>
-                  <Link to={`/report/${item.id}`} className="report-btn">
-                    <Button
-                      variant="contained"
-                      className="btn-hover"
-                      sx={{
-                        borderColor: "rgba(0, 55, 250, 0.5)",
-                        backgroundColor: "rgba(0, 55, 250, 0.8)",
-                        color: "white",
+                  <Button
+                    variant="contained"
+                    className="btn-hover report-btn"
+                    onClick={() => {
+                      openReport(item.id);
+                    }}
+                    sx={{
+                      borderColor: "rgba(0, 55, 250, 0.5)",
+                      backgroundColor: "rgba(0, 55, 250, 0.8)",
+                      color: "white",
 
-                        height: "36px",
-                        width: "200px",
+                      height: "36px",
+                      width: "200px",
+                      boxShadow: "0",
+                      borderRadius: "10px",
+                      "&:hover": {
+                        borderColor: "#0037FA",
+                        color: "white",
+                        backgroundColor: "rgba(0, 55, 250, 0.9)",
+                        transform: "scale(1.08)",
+                        transition: "all ease 0.3s",
                         boxShadow: "0",
-                        borderRadius: "10px",
-                        "&:hover": {
-                          borderColor: "#0037FA",
-                          color: "white",
-                          backgroundColor: "rgba(0, 55, 250, 0.9)",
-                          transform: "scale(1.08)",
-                          transition: "all ease 0.3s",
-                          boxShadow: "0",
-                        },
-                      }}
-                    >
-                      <span className="font-xs font-50">리포트 보기</span>
-                    </Button>
-                  </Link>
+                      },
+                    }}
+                  >
+                    <span className="font-xs font-50">리포트 보기</span>
+                  </Button>
                 </div>{" "}
               </Card>
             </div>

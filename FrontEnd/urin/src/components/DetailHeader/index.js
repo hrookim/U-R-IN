@@ -64,16 +64,20 @@ const DetailHeader = ({
       <div className="dh-container">
         <div className="dh-chips">
           {console.log(study.hashtagNameList)}
-          {study.hashtagNameList.map((item) => (
-            <button
-              type="button"
-              className="dh-chip-button font-30 font-xs"
-              disabled
-              key={item}
-            >
-              {item}
-            </button>
-          ))}
+          {study.hashtagCodes != "string" ? (
+            <div>
+              {study.hashtagNameList.map((item, idx) => (
+                <button
+                  type="button"
+                  className="dh-chip-button font-30 font-xs"
+                  disabled
+                  key={item}
+                >
+                  {item}
+                </button>
+              ))}
+            </div>
+          ) : null}
         </div>
 
         <div className="dh-container-item">
@@ -143,13 +147,14 @@ const DetailHeader = ({
                         <button
                           type="button"
                           className="dh-meeting-button font-50 font-sm"
+                          onClick={startMeeting}
                         >
                           미팅 입장하기
                         </button>
                       ) : (
                         <button
                           type="button"
-                          className="dh-meeting-button font-50 font-sm"
+                          className="dh-meeting-button-disabled font-50 font-sm"
                           disabled
                         >
                           미팅 입장하기

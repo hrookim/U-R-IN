@@ -22,8 +22,8 @@ import PrivateRoute from "./components/PrivateRoute/PrivateRoute";
 import PublicRoute from "./components/PublicRoute/PublicRoute";
 import NavComponent from "./components/Navbar";
 import Footer from "./components/Footer";
-import NotFound from "./pages/NotFound";
 import MyPage from "./pages/MyPage";
+import NotFound from "./pages/NotFound";
 import Report from "./pages/Report";
 
 const App = () => {
@@ -84,6 +84,15 @@ const App = () => {
             />
           }
         />
+        <Route
+          path="/report"
+          element={
+            <PrivateRoute
+              authenticated={privateAccess}
+              component={<Report />}
+            />
+          }
+        />
 
         <Route
           path="/intro"
@@ -94,7 +103,6 @@ const App = () => {
             />
           }
         />
-        <Route path="/report/:studyId" element={<Report />} />
 
         {/* validation이 필요 없는 페이지 */}
         <Route path="/study/:studyId/meeting/" element={<Meeting />} />

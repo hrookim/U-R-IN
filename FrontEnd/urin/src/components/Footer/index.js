@@ -11,7 +11,8 @@ const Footer = () => {
 
   return (
     <div>
-      {!location.pathname.includes("meeting") ? (
+      {!location.pathname.includes("meeting") &&
+      !location.pathname.includes("/report") ? (
         <div className="footer-container">
           <div>
             <section className="footer-subscription">
