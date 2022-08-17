@@ -20,6 +20,7 @@ import javax.transaction.Transactional;
 import java.util.UUID;
 
 import static com.dongpop.urin.global.error.errorcode.MeetingErrorCode.*;
+import static com.dongpop.urin.global.error.errorcode.ParticipantErrorCode.PARTICIPANT_DOES_NOT_BELONG_STUDY;
 import static com.dongpop.urin.global.error.errorcode.StudyErrorCode.STUDY_DOES_NOT_EXIST;
 
 @Slf4j
@@ -54,8 +55,8 @@ public class MeetingService {
         }
 
         Study study = getStudy(studyId);
-        if (!isStudyLeader(member, study)) {
-            throw new CustomException(ONLY_POSSIBLE_STUDY_LEADER);
+        if (!study.isRegistedMember(member)) {
+            throw new CustomException(PARTICIPANT_DOES_NOT_BELONG_STUDY);
         }
         if (!meetingCreateDto.getSessionId().equals(study.getSessionId())) {
             throw new CustomException(SESSIONID_IS_NOT_VALID);
