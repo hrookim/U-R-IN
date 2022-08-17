@@ -22,8 +22,8 @@ import PrivateRoute from "./components/PrivateRoute/PrivateRoute";
 import PublicRoute from "./components/PublicRoute/PublicRoute";
 import NavComponent from "./components/Navbar";
 import Footer from "./components/Footer";
-import NotFound from "./pages/NotFound";
 import MyPage from "./pages/MyPage";
+import NotFound from "./pages/NotFound";
 import Report from "./pages/Report";
 
 const App = () => {
@@ -85,7 +85,7 @@ const App = () => {
           }
         />
         <Route
-          path="/report"
+          path="/report/:studyId"
           element={
             <PrivateRoute
               authenticated={privateAccess}

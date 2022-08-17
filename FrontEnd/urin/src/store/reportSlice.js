@@ -5,33 +5,113 @@ import {
 } from "@reduxjs/toolkit";
 import axios from "axios";
 
-export const getReport = createAsyncThunk("GET_REPORT", async (arr) => {
-  try {
-    const response = await axios.get(`${process.env.REACT_APP_BACK_BASW_URL}`, {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-      },
-    });
-    return response.data;
-  } catch (err) {
-    console.log(err);
-    return isRejectedWithValue(err.response.data);
+export const getReport = createAsyncThunk(
+  "GET_REPORT",
+  async ({ page, navigate }) => {
+    try {
+      console.log(page);
+      console.log("리포트 생성 중");
+      const response = await axios.get(
+        `${process.env.REACT_APP_BACK_BASE_URL}meeting/${page}/report`,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+          },
+        }
+      );
+      console.log(response.data);
+      // if (response.data === []) {
+      //   console.log("비었는디?");
+      //   navigate("/notfound");
+      // }
+      return response.data;
+    } catch (err) {
+      navigate("/notfound");
+      console.log(err);
+      return isRejectedWithValue(err.response.data);
+    }
   }
-});
+);
 
 const reportSlice = createSlice({
   name: "reports",
   initialState: {
-    feedBackList: [
-      {
-        id: 0,
+    aiData: {
+      interviewee: {
+        emotion: {
+          confidence: 100,
+          calm: 100,
+          nervous: 0,
+        },
+        poseDataList: [
+          {
+            name: "기준자세1",
+            count: 1,
+          },
+          {
+            name: "기준자세2",
+            count: 2,
+          },
+          {
+            name: "기준자세3",
+            count: 3,
+          },
+          {
+            name: "기준자세4",
+            count: 4,
+          },
+        ],
       },
-    ],
-    aiAnalysisList: [
-      {
-        confidence: 1,
+      passUser: {
+        emotion: {
+          confidence: 100,
+          calm: 100,
+          nervous: 0,
+        },
+        poseDataList: [
+          {
+            name: "기준자세1",
+            count: 1,
+          },
+          {
+            name: "기준자세2",
+            count: 2,
+          },
+          {
+            name: "기준자세3",
+            count: 3,
+          },
+          {
+            name: "기준자세4",
+            count: 4,
+          },
+        ],
       },
-    ],
+    },
+    feedback: {
+      personality: [
+        {
+          questionContent: "인성면접질문",
+          answerContentList: [
+            {
+              interviewer: "인성면접관",
+              content: "인성면접답변",
+            },
+          ],
+        },
+      ],
+      tech: [
+        {
+          questionContent: "적성면접질문",
+          answerContentList: [
+            {
+              interviewer: "적성면접관",
+              content: "적성면접답변",
+            },
+          ],
+        },
+      ],
+    },
   },
   reducers: {},
   extraReducers: {
