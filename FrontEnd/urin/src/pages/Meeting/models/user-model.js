@@ -1,5 +1,6 @@
 /* eslint-disable */
 class UserModel {
+  id;
   connectionId;
   audioActive;
   videoActive;
@@ -9,13 +10,14 @@ class UserModel {
   type; // 'remote' | 'local'
 
   constructor() {
-    this.connectionId = "";
-    this.audioActive = true;
-    this.videoActive = true;
-    this.screenShareActive = false;
+    this.id = 0;
     this.nickname = "";
-    this.streamManager = null;
     this.type = "local";
+    this.connectionId = "";
+    this.videoActive = true;
+    this.audioActive = true;
+    this.screenShareActive = false;
+    this.streamManager = null;
   }
 
   isAudioActive() {
@@ -28,6 +30,10 @@ class UserModel {
 
   isScreenShareActive() {
     return this.screenShareActive;
+  }
+
+  getId() {
+    return this.id;
   }
 
   getConnectionId() {
@@ -45,18 +51,27 @@ class UserModel {
   isLocal() {
     return this.type === "local";
   }
+
   isRemote() {
-    return !this.isLocal();
+    return this.type !== "local";
   }
+
+  setId(id) {
+    this.id = id;
+  }
+
   setAudioActive(isAudioActive) {
     this.audioActive = isAudioActive;
   }
+
   setVideoActive(isVideoActive) {
     this.videoActive = isVideoActive;
   }
+
   setScreenShareActive(isScreenShareActive) {
     this.screenShareActive = isScreenShareActive;
   }
+
   setStreamManager(streamManager) {
     this.streamManager = streamManager;
   }
@@ -64,11 +79,13 @@ class UserModel {
   setConnectionId(conecctionId) {
     this.connectionId = conecctionId;
   }
+
   setNickname(nickname) {
     this.nickname = nickname;
   }
+
   setType(type) {
-    if ((type === "local") | (type === "remote")) {
+    if (type === "local" || type === "remote") {
       this.type = type;
     }
   }

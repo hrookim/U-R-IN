@@ -1,48 +1,55 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useState } from "react";
 import "./index.css";
 
 import {
   Avatar,
+  Button,
   Card,
-  CardActionArea,
   CardContent,
   CardMedia,
   Grid,
 } from "@mui/material";
 
 import WorkspacePremiumIcon from "@mui/icons-material/WorkspacePremium";
-import { useNavigate, Link } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { checkValidation } from "../../store/checkValidationSlice";
-import { getMemberId } from "../../store/memberSlice";
 import { getMyPage } from "../../store/myPageSlice";
+import CheckValidation from "../../components/CheckValidation";
 import "../../assets/DesignSystem.css";
 
 const MyPage = () => {
-  const navigate = useNavigate();
   const dispatch = useDispatch();
 
   const memberName = useSelector((state) => state.member.nickname);
-  const memberId = useSelector((state) => state.member.id);
   const myPage = useSelector((state) => state.mypage);
 
-  const mounted = useRef(false);
+  const [currentAllChecked, setCurrentAllChecked] = useState(false);
+  const [pastAllChecked, setPastAllChecked] = useState(false);
 
   useEffect(() => {
-    dispatch(getMemberId(navigate));
-    dispatch(getMyPage());
-  }, []);
+    dispatch(getMyPage({ currentAllChecked, pastAllChecked }));
+  }, [currentAllChecked, pastAllChecked]);
 
-  useEffect(() => {
-    if (!mounted.current && !memberId) {
-      mounted.current = true;
+  const currentCheck = () => {
+    if (currentAllChecked) {
+      setCurrentAllChecked(false);
     } else {
-      dispatch(checkValidation(memberId, navigate));
+      setCurrentAllChecked(true);
     }
-  }, [memberId]);
+  };
+
+  const pastCheck = () => {
+    if (pastAllChecked) {
+      setPastAllChecked(false);
+    } else {
+      setPastAllChecked(true);
+    }
+  };
 
   return (
     <div className="my-page">
+      <CheckValidation />
+
       <div className="my-page-header">
         <Avatar
           className="my-page-avatar"
@@ -53,10 +60,8 @@ const MyPage = () => {
 
         <div className="my-page-member">
           <p className="font-60 font-md member-name">
-            {memberName}{" "}
-            {myPage.currentStudyList.length +
-              myPage.terminatedStudyList.length <=
-            10 ? (
+            {memberName}
+            {myPage.totalCurrentStudies + myPage.totalPastStudies <= 10 ? (
               <WorkspacePremiumIcon
                 className="medal-icon"
                 sx={{ color: "#c49104" }}
@@ -70,11 +75,11 @@ const MyPage = () => {
           </p>
           <p className="font-40 font-sm member-info">
             스터디 참여 이력 :&nbsp;
-            {myPage.currentStudyList.length + myPage.terminatedStudyList.length}
-            회
+            {myPage.totalCurrentStudies + myPage.totalPastStudies}회
           </p>
         </div>
       </div>
+
       <p className="font-80 font-lg">참여 중인 스터디</p>
       <Grid container spacing={2} className="card-grid">
         {myPage.currentStudyList.map((item) => (
@@ -88,18 +93,19 @@ const MyPage = () => {
             key={item.id}
             className="card-item"
           >
-            <Card
-              key={item.id}
-              className="card"
-              sx={{
-                border: "none",
-                borderRadius: "20px",
-                maxWidth: "500px",
-                boxShadow: 0,
-              }}
-            >
-              <Link to={`/study/${item.id}`} className="card-link">
-                <CardActionArea>
+            <div className="card-inner">
+              <Card
+                key={item.id}
+                className="card-mypage"
+                sx={{
+                  borderStyle: "solid",
+                  borderColor: "rgba(0,0,0,0.05)",
+                  borderRadius: "20px",
+                  maxWidth: "500px",
+                  boxShadow: 0,
+                }}
+              >
+                <Link to={`/study/${item.id}`} className="card-link">
                   <CardMedia
                     className="card-img"
                     component="img"
@@ -109,7 +115,7 @@ const MyPage = () => {
                   />
                   <CardContent
                     className="card-content"
-                    sx={{ padding: "18px 4px 0 4px" }}
+                    sx={{ padding: "18px 4px 0px 4px" }}
                   >
                     <p className="font-70 font-md card-title">{item.title}</p>
                     {item.status === "RECRUITING" ? (
@@ -132,15 +138,112 @@ const MyPage = () => {
                       </div>
                     )}
                   </CardContent>
-                </CardActionArea>
-              </Link>
-            </Card>
+                </Link>
+              </Card>
+              <Card
+                key={item.id}
+                className="card"
+                sx={{
+                  opacity: "0",
+                  backgroundColor: "rgba(255,255,255,0)",
+                  borderColor: "#dedede",
+                  borderRadius: "20px",
+                  maxWidth: "500px",
+                  height: "260.5px",
+                  boxShadow: 0,
+                  "&:hover": {
+                    opacity: "1",
+                    backgroundColor: "rgba(255,255,255,0.9)",
+                    borderColor: "rgba(0, 55, 250, 0.5)",
+                  },
+                }}
+              >
+                <div className="card-btn">
+                  <Link to={`/study/${item.id}`} className="report-btn">
+                    <Button
+                      variant="contained"
+                      className="btn-hover"
+                      sx={{
+                        borderColor: "#0037FA",
+                        color: "#0037FA",
+                        backgroundColor: "rgba(0, 55, 250, 0.2)",
+
+                        height: "36px",
+                        width: "200px",
+                        boxShadow: "0",
+                        borderRadius: "10px",
+
+                        "&:hover": {
+                          borderColor: "#0037FA",
+                          color: "#0037FA",
+                          backgroundColor: "rgba(0, 55, 250, 0.3)",
+                          transform: "scale(1.08)",
+                          transition: "all ease 0.3s",
+                          boxShadow: "0",
+                        },
+                      }}
+                    >
+                      <span className="font-xs font-50">스터디 정보 보기</span>
+                    </Button>
+                  </Link>
+                  <Link to="/" className="report-btn">
+                    <Button
+                      variant="contained"
+                      className="btn-hover"
+                      sx={{
+                        borderColor: "rgba(0, 55, 250, 0.5)",
+                        backgroundColor: "rgba(0, 55, 250, 0.8)",
+                        color: "white",
+
+                        height: "36px",
+                        width: "200px",
+                        boxShadow: "0",
+                        borderRadius: "10px",
+                        "&:hover": {
+                          borderColor: "#0037FA",
+                          color: "white",
+                          backgroundColor: "rgba(0, 55, 250, 0.9)",
+                          transform: "scale(1.08)",
+                          transition: "all ease 0.3s",
+                          boxShadow: "0",
+                        },
+                      }}
+                    >
+                      <span className="font-xs font-50">리포트 보기</span>
+                    </Button>
+                  </Link>
+                </div>{" "}
+              </Card>
+            </div>
           </Grid>
         ))}
       </Grid>
+      {myPage.totalCurrentStudies > 4 && !currentAllChecked ? (
+        <div className="more-btn">
+          <Button
+            sx={{ color: "#0037FA" }}
+            onClick={currentCheck}
+            variant="text"
+          >
+            펼치기
+          </Button>
+        </div>
+      ) : null}
+      {myPage.totalCurrentStudies > 4 && currentAllChecked ? (
+        <div className="more-btn">
+          <Button
+            sx={{ color: "#0037FA" }}
+            onClick={currentCheck}
+            variant="text"
+          >
+            접기
+          </Button>
+        </div>
+      ) : null}
+
       <p className="font-80 font-lg">지난 스터디</p>
       <Grid container spacing={2} className="card-grid">
-        {myPage.terminatedStudyList.map((item) => (
+        {myPage.pastStudyList.map((item) => (
           <Grid
             item
             xs={12}
@@ -151,18 +254,19 @@ const MyPage = () => {
             key={item.id}
             className="card-item"
           >
-            <Card
-              key={item.id}
-              className="card"
-              sx={{
-                border: "none",
-                borderRadius: "20px",
-                maxWidth: "500px",
-                boxShadow: 0,
-              }}
-            >
-              <Link to={`/study/${item.id}`} className="card-link">
-                <CardActionArea>
+            <div className="card-inner">
+              <Card
+                key={item.id}
+                className="card-mypage"
+                sx={{
+                  borderStyle: "solid",
+                  borderColor: "rgba(0,0,0,0.05)",
+                  borderRadius: "20px",
+                  maxWidth: "500px",
+                  boxShadow: 0,
+                }}
+              >
+                <Link to={`/study/${item.id}`} className="card-link">
                   <CardMedia
                     className="card-img"
                     component="img"
@@ -170,9 +274,10 @@ const MyPage = () => {
                     image={`/img/study_img${item.title.length % 10}.png`}
                     alt="green iguana"
                   />
+
                   <CardContent
                     className="card-content"
-                    sx={{ padding: "18px 4px 0 4px" }}
+                    sx={{ padding: "18px 4px 0px 4px" }}
                   >
                     <p className="font-70 font-md card-title">{item.title}</p>
                     {item.status === "RECRUITING" ? (
@@ -195,12 +300,100 @@ const MyPage = () => {
                       </div>
                     )}
                   </CardContent>
-                </CardActionArea>
-              </Link>
-            </Card>
+                </Link>
+              </Card>
+              <Card
+                key={item.id}
+                className="card"
+                sx={{
+                  opacity: "0",
+                  backgroundColor: "rgba(255,255,255,0)",
+                  borderColor: "#dedede",
+                  borderRadius: "20px",
+                  maxWidth: "500px",
+                  height: "260.5px",
+                  boxShadow: 0,
+                  "&:hover": {
+                    opacity: "1",
+                    backgroundColor: "rgba(255,255,255,0.9)",
+                    borderColor: "rgba(0, 55, 250, 0.5)",
+                  },
+                }}
+              >
+                <div className="card-btn">
+                  <Link to={`/study/${item.id}`} className="report-btn">
+                    <Button
+                      variant="contained"
+                      className="btn-hover"
+                      sx={{
+                        borderColor: "#0037FA",
+                        color: "#0037FA",
+                        backgroundColor: "rgba(0, 55, 250, 0.2)",
+
+                        height: "36px",
+                        width: "200px",
+                        boxShadow: "0",
+                        borderRadius: "10px",
+
+                        "&:hover": {
+                          borderColor: "#0037FA",
+                          color: "#0037FA",
+                          backgroundColor: "rgba(0, 55, 250, 0.3)",
+                          transform: "scale(1.08)",
+                          transition: "all ease 0.3s",
+                          boxShadow: "0",
+                        },
+                      }}
+                    >
+                      <span className="font-xs font-50">스터디 정보 보기</span>
+                    </Button>
+                  </Link>
+                  <Link to="/" className="report-btn">
+                    <Button
+                      variant="contained"
+                      className="btn-hover"
+                      sx={{
+                        borderColor: "rgba(0, 55, 250, 0.5)",
+                        backgroundColor: "rgba(0, 55, 250, 0.8)",
+                        color: "white",
+
+                        height: "36px",
+                        width: "200px",
+                        boxShadow: "0",
+                        borderRadius: "10px",
+                        "&:hover": {
+                          borderColor: "#0037FA",
+                          color: "white",
+                          backgroundColor: "rgba(0, 55, 250, 0.9)",
+                          transform: "scale(1.08)",
+                          transition: "all ease 0.3s",
+                          boxShadow: "0",
+                        },
+                      }}
+                    >
+                      <span className="font-xs font-50">리포트 보기</span>
+                    </Button>
+                  </Link>
+                </div>{" "}
+              </Card>
+            </div>
           </Grid>
         ))}
       </Grid>
+      {myPage.totalPastStudies > 4 && !pastAllChecked ? (
+        <div className="more-btn">
+          <Button sx={{ color: "#0037FA" }} onClick={pastCheck} variant="text">
+            펼치기
+          </Button>
+        </div>
+      ) : null}
+      {myPage.totalPastStudies > 4 && pastAllChecked ? (
+        <div className="more-btn">
+          <Button sx={{ color: "#0037FA" }} onClick={pastCheck} variant="text">
+            접기
+          </Button>
+        </div>
+      ) : null}
     </div>
   );
 };

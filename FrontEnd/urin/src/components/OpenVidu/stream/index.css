@@ -1,9 +1,3 @@
-.streamComponent {
-    position: relative;
-}
-
-
-
 .nickname {
     background: rgba(58, 64, 74, 0.651);
     padding: 5px !important;
@@ -12,14 +6,16 @@
     color: #ffffff;
 }
 
-.form-control {
-    color: black;
+.upper-right {
+    position: absolute;
+    z-index: 999;
+    top: 2%;
+    right: 2%;
 }
 
-
 video {
-    -o-object-fit: cover;
-    object-fit: cover;
+    -o-object-fit: contain;
+    object-fit: contain;
     width: 100%;
     height: 100%;
     color: #ffffff;
@@ -31,7 +27,7 @@ video {
 }
 
 #statusIcons {
-    bottom: 6px;
+    bottom: 0px;
     background: #c71100;
     width: 40px;
     color: #ffffff;
@@ -49,14 +45,18 @@ video {
     background-color: #000000c4;
     color: #ffffff;
 }
-/* Contains the video element, used to fix video letter-boxing */
-.OT_widget-container {
-    width: 100%;
-    height: 100%;
-    /* overflow: hidden; */
+
+.video-wrapper {
+    aspect-ratio: 16 / 9;
+    position: relative;
 }
 
 #input,
 #label {
     color: white;
+}
+
+.timer {
+    color: white;
+    background-color: transparent;
 }

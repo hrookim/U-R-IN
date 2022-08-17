@@ -1,48 +1,143 @@
-.navbar {
-  box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.1);
+.nav-title {
+  margin-left:25vh;
+}
+
+.nav {
   height: 60px;
-}
-
-#container {
-  display: flex;
+  width: 100%;
+  background-color: #FFFFFF;
+  position: relative;
   justify-content: space-between;
-  max-width: 100%;
-  background-color: white;
 }
 
-.title-logo {
-  height: 50px;
+.nav > .nav-header {
+  display: flex;
+  align-items: center;
+  
 }
 
-.nav-right {
+.nav > .nav-header > .nav-title {
+  display: inline-block;
+  font-size: 22px;
+  color: black;
+  padding: 10px 10px 10px 10px;
+}
+
+.nav > .nav-btn {
+  display: none;
+}
+
+.nav > .nav-btn > label:hover {
+  cursor: pointer;
+}
+
+.nav-links {
+  display: inline;
+  float: right;
+}
+
+.nav-links > a {
+  display: inline-block;
+  padding: 13px 10px 13px 10px;
+  margin: 0 20px 0 30px;
+  text-decoration: none;
+  color: black;
+}
+
+.nav-links > div {
+  display: inline-block;
+}
+
+
+.nav-links > a:hover {
+  color: #0037FA;
+  
+}
+
+.nav > #nav-check {
+  display: none;
+}
+
+@media (min-width:900px) {
+ .nav-title {
+  
+  transition: margin 1s ease-in-out;
+}
+.nav-links {
+  
+  transition: margin 1s ease-in-out;
+  }}
+
+@media (max-width:900px) {
+  .nav-title {
+  margin-left:1em;
+  transition: margin 1s ease-in-out;
+}
+.nav-links {
+  margin-right:1em;
+  transition: margin 1s ease-in-out;
+}
+}
+@media (max-width:600px) {
+  .nav > .nav-btn {
+    display: inline-block;
+    position: absolute;
+    right: 3px;
+    top: 3px;
+    z-index:99999;
+  }
+  .nav > .nav-btn > label {
+    display: inline-block;
+    width: 50px;
+    height: 50px;
+    padding: 13px;
+    border-radius: 10px;
+
+  }
+  .nav > .nav-btn > label:hover {
+    background-color: rgba(0, 55, 250, 0.1);
+  }
+  .nav > .nav-btn > label > span {
+    display: block;
+    width: 25px;
+    height: 10px;
+    border-top: 2px solid black;
+  }
+  .nav-links {
+    position: absolute;
+    display: block;
+    width: 100%;
+    background-color: #FFFFFF;
+    height: 0px;
+    transition: all 0.3s ease-in;
+    overflow-y: hidden;
+    top: 50px;
+    left: 0px;
+    z-index: 9999;
+  }
+  .nav-links > a {
+    display: block;
+    width: 100%;
+  }
+  .nav > #nav-check:not(:checked) ~ div > .nav-links {
+    height: 0px;
+  }
+  .nav > #nav-check:checked ~ div > .nav-links {
+    height: calc(100vh - 50px);
+    overflow-y: auto;
+  }
+  .avatar {
+    margin: 0 40px 0 0;
+  }
+}
+
+.nav-right-group {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin: 0 20px 0 0;
-  width: 150px;
 }
 
 .btn-logout{
   text-decoration: none;
   color: black;
-}
-
-@media only screen and (min-width: 992px) {
-  .nav-right {
-    display: flex;
-    justify-content: space-between;
-    width:400px;
-    align-items: center;
-  }
-}
-
-.nav-link {
-  margin: 0 20px 0 0;
-  width: 120px;
-}
-
-#avatar {
-  height: 30px;
-  width: 30px;
-  margin: 0 30px 0 20px;
 }

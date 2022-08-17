@@ -7,8 +7,10 @@ import com.dongpop.urin.oauth.handler.CustomLogoutHandler;
 import com.dongpop.urin.oauth.handler.OAuth2AuthenticationFailureHandler;
 import com.dongpop.urin.oauth.handler.OAuth2AuthenticationSuccessHandler;
 import com.dongpop.urin.oauth.repository.HttpCookieOAuth2AuthorizationRequestRepository;
+import com.dongpop.urin.oauth.service.CustomOAuth2AuthorizedClientService;
 import com.dongpop.urin.oauth.service.CustomOAuth2UserService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -24,6 +26,9 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
+import java.util.List;
+
+@Slf4j
 @RequiredArgsConstructor
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
@@ -33,6 +38,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private final OAuth2AuthenticationSuccessHandler oAuth2AuthenticationSuccessHandler;
     private final OAuth2AuthenticationFailureHandler oAuth2AuthenticationFailureHandler;
     private final MemberRepository memberRepository;
+    private final CustomOAuth2AuthorizedClientService oAuth2AuthorizedClientService;
     private final CorsProperties corsProperties;
 
     @Override
@@ -53,7 +59,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .authorizeRequests()
                     .antMatchers("/oauth2/**", "/swagger-ui/**", "/swagger-resources/**",
-                            "/v2/**").permitAll()
+                            "/v2/**", "/notification").permitAll()
                     .anyRequest().authenticated()
                 .and()
                 .addFilterBefore(tokenAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
@@ -61,6 +67,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         .authenticationEntryPoint(new RestAuthenticationEntryPoint())
                 .and()
                 .oauth2Login()
+                    .authorizedClientService(oAuth2AuthorizedClientService)
                     .redirectionEndpoint()
                         .baseUri("/oauth2/code/*")
                     .and()
@@ -88,9 +95,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     public CorsConfigurationSource corsConfigurationSource(CorsProperties corsProperties) {
         CorsConfiguration configuration = new CorsConfiguration();
 
-        corsProperties.getAllowOrigins().forEach((origin) -> {
-            configuration.addAllowedOrigin(origin);
-        });
+        List<String> allowOrigins = corsProperties.getAllowOrigins();
+        for (String allowOrigin : allowOrigins) {
+            log.info("[Security Config] : Allow-Origin = {}", allowOrigin);
+            configuration.addAllowedOrigin(allowOrigin);
+        }
         configuration.addAllowedHeader("*");
         configuration.addAllowedMethod("*");
         configuration.setAllowCredentials(true);

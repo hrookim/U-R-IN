@@ -1,0 +1,22 @@
+.detail-info {
+  margin: 0 0 0 20px;
+}
+
+.member-info {
+  display: flex;
+}
+
+.member-info > span {
+  margin-left: 10px
+}
+
+.content-title {
+  font-size: 24px;
+  margin: 0 0 15px 0;
+
+}
+
+.content-title2 {
+  font-size: 24px;
+  margin: 30px 0 15px 0;
+}

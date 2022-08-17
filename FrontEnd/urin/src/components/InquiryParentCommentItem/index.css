@@ -1,0 +1,17 @@
+.writer-info {
+  display: flex;
+  align-items: center;
+}
+
+.writer-info > span {
+  margin: 0 0 0 10px;
+}
+
+.comment-content{
+  margin: 5px 0 0 45px;
+}
+
+.inquiry-input-update {
+  width: 90%;
+  height: 100px;
+}

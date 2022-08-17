@@ -11,7 +11,6 @@ export const getMemberId = createAsyncThunk(
   "GET_MEMBERID",
   async (navigate) => {
     try {
-      console.log("member");
       const response = await axios.get(
         `${process.env.REACT_APP_BACK_BASE_URL}member/me`,
         {
@@ -20,11 +19,11 @@ export const getMemberId = createAsyncThunk(
           },
         }
       );
-      console.log(response.data, "===========");
       return response.data;
     } catch (err) {
       localStorage.clear();
       navigate("/intro");
+      window.location.reload();
       console.log("잘못된 접근입니다. 제대로 로그인해주세요.");
       return isRejectedWithValue(err.response.data);
     }

@@ -5,22 +5,27 @@ import {
 } from "@reduxjs/toolkit";
 import axios from "axios";
 
-export const getMyPage = createAsyncThunk("GET_MY_PAGE", async () => {
-  try {
-    const response = await axios.get(
-      `${process.env.REACT_APP_BACK_BASE_URL}studies/me`,
-      {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-        },
-      }
-    );
-    return response.data;
-  } catch (err) {
-    console.log(err);
-    return isRejectedWithValue(err.response.data);
+export const getMyPage = createAsyncThunk(
+  "GET_MY_PAGE",
+  async ({ currentAllChecked, pastAllChecked }) => {
+    try {
+      console.log("디스패치 하는 것", { currentAllChecked, pastAllChecked });
+      const response = await axios.get(
+        `${process.env.REACT_APP_BACK_BASE_URL}studies/me?currentAll=${currentAllChecked}&pastAll=${pastAllChecked}`,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+          },
+        }
+      );
+      console.log(response.data);
+      return response.data;
+    } catch (err) {
+      console.log(err);
+      return isRejectedWithValue(err.response.data);
+    }
   }
-});
+);
 
 const myPageSlice = createSlice({
   name: "mypage",
@@ -34,7 +39,7 @@ const myPageSlice = createSlice({
         status: "RECRUITING",
       },
     ],
-    terminatedStudyList: [
+    pastStudyList: [
       {
         id: 0,
         title: "지난 스터디",

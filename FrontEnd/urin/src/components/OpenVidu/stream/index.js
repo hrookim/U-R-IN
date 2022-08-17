@@ -14,10 +14,14 @@ export default class StreamComponent extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      nickname: this.props.user.getNickname(),
       mutedSound: false,
     };
     this.toggleSound = this.toggleSound.bind(this);
+    this.interviewingChanged = this.interviewingChanged.bind(this);
+  }
+
+  interviewingChanged(current) {
+    this.props.interviewingChanged(current);
   }
 
   toggleSound() {
@@ -25,49 +29,91 @@ export default class StreamComponent extends Component {
   }
 
   render() {
+    const { mutedSound } = this.state;
+    const {
+      user,
+      localUser,
+      meetingId,
+      intervieweeId,
+      isInterviewing,
+      isSomeoneShareScreen,
+    } = this.props;
+    const { id, nickname } = user;
+    const isInterviewee = intervieweeId === id;
+    let layout = "col-4";
+    if (!isSomeoneShareScreen && !intervieweeId) {
+      layout = "col-6";
+    }
+    if (isSomeoneShareScreen && user.screenShareActive) {
+      layout = "order-first";
+    }
+    if (!!intervieweeId && isInterviewee) {
+      layout = "order-first";
+    }
+
     return (
-      <div className="OT_widget-container">
-        <div className="nickname">
-          <div>
-            <span id="nickname">{this.props.user.getNickname()}</span>
+      <div className={"video-container p-1 " + layout}>
+        <div className="video-wrapper" style={{ display: "grid" }}>
+          <div className="nickname">
+            <span id="nickname">{nickname}</span>
           </div>
+
+          {isInterviewee && (
+            <div className="upper-right d-flex align-items-center">
+              <button
+                className="interview-button btn btn-sm btn-light fw-semibold rounded-pill px-3 mx-2"
+                onClick={() => {
+                  this.interviewingChanged(isInterviewing);
+                }}
+                disabled={localUser.id !== intervieweeId}
+              >
+                {isInterviewing ? "면접종료" : "면접시작"}
+              </button>
+              {/* TODO: 타이머 */}
+              <span className="timer mx-2">타이머</span>
+            </div>
+          )}
+
+          {user !== undefined && user.getStreamManager() !== undefined ? (
+            <>
+              <OvVideoComponent
+                user={user}
+                localUser={localUser}
+                meetingId={meetingId}
+                isInterviewee={isInterviewee}
+                intervieweeId={intervieweeId}
+                isInterviewing={isInterviewing}
+                mutedSound={mutedSound}
+              />
+
+              <div>
+                {!user.isLocal() && (
+                  <IconButton id="volumeButton" onClick={this.toggleSound}>
+                    {mutedSound ? (
+                      <VolumeOffIcon color="secondary" />
+                    ) : (
+                      <VolumeUpIcon />
+                    )}
+                  </IconButton>
+                )}
+              </div>
+
+              <div id="statusIcons">
+                {!user.isVideoActive() ? (
+                  <div id="camIcon">
+                    <VideocamOffIcon id="statusCam" />
+                  </div>
+                ) : null}
+
+                {!user.isAudioActive() ? (
+                  <div id="micIcon">
+                    <MicOffIcon id="statusMic" />
+                  </div>
+                ) : null}
+              </div>
+            </>
+          ) : null}
         </div>
-
-        {this.props.user !== undefined &&
-        this.props.user.getStreamManager() !== undefined ? (
-          <div className="streamComponent">
-            <OvVideoComponent
-              user={this.props.user}
-              mutedSound={this.state.mutedSound}
-            />
-
-            <div>
-              {!this.props.user.isLocal() && (
-                <IconButton id="volumeButton" onClick={this.toggleSound}>
-                  {this.state.mutedSound ? (
-                    <VolumeOffIcon color="secondary" />
-                  ) : (
-                    <VolumeUpIcon />
-                  )}
-                </IconButton>
-              )}
-            </div>
-
-            <div id="statusIcons">
-              {!this.props.user.isVideoActive() ? (
-                <div id="camIcon">
-                  <VideocamOffIcon id="statusCam" />
-                </div>
-              ) : null}
-
-              {!this.props.user.isAudioActive() ? (
-                <div id="micIcon">
-                  <MicOffIcon id="statusMic" />
-                </div>
-              ) : null}
-            </div>
-          </div>
-        ) : null}
       </div>
     );
   }

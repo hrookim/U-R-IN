@@ -10,7 +10,6 @@ export const checkValidation = createAsyncThunk(
   "CHECK_VALIDATION",
   async (memberId, navigate) => {
     try {
-      console.log("checkvalidation", memberId);
       if (memberId === undefined) {
         console.log("잘못된 요청입니다.");
         localStorage.clear();
@@ -24,13 +23,14 @@ export const checkValidation = createAsyncThunk(
             },
           }
         );
-        console.log(response.data, "-----");
         return response.data;
       }
       return { message: "잘못된 요청입니다." };
     } catch (err) {
       localStorage.clear();
       navigate("/intro");
+      window.location.reload();
+
       console.log("잘못된 접근입니다. 제대로 로그인해주세요.");
       return isRejectedWithValue(err.response.data);
     }

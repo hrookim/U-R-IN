@@ -17,6 +17,8 @@ const StudyDetail = () => {
   const { studyId } = useParams();
 
   const study = useSelector((state) => state.study);
+
+  console.log("스터디디디디", study);
   const currentMemberId = useSelector((state) => state.member.id);
   useEffect(() => {
     dispatch(getStudy({ studyId, navigate }));
@@ -35,7 +37,6 @@ const StudyDetail = () => {
       participant.memberId === currentMemberId && participant.isLeader
   );
   const isLeader = checkLeader.includes(true);
-
   return (
     <div className="main-page">
       <CheckValidation />
