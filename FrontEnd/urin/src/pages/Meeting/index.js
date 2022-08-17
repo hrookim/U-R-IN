@@ -235,7 +235,7 @@ class Meeting extends Component {
       subscribers: [],
       sessionId: "sessionA",
       myuserId: 0,
-      localUser: undefined,
+      // localUser: undefined,
     });
     if (this.props.leaveSession) {
       this.props.leaveSession();
