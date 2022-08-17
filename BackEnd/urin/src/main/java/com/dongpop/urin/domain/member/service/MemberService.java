@@ -17,4 +17,9 @@ public class MemberService {
     public void signUp(Member member) {
         memberRepository.save(member);
     }
+
+    @Transactional
+    public void changeMemberPassState(Member member) {
+        member.changeMemberPassState(true);
+    }
 }
