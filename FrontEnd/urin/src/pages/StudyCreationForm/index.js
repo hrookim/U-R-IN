@@ -134,8 +134,6 @@ const StudyCreationForm = () => {
           </div>
           <FormControl className="title" fullWidth sx={{ m: 1 }}>
             <TextField
-              // value={form.title}
-              fullwidth
               autoFocus
               required
               id="title"

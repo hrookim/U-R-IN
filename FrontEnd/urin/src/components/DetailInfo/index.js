@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { useParams } from "react-router-dom";
 import styled from "styled-components";
-import { Avatar, IconButton, Typography } from "@mui/material";
+import { Avatar, Typography } from "@mui/material";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCrown } from "@fortawesome/free-solid-svg-icons";
 import RemoveCircleOutlineIcon from "@mui/icons-material/RemoveCircleOutline";
@@ -43,7 +43,12 @@ const DetailInfo = ({ study, isLeader, isParticipant, setIsChanged }) => {
             className="member-info"
             style={{ margin: "0 0 15px 0" }}
           >
-            <Avatar sx={{ width: "30px", height: "30px" }}>
+            <Avatar
+              sx={{
+                width: "30px",
+                height: "30px",
+              }}
+            >
               {participant.nickname[0]}
             </Avatar>
             <span>{participant.nickname}</span>

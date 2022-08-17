@@ -70,6 +70,7 @@
 .searchbar{
   position: relative;
   width: 50vw;
+  max-width: 1000px;
   height: 35px;
   border-radius: 20px;
 }
