@@ -7,7 +7,6 @@ import com.dongpop.urin.domain.meeting.dto.response.MeetingIdDto;
 import com.dongpop.urin.domain.meetingParticipant.entity.MeetingParticipant;
 import com.dongpop.urin.domain.meetingParticipant.repository.MeetingParticipantRepository;
 import com.dongpop.urin.domain.member.entity.Member;
-import com.dongpop.urin.domain.notification.service.NotificationService;
 import com.dongpop.urin.domain.participant.dto.response.ParticipantDto;
 import com.dongpop.urin.domain.participant.entity.Participant;
 import com.dongpop.urin.domain.participant.repository.ParticipantRepository;
@@ -52,8 +51,6 @@ public class StudyService {
     private final HashtagRepository hashtagRepository;
     private final MeetingParticipantRepository meetingParticipantRepository;
 
-    private final NotificationService notificationService;
-
     @Transactional
     @Scheduled(cron = "0 0 0 * * *")
     public void checkTerminatedStudy() {
@@ -67,7 +64,6 @@ public class StudyService {
 
         });
     }
-
     /**
      * 스터디 summary 리스트 (검색, 페이징)
      */
@@ -253,9 +249,8 @@ public class StudyService {
     }
 
     private Study getStudy(int studyId) {
-        Study study = studyRepository.findById(studyId)
+        return studyRepository.findById(studyId)
                 .orElseThrow(() -> new CustomException(STUDY_DOES_NOT_EXIST));
-        return study;
     }
 
     private List<HashtagDataDto> getHashtagDatas(Study study) {
