@@ -72,6 +72,7 @@ public class MeetingService {
         if (study.getStudyLeader().getId() == member.getId()) {
             study.changeOnairStatus(meetingCreateDto.getIsConnected());
             meeting = meetingRepository.save(meeting);
+            System.out.println("====== 알람 보내는 요청 ======");
             sendNotificationToParticipants(study);
         } else {
             meeting = meetingRepository.findFirstByStudyOrderByIdDesc(study)
