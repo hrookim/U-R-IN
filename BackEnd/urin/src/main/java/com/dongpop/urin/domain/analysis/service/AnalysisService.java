@@ -8,6 +8,7 @@ import com.dongpop.urin.domain.analysis.repository.PostureRepository;
 import com.dongpop.urin.domain.meeting.entity.Meeting;
 import com.dongpop.urin.domain.meeting.repository.MeetingRepository;
 import com.dongpop.urin.domain.member.entity.Member;
+import com.dongpop.urin.domain.member.repository.MemberRepository;
 import com.dongpop.urin.global.error.exception.CustomException;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
@@ -23,6 +24,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static com.dongpop.urin.global.error.errorcode.CommonErrorCode.DO_NOT_HAVE_AUTHORIZATION;
+import static com.dongpop.urin.global.error.errorcode.CommonErrorCode.NO_SUCH_ELEMENTS;
 import static com.dongpop.urin.global.error.errorcode.MeetingErrorCode.MEETING_IS_NOT_EXIST;
 
 @RequiredArgsConstructor
@@ -33,12 +35,16 @@ public class AnalysisService {
     private final EmotionRepository emotionRepository;
     private final PostureRepository postureRepository;
     private final MeetingRepository meetingRepository;
+    private final MemberRepository memberRepository;
 
     private final double EMOTION_COUNT_CRITERIA = 0.4;
 
     @Transactional
-    public void setAnalysisData(int meetingId, Member interviewee, AnalysisDataDto aiData) {
+    public void setAnalysisData(int meetingId, int intervieweeId, AnalysisDataDto aiData) {
         Meeting meeting = getMeetingFromId(meetingId);
+
+        Member interviewee = memberRepository.findById(intervieweeId)
+                .orElseThrow(() -> new CustomException(NO_SUCH_ELEMENTS));
 
         checkMemberExistenceInStudy(meeting, interviewee);
 
