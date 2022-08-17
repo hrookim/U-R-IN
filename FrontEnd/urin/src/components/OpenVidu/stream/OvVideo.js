@@ -64,8 +64,8 @@ export default class OvVideoComponent extends Component {
   startDetection = async () => {
     console.log("this.props", this.props);
     if (
-      (this.props.intervieweeId === this.props.user.id) ===
-      this.props.localUser.id
+      this.props.intervieweeId === this.props.user.id &&
+      this.props.intervieweeId === this.props.localUser.id
     ) {
       console.log("감지시작");
       const modelURL = `${URL}model.json`;
@@ -90,8 +90,8 @@ export default class OvVideoComponent extends Component {
   stopDetection = () => {
     this.state.isDetectioning = false;
     if (
-      (this.props.intervieweeId === this.props.user.id) ===
-      this.props.localUser.id
+      this.props.intervieweeId === this.props.user.id &&
+      this.props.intervieweeId === this.props.localUser.id
     ) {
       console.log("저장된 faceAPI 결과:", this.state.face);
       console.log("저장된 TM 결과:", this.state.pose);
