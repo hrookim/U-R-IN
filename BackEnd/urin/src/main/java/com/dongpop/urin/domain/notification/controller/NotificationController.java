@@ -17,7 +17,7 @@ public class NotificationController {
 
     private final NotificationService notificationService;
 
-    @GetMapping(value = "/notification", produces = "text/event-stream")
+    @GetMapping(value = "api/v1/notification", produces = "text/event-stream")
     public ResponseEntity<SseEmitter> subscribe(int memberId,
                                                 @RequestHeader(
                                                         value = "Last-Event-Id",

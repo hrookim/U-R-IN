@@ -8,6 +8,7 @@ import com.dongpop.urin.domain.analysis.repository.PostureRepository;
 import com.dongpop.urin.domain.meeting.entity.Meeting;
 import com.dongpop.urin.domain.meeting.repository.MeetingRepository;
 import com.dongpop.urin.domain.member.entity.Member;
+import com.dongpop.urin.domain.member.repository.MemberRepository;
 import com.dongpop.urin.global.error.exception.CustomException;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
@@ -19,9 +20,11 @@ import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static com.dongpop.urin.global.error.errorcode.CommonErrorCode.*;
 import static com.dongpop.urin.global.error.errorcode.CommonErrorCode.DO_NOT_HAVE_AUTHORIZATION;
 import static com.dongpop.urin.global.error.errorcode.MeetingErrorCode.MEETING_IS_NOT_EXIST;
 
@@ -33,12 +36,66 @@ public class AnalysisService {
     private final EmotionRepository emotionRepository;
     private final PostureRepository postureRepository;
     private final MeetingRepository meetingRepository;
+    private final MemberRepository memberRepository;
 
-    private final double EMOTION_COUNT_CRITERIA = 0.4;
+    private final Map<String, AnalysisCacheDto> passDataCache = new ConcurrentHashMap<>();
+
+    private static final double EMOTION_COUNT_CRITERIA = 0.4;
+    private static final double CONSTANT = 10000;
 
     @Transactional
-    public void setAnalysisData(int meetingId, Member interviewee, AnalysisDataDto aiData) {
+    public void calculatePassData(int passMemberId) {
+        Member passMember = memberRepository.findById(passMemberId)
+                .orElseThrow(() -> new CustomException(NO_SUCH_ELEMENTS));
+        List<AnalysisData> passAnalysisData = analysisRepository.findByInterviewee(passMember);
+
+        for (AnalysisData data : passAnalysisData) {
+            double divisor = data.getTime() / CONSTANT;
+
+            data.getEmotionList().forEach((emotion -> {
+                AnalysisCacheDto analysisCacheDto = passDataCache.get(emotion.getType().name());
+                if (analysisCacheDto == null) {
+                    analysisCacheDto = new AnalysisCacheDto();
+                }
+
+                analysisCacheDto.addValues(emotion.getCount() / CONSTANT, divisor);
+                passDataCache.put(emotion.getType().name(), analysisCacheDto);
+            }));
+
+            data.getPostureList().forEach((posture -> {
+                AnalysisCacheDto analysisCacheDto = passDataCache.get(posture.getType().name());
+                if (analysisCacheDto == null) {
+                    analysisCacheDto = new AnalysisCacheDto();
+                }
+                analysisCacheDto.addValues(posture.getCount() / CONSTANT, divisor);
+                passDataCache.put(posture.getType().name(), analysisCacheDto);
+            }));
+        }
+
+        passDataCache.forEach((k, v) -> {
+            if (isEmotionType(k)) {
+                v.calculatePercentageData();
+            } else {
+                v.calculatePerMinute();
+            }
+        });
+    }
+
+    private boolean isEmotionType(String typeName) {
+        for (EmotionType type : EmotionType.values()) {
+            if (type.name().equals(typeName)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Transactional
+    public void setAnalysisData(int meetingId, int intervieweeId, AnalysisDataDto aiData) {
         Meeting meeting = getMeetingFromId(meetingId);
+
+        Member interviewee = memberRepository.findById(intervieweeId)
+                .orElseThrow(() -> new CustomException(NO_SUCH_ELEMENTS));
 
         checkMemberExistenceInStudy(meeting, interviewee);
 
@@ -126,10 +183,8 @@ public class AnalysisService {
     }
 
     private Meeting getMeetingFromId(int meetingId) {
-        Meeting meeting = meetingRepository.findById(meetingId)
+        return meetingRepository.findById(meetingId)
                 .orElseThrow(() -> new CustomException(MEETING_IS_NOT_EXIST));
-
-        return meeting;
     }
 
 }

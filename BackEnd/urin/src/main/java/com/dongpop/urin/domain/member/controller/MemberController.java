@@ -1,5 +1,6 @@
 package com.dongpop.urin.domain.member.controller;
 
+import com.dongpop.urin.domain.analysis.service.AnalysisService;
 import com.dongpop.urin.domain.member.dto.response.MemberInfoDto;
 import com.dongpop.urin.domain.member.dto.response.MemberValidDto;
 import com.dongpop.urin.domain.member.entity.Member;
@@ -8,18 +9,21 @@ import com.dongpop.urin.global.error.errorcode.CommonErrorCode;
 import com.dongpop.urin.global.error.exception.CustomException;
 import com.dongpop.urin.oauth.model.MemberPrincipal;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import static com.dongpop.urin.global.error.errorcode.CommonErrorCode.*;
 
+@Slf4j
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/v1/member")
 public class MemberController {
 
     private final MemberService memberService;
+    private final AnalysisService analysisService;
 
     @GetMapping("/me")
     public ResponseEntity<MemberInfoDto> getMyMemberData(@AuthenticationPrincipal MemberPrincipal memberPrincipal) {
@@ -38,8 +42,7 @@ public class MemberController {
     public ResponseEntity<MemberValidDto> checkValidMember(@PathVariable int memberId,
                                                            @AuthenticationPrincipal MemberPrincipal memberPrincipal) {
         if (memberPrincipal.getMember().getId() != memberId) {
-            //TODO: Exception 401 변경
-            throw new RuntimeException();
+            throw new CustomException(DO_NOT_HAVE_AUTHENTICATION);
         }
         return ResponseEntity.ok().body(new MemberValidDto(true));
     }
@@ -49,10 +52,12 @@ public class MemberController {
                                               @AuthenticationPrincipal MemberPrincipal memberPrincipal) {
         Member member = memberPrincipal.getMember();
         if (memberId != member.getId()) {
+            log.info("JWT Member is not equal to PathVariable member.");
             throw new CustomException(DO_NOT_HAVE_AUTHORIZATION);
         }
 
-        memberService.changeMemberPassState(member);
+        memberService.changeMemberPassState(memberId);
+        analysisService.calculatePassData(memberId);
         return ResponseEntity.ok().build();
     }
 }

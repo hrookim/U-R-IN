@@ -52,8 +52,9 @@ public class NotificationService {
 
         Map<String, SseEmitter> emitters = emitterRepository.findAllEmitterStartWithByMemberId(receiverId);
         for (Map.Entry<String, SseEmitter> entry : emitters.entrySet()) {
-            emitterRepository.saveEventCache(entry.getKey(), notification);
-            sendNotification(entry.getValue(), eventId, entry.getKey(), NotificationResponseDto.create(notification));
+            NotificationResponseDto event = NotificationResponseDto.create(notification);
+            emitterRepository.saveEventCache(entry.getKey(), event);
+            sendNotification(entry.getValue(), eventId, entry.getKey(), event);
         }
     }
 
@@ -89,7 +90,7 @@ public class NotificationService {
     }
 
     private void sendLostData(String lastEventId, Integer memberId, String emitterId, SseEmitter emitter) {
-        log.info("====== [잃은 데이터 전송] =======");
+        log.info("Send Lost Notification : lastEventId = {}, data = {}", emitterId, lastEventId);
         Map<String, Object> eventCaches = emitterRepository.findAllEventCacheStartWithByMemberId(String.valueOf(memberId));
         eventCaches.entrySet().stream()
                 .filter(entry -> lastEventId.compareTo(entry.getKey()) < 0)
