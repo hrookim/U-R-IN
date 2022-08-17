@@ -1,12 +1,10 @@
 import React, { useState, useEffect } from "react";
-import { css } from "@emotion/react";
 import { Grid } from "@mui/material";
 import SearchButton from "../SearchButton";
 
 const SearchFilter = ({ getHashtags, getOverflowed }) => {
   const [hashtags, setHashtags] = useState("");
   const [selected, setSelected] = useState(true);
-  const [oldChecked, setOldChecked] = useState("");
 
   useEffect(() => {
     getHashtags(hashtags);

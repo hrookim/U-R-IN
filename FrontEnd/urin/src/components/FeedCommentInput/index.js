@@ -37,6 +37,7 @@ const FeedCommentInput = ({ parentId, setIsInputSubmitted }) => {
           onKeyPress={onKeyPress}
           value={form}
           className="feed-parent-input"
+          style={{ padding: "20px" }}
         />
         {/* <Button
           onClick={onSubmit}

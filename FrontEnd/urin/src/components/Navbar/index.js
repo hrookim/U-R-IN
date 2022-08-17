@@ -1,16 +1,14 @@
 import React, { useState, useEffect } from "react";
-import "./index.css";
-import "../../assets/DesignSystem.css";
 import { useLocation, Link, useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
+import "./index.css";
+import "../../assets/DesignSystem.css";
 
 import {
   Avatar,
-  Badge,
   Box,
   Button,
   Checkbox,
-  Container,
   Divider,
   FormControl,
   FormControlLabel,
@@ -23,7 +21,7 @@ import {
   Tooltip,
 } from "@mui/material";
 
-import { NotificationsNone, Logout } from "@mui/icons-material/";
+import { Logout } from "@mui/icons-material/";
 import AccountBalanceIcon from "@mui/icons-material/AccountBalance";
 import { passValidation } from "../../store/passValidationSlice";
 
@@ -55,10 +53,6 @@ const NavComponent = () => {
   const memberName = useSelector((state) => state.member.nickname);
   const memberId = useSelector((state) => state.member.id);
 
-  useEffect(() => {
-    setToken(localStorage.getItem("access_token"));
-  }, [token]);
-
   const [form, setForm] = useState({
     company: "",
     email: "",
@@ -66,7 +60,6 @@ const NavComponent = () => {
 
   const onChange = (e) => {
     const { name, value } = e.target;
-    console.log(name, value, "===");
 
     if (name == "email") {
       const reg =
@@ -80,15 +73,18 @@ const NavComponent = () => {
   };
 
   const [anchorEl, setAnchorEl] = useState(null);
+  const [openModal, setOpenModal] = useState(false);
+
   const open = Boolean(anchorEl);
+
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
+
   const handleClose = () => {
     setAnchorEl(null);
   };
 
-  const [openModal, setOpenModal] = useState(false);
   const modalClose = () => setOpenModal(false);
 
   const passClick = () => {
@@ -98,12 +94,17 @@ const NavComponent = () => {
   const sendValidation = () => {
     if (valid && disabled) {
       dispatch(passValidation({ memberId, navigate }));
+      alert("성공적으로 인증되었습니다.");
     } else if (!valid) {
       alert("올바른 이메일 주소를 적어주세요.");
     } else {
       alert("개인정보 제공에 동의를 해주세요.");
     }
   };
+
+  useEffect(() => {
+    setToken(localStorage.getItem("access_token"));
+  }, [token]);
 
   return (
     <div>
@@ -139,9 +140,7 @@ const NavComponent = () => {
                 내 스터디 보기
               </a>
             </div>
-            <Badge badgeContent={4} color="secondary">
-              <NotificationsNone />
-            </Badge>
+
             <div className="avatar">
               <Box
                 sx={{
@@ -150,7 +149,7 @@ const NavComponent = () => {
                   textAlign: "center",
                 }}
               >
-                <Tooltip title="Account settings">
+                <Tooltip title="계정 관리">
                   <IconButton
                     onClick={handleClick}
                     size="small"
