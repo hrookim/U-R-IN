@@ -1,0 +1,15 @@
+.loading-box {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 40px;
+  position: relative;
+}
+
+.loading-with {
+  margin-right: 20px;
+}
+#loading-logo {
+  width: 225px;
+  z-index: 0;
+}
