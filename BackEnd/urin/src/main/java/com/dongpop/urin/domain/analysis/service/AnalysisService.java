@@ -53,7 +53,6 @@ public class AnalysisService {
         saveAnalysisData(analysisData, aiData);
     }
 
-    @Transactional
     private void saveAnalysisData(AnalysisData analysisData, AnalysisDataDto aiData) {
         analysisRepository.save(analysisData);
 
@@ -61,7 +60,6 @@ public class AnalysisService {
         saveEmotionData(analysisData, countFromEmotionData(aiData.getFaceDataList()), aiData.getFaceDataList().size());
     }
 
-    @Transactional
     private void savePoseData(AnalysisData analysisData, Map<PostureType, Integer> poseMap) {
         for(PostureType poseType : poseMap.keySet()) {
             Posture posture = postureRepository.findByAnalysisDataAndType(analysisData, poseType)
@@ -73,7 +71,6 @@ public class AnalysisService {
         }
     }
 
-    @Transactional
     private void saveEmotionData(AnalysisData analysisData, Map<EmotionType, Integer> emotionMap, int realAnalyzedTime) {
         for(EmotionType emotionType : emotionMap.keySet()) {
             Emotion emotion = emotionRepository.findByAnalysisDataAndType(analysisData, emotionType)
