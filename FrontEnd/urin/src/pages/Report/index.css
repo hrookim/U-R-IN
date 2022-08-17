@@ -43,7 +43,18 @@ a {
   margin: 5px 5px 5px 10px;
   
 }
+.report-index-category {
+  margin: 5px 5px 5px 35px;
+ 
+}
 .report-index-content {
+  margin: 5px 5px 5px 55px;
+
+    border-left-color: #0037FA;
+    border-left-style: solid;
+ 
+}
+.report-index-content-ai {
   margin: 5px 5px 5px 35px;
 
     border-left-color: #0037FA;
@@ -68,6 +79,7 @@ position: relative;
 .report-content-title{
   margin: 20px 10px 10px 10px ;
 }
+
 .report-content-detail{
   margin: 10px 10px 10px 10px ;
 }
@@ -147,8 +159,8 @@ width: 100%
 }
 
 .report-content-move-title{
-  width: 100px;
-    height: 100px;
+  width: 90px;
+    height: 90px;
     margin: 10px;
     font-size: 20px;
     /* line-height: 100px; */
