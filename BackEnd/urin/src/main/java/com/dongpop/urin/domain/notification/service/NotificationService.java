@@ -52,8 +52,9 @@ public class NotificationService {
 
         Map<String, SseEmitter> emitters = emitterRepository.findAllEmitterStartWithByMemberId(receiverId);
         for (Map.Entry<String, SseEmitter> entry : emitters.entrySet()) {
-            emitterRepository.saveEventCache(entry.getKey(), notification);
-            sendNotification(entry.getValue(), eventId, entry.getKey(), NotificationResponseDto.create(notification));
+            NotificationResponseDto event = NotificationResponseDto.create(notification);
+            emitterRepository.saveEventCache(entry.getKey(), event);
+            sendNotification(entry.getValue(), eventId, entry.getKey(), event);
         }
     }
 
