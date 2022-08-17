@@ -147,6 +147,7 @@ const DetailHeader = ({
                         <button
                           type="button"
                           className="dh-meeting-button font-50 font-sm"
+                          onClick={startMeeting}
                         >
                           미팅 입장하기
                         </button>

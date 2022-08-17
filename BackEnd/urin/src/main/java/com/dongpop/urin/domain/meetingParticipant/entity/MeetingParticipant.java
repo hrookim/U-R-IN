@@ -1,10 +1,9 @@
-package com.dongpop.urin.domain.analysis.entity;
+package com.dongpop.urin.domain.meetingParticipant.entity;
 
 import com.dongpop.urin.domain.common.entity.BaseTimeEntity;
 import com.dongpop.urin.domain.meeting.entity.Meeting;
 import com.dongpop.urin.domain.member.entity.Member;
 import lombok.AccessLevel;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -12,9 +11,9 @@ import javax.persistence.*;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Table(name = "analysis_data")
+@Table(name = "meeting_participants")
 @Entity
-public class AnalysisData extends BaseTimeEntity {
+public class MeetingParticipant extends BaseTimeEntity {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
@@ -23,19 +22,11 @@ public class AnalysisData extends BaseTimeEntity {
     private Meeting meeting;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "interviewee")
-    private Member interviewee;
+    @JoinColumn(name = "member_id")
+    private Member member;
 
-    private int time;
-
-    @Builder
-    public AnalysisData(Meeting meeting, Member interviewee, int time) {
+    public MeetingParticipant(Meeting meeting, Member member) {
         this.meeting = meeting;
-        this.interviewee = interviewee;
-        this.time = time;
-    }
-
-    public void sumTime(int time) {
-        this.time += time;
+        this.member = member;
     }
 }
