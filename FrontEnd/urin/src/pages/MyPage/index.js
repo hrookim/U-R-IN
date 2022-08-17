@@ -59,7 +59,6 @@ const MyPage = () => {
   return (
     <div className="my-page">
       <CheckValidation />
-
       <div className="my-page-header">
         <Avatar
           className="my-page-avatar"
@@ -67,7 +66,6 @@ const MyPage = () => {
         >
           {memberName[0]}
         </Avatar>
-
         <div className="my-page-member">
           <p className="font-60 font-md member-name">
             {memberName}
@@ -89,7 +87,6 @@ const MyPage = () => {
           </p>
         </div>
       </div>
-
       <p className="font-80 font-lg">참여 중인 스터디</p>
       <Grid container spacing={2} className="card-grid">
         {myPage.currentStudyList.map((item) => (
@@ -223,7 +220,7 @@ const MyPage = () => {
                   >
                     <span className="font-xs font-50">리포트 보기</span>
                   </Button>
-                </div>{" "}
+                </div>
               </Card>
             </div>
           </Grid>
@@ -251,7 +248,6 @@ const MyPage = () => {
           </Button>
         </div>
       ) : null}
-
       <p className="font-80 font-lg">지난 스터디</p>
       <Grid container spacing={2} className="card-grid">
         {myPage.pastStudyList.map((item) => (
@@ -285,7 +281,6 @@ const MyPage = () => {
                     image={`/img/study_img${item.title.length % 10}.png`}
                     alt="green iguana"
                   />
-
                   <CardContent
                     className="card-content"
                     sx={{ padding: "18px 4px 0px 4px" }}
@@ -385,7 +380,7 @@ const MyPage = () => {
                       <span className="font-xs font-50">리포트 보기</span>
                     </Button>
                   </Link>
-                </div>{" "}
+                </div>
               </Card>
             </div>
           </Grid>

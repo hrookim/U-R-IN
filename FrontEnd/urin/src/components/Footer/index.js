@@ -20,10 +20,9 @@ const Footer = () => {
                 새로운 면접스터디 플랫폼을 경험해보세요!
               </p>
               <p className="footer-subscription-text font-xs font-30">
-                With UR In, You are in.
+                With UR IN, You&apos;re in.
               </p>
             </section>
-
             <section className="social-media">
               <div className="social-media-wrap">
                 <div className="footer-logo">

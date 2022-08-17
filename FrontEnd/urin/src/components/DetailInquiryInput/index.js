@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
+import { Button } from "@mui/material";
+
 import { createInquiry } from "../../store/inquirySlice";
 
 const DetailInquiryInput = ({ studyId, setIsInputSubmitted }) => {
@@ -32,6 +34,7 @@ const DetailInquiryInput = ({ studyId, setIsInputSubmitted }) => {
           onKeyPress={onKeyPress}
           value={form}
           className="feed-input"
+          style={{ padding: "20px" }}
         />
         {/* <Button
           onClick={onSubmit}
