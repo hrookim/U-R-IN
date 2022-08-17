@@ -64,6 +64,7 @@ public class StudyService {
                         study.getId(), study.getExpirationDate(), LocalDate.now());
                 study.updateStatus(TERMINATED);
             }
+
         });
     }
 
@@ -79,7 +80,7 @@ public class StudyService {
 
         Page<Study> pages = studyRepository.findStudyList(studySearchDto, pageable);
         if (pages.isEmpty()) {
-            return new StudyListDto(0, new ArrayList<StudySummaryDto>());
+            return new StudyListDto(0, new ArrayList<>());
         }
 
         List<StudySummaryDto> studyList = pages.toList().stream()
@@ -169,7 +170,7 @@ public class StudyService {
         List<MeetingParticipant> meetingParticipantList = meetingParticipantRepository.findAllMeetingParticipantList(study, member);
 
         List<MeetingIdDto> idList = new ArrayList<>();
-        meetingParticipantList.stream().forEach(mt -> {
+        meetingParticipantList.forEach(mt -> {
             idList.add(new MeetingIdDto(mt.getMeeting().getId()));
         });
 
@@ -270,7 +271,7 @@ public class StudyService {
         List<HashtagDataDto> hashtagDatas = getHashtagDatas(study);
 
         StringBuilder sb = new StringBuilder();
-        hashtagDatas.stream().forEach((dataDto) -> {
+        hashtagDatas.forEach((dataDto) -> {
             sb.append(dataDto.getCode());
             hashtagNameList.add(dataDto.getName());
         });
