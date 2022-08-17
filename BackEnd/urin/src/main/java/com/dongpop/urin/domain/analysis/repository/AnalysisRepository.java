@@ -16,6 +16,7 @@ public interface AnalysisRepository extends JpaRepository<AnalysisData, Integer>
     @EntityGraph(attributePaths = {"emotionList", "postureList"})
     List<AnalysisData> findByInterviewee(Member interviewee);
 
-    @EntityGraph(attributePaths = {"emotionList", "postureList"})
-    List<AnalysisData> findAllByIntervieweeIsPassed(Member interviewee);
+    @Query("SELECT a FROM AnalysisData a" +
+            " WHERE a.interviewee.isPassed IS TRUE")
+    List<AnalysisData> findAllPassedInterviewee();
 }

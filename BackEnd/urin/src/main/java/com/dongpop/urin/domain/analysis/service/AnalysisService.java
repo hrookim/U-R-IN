@@ -18,6 +18,7 @@ import javax.transaction.Transactional;
 
 import java.lang.reflect.Field;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -84,13 +85,19 @@ public class AnalysisService {
         });
     }
 
-    public Map<String, AnalysisCacheDto> getpassDataCache() {
+    @Transactional
+    public Map<String, AnalysisCacheDto> getPassDataCache() {
         if (passDataCache.isEmpty()) {
-            //TODO: 합격자들 데이터 싹다 저장
-            List<AnalysisData> passIntervieweeData = analysisRepository.findAllPassInterviewee();
+            //TODO: 쿼리 확인
+            List<AnalysisData> passIntervieweeData = analysisRepository.findAllPassedInterviewee();
             calculateDataList(passIntervieweeData);
         }
-        return passDataCache;
+
+        Map<String, AnalysisCacheDto> copyMap = new HashMap<>();
+        for (Map.Entry<String, AnalysisCacheDto> entry : passDataCache.entrySet()) {
+            copyMap.put(entry.getKey(), entry.getValue());
+        }
+        return copyMap;
     }
 
     @Transactional
