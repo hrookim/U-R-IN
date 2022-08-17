@@ -48,11 +48,11 @@ const AnalysisChart = ({ interviewee, passUser }) => {
     series: [
       {
         name: "나의 평균(%)",
-        data: { interviewee },
+        data: interviewee,
       },
       {
         name: "합격자 평균(%)",
-        data: { passUser },
+        data: passUser,
       },
     ],
   });

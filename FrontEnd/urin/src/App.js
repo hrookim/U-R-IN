@@ -85,7 +85,7 @@ const App = () => {
           }
         />
         <Route
-          path="/report"
+          path="/report/:studyId"
           element={
             <PrivateRoute
               authenticated={privateAccess}

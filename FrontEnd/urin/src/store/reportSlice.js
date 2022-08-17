@@ -7,11 +7,12 @@ import axios from "axios";
 
 export const getReport = createAsyncThunk(
   "GET_REPORT",
-  async ({ meetingId, navigate }) => {
+  async ({ page, navigate }) => {
     try {
+      console.log(page);
       console.log("리포트 생성 중");
       const response = await axios.get(
-        `${process.env.REACT_APP_BACK_BASW_URL}meeting/${meetingId}/report`,
+        `${process.env.REACT_APP_BACK_BASE_URL}meeting/${page}/report`,
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
@@ -19,10 +20,10 @@ export const getReport = createAsyncThunk(
         }
       );
       console.log(response.data);
-      if (response.data === []) {
-        console.log("비었는디?");
-        navigate("/notfound");
-      }
+      // if (response.data === []) {
+      //   console.log("비었는디?");
+      //   navigate("/notfound");
+      // }
       return response.data;
     } catch (err) {
       navigate("/notfound");
@@ -42,7 +43,7 @@ const reportSlice = createSlice({
           calm: 100,
           nervous: 0,
         },
-        pose: [
+        poseDataList: [
           {
             name: "기준자세",
             count: 0,
