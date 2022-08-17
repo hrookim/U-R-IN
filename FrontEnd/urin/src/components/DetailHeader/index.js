@@ -63,16 +63,21 @@ const DetailHeader = ({
     <div>
       <div className="dh-container">
         <div className="dh-chips">
-          {study.hashtagNameList.map((item) => (
-            <button
-              type="button"
-              className="dh-chip-button font-30 font-xs"
-              disabled
-              key={item.code}
-            >
-              {item}
-            </button>
-          ))}
+          {console.log(study.hashtagNameList)}
+          {study.hashtagCodes != "string" ? (
+            <div>
+              {study.hashtagNameList.map((item, idx) => (
+                <button
+                  type="button"
+                  className="dh-chip-button font-30 font-xs"
+                  disabled
+                  key={item}
+                >
+                  {item}
+                </button>
+              ))}
+            </div>
+          ) : null}
         </div>
 
         <div className="dh-container-item">
@@ -83,7 +88,6 @@ const DetailHeader = ({
             </Link>
           )}
         </div>
-        {console.log("디데이", study.dday)}
         <div className="dh-container-item">
           {study.status === "TERMINATED" && (
             <span className="font-40 font-sm dh-tag">종료</span>
@@ -105,7 +109,7 @@ const DetailHeader = ({
           {study.status !== "TERMINATED" && (
             <div className="dh-container-item2">
               {isLeader ? (
-                <div className="font-40">
+                <div className="font-50">
                   {study.status !== "TERMINATED" && (
                     <div className="btn-center">
                       {study.isOnair ? (
@@ -136,20 +140,21 @@ const DetailHeader = ({
                   )}
                 </div>
               ) : (
-                <div className="font-40">
+                <div className="font-50">
                   {isParticipant ? (
-                    <div className="font-40">
+                    <div className="font-50">
                       {study.isOnair ? (
                         <button
                           type="button"
                           className="dh-meeting-button font-50 font-sm"
+                          onClick={startMeeting}
                         >
                           미팅 입장하기
                         </button>
                       ) : (
                         <button
                           type="button"
-                          className="dh-meeting-button font-50 font-sm"
+                          className="dh-meeting-button-disabled font-50 font-sm"
                           disabled
                         >
                           미팅 입장하기
@@ -166,7 +171,7 @@ const DetailHeader = ({
                   ) : (
                     <button
                       type="button"
-                      className="dh-study-button font-50 font-md"
+                      className="dh-study-button font-50 font-sm"
                       onClick={onClickJoin}
                     >
                       스터디 참여하기

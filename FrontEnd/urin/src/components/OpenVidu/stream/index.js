@@ -15,9 +15,28 @@ export default class StreamComponent extends Component {
     super(props);
     this.state = {
       mutedSound: false,
+      timer: 0,
     };
     this.toggleSound = this.toggleSound.bind(this);
     this.interviewingChanged = this.interviewingChanged.bind(this);
+  }
+
+  componentDidUpdate(prevProps) {
+    if (prevProps) {
+      if (prevProps.isInterviewing !== this.props.isInterviewing) {
+        // 면접 시작: timer 생성
+        if (this.props.isInterviewing) {
+          this.startTimer = setInterval(() => {
+            this.setState({ timer: this.state.timer + 1 });
+          }, 1000);
+        }
+        // 면접 종료: timer 종료
+        else {
+          clearInterval(this.startTimer);
+          this.setState({ timer: 0 });
+        }
+      }
+    }
   }
 
   interviewingChanged(current) {
@@ -28,8 +47,19 @@ export default class StreamComponent extends Component {
     this.setState({ mutedSound: !this.state.mutedSound });
   }
 
+  secondsToTime(sec) {
+    let minutes, seconds;
+    minutes = Math.floor(sec / 60);
+    seconds = sec - minutes * 60;
+
+    if (minutes.toString().length == 1) minutes = "0" + minutes;
+    if (seconds.toString().length == 1) seconds = "0" + seconds;
+
+    return minutes + ":" + seconds;
+  }
+
   render() {
-    const { mutedSound } = this.state;
+    const { mutedSound, timer } = this.state;
     const {
       user,
       localUser,
@@ -54,10 +84,12 @@ export default class StreamComponent extends Component {
     return (
       <div className={"video-container p-1 " + layout}>
         <div className="video-wrapper" style={{ display: "grid" }}>
+          {/* 좌상단 닉네임 */}
           <div className="nickname">
             <span id="nickname">{nickname}</span>
           </div>
 
+          {/* 우상단 면접시작종료 */}
           {isInterviewee && (
             <div className="upper-right d-flex align-items-center">
               <button
@@ -69,13 +101,13 @@ export default class StreamComponent extends Component {
               >
                 {isInterviewing ? "면접종료" : "면접시작"}
               </button>
-              {/* TODO: 타이머 */}
-              <span className="timer mx-2">타이머</span>
+              <span className="timer mx-2">{this.secondsToTime(timer)}</span>
             </div>
           )}
 
           {user !== undefined && user.getStreamManager() !== undefined ? (
             <>
+              {/* 비디오 */}
               <OvVideoComponent
                 user={user}
                 localUser={localUser}
@@ -86,7 +118,8 @@ export default class StreamComponent extends Component {
                 mutedSound={mutedSound}
               />
 
-              <div>
+              {/* 비디오 내부 onoff표시 */}
+              {/* <div>
                 {!user.isLocal() && (
                   <IconButton id="volumeButton" onClick={this.toggleSound}>
                     {mutedSound ? (
@@ -96,7 +129,7 @@ export default class StreamComponent extends Component {
                     )}
                   </IconButton>
                 )}
-              </div>
+              </div> */}
 
               <div id="statusIcons">
                 {!user.isVideoActive() ? (

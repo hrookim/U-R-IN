@@ -48,7 +48,6 @@ const StudyUpdateTagButton = ({
   const [selected, setSelected] = useState(false);
 
   useEffect(() => {
-    console.log("oldchecked", oldChecked);
     if (oldChecked.includes(id)) {
       setSelected(true);
     } else {

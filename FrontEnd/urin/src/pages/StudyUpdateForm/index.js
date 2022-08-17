@@ -52,12 +52,14 @@ const StudyUpdateForm = () => {
   const [disable, setDisable] = useState(false);
   const [errorStatement, setErrorStatement] = useState("");
   const [deletedMembers, setDeletedMembers] = useState([]);
+  const [defaultChecked, setDefaultChecked] = useState(false);
 
   // popper관련
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [open, setOpen] = React.useState(false);
 
   useEffect(() => {
+    console.log("check disable", disable);
     if (disable) {
       setForm({
         ...form,
@@ -83,6 +85,8 @@ const StudyUpdateForm = () => {
       } = study;
 
       if (dday === -1) {
+        console.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!====");
+
         const formatDate = new Date();
         setForm({
           title,
@@ -93,7 +97,9 @@ const StudyUpdateForm = () => {
         });
         setFormDate(formatDate);
         setDisable(true);
+        setDefaultChecked(true);
       } else {
+        console.log("======================================");
         const formatDate = new Date(expirationDate);
         setForm({
           title,
@@ -117,7 +123,6 @@ const StudyUpdateForm = () => {
 
   const onSubmit = (e) => {
     e.preventDefault();
-    console.log("form", "newHashtags", form);
     if (form.hashtags) {
       dispatch(updateStudy({ studyId, form, navigate }));
 
@@ -153,9 +158,7 @@ const StudyUpdateForm = () => {
 
   const onClickLeave = (memberId) => {
     alert("수정하기 버튼을 눌러야 탈퇴 내역이 최종 반영됩니다!");
-    console.log(memberId);
     setDeletedMembers(...deletedMembers, [memberId]);
-    console.log(deletedMembers);
 
     // dispatch(leaveStudy([studyId, memberId])).then(() => {
     //   setIsChanged(true);
@@ -165,7 +168,6 @@ const StudyUpdateForm = () => {
 
   const onClickInclude = (memberId) => {
     alert("탈퇴 목록에서 제외되었습니다!");
-    console.log(memberId);
     setDeletedMembers(deletedMembers.filter((element) => element !== memberId));
 
     // dispatch(leaveStudy([studyId, memberId])).then(() => {
@@ -173,6 +175,8 @@ const StudyUpdateForm = () => {
     //   setInterval(() => setIsChanged(false), 100);
     // });
   };
+
+  console.log("form", form);
 
   return (
     <div>
@@ -204,7 +208,6 @@ const StudyUpdateForm = () => {
           <FormControl className="title" fullWidth sx={{ m: 1 }}>
             <TextField
               value={form.title}
-              fullwidth
               autoFocus
               required
               id="title"
@@ -273,6 +276,7 @@ const StudyUpdateForm = () => {
                       onChange={() => {
                         setDisable(!disable);
                       }}
+                      checked={defaultChecked}
                     />
                   }
                 />
@@ -308,7 +312,7 @@ const StudyUpdateForm = () => {
                 <MenuItem value={3}>3명</MenuItem>
                 <MenuItem value={4}>4명</MenuItem>
               </Select>
-              <small>{errorStatement}</small>{" "}
+              <small>{errorStatement}</small>
             </Grid>
           </Grid>
           <div className="content-title-group">
@@ -332,7 +336,6 @@ const StudyUpdateForm = () => {
                       backgroundColor: "rgba(0,0,0,0.3);",
                     }}
                   >
-                    {" "}
                     {participant.nickname[0]}
                   </Avatar>
                 ) : (
@@ -343,7 +346,6 @@ const StudyUpdateForm = () => {
                       backgroundColor: "#0037FA",
                     }}
                   >
-                    {" "}
                     {participant.nickname[0]}
                   </Avatar>
                 )}
@@ -361,11 +363,6 @@ const StudyUpdateForm = () => {
                     icon={faCrown}
                     style={{ margin: "0 0 0 8px" }}
                   />
-                )}
-                {console.log(
-                  !deletedMembers.includes(participant.id),
-                  participant.id,
-                  deletedMembers
                 )}
                 {!participant.isLeader &&
                 study.status != "TERMINATED" &&

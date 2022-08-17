@@ -84,6 +84,15 @@ const App = () => {
             />
           }
         />
+        <Route
+          path="/report"
+          element={
+            <PrivateRoute
+              authenticated={privateAccess}
+              component={<Report />}
+            />
+          }
+        />
 
         <Route
           path="/intro"
@@ -94,7 +103,6 @@ const App = () => {
             />
           }
         />
-        <Route path="/report" element={<Report />} />
 
         {/* validation이 필요 없는 페이지 */}
         <Route path="/study/:studyId/meeting/" element={<Meeting />} />
