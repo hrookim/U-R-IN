@@ -48,7 +48,10 @@ public class AnalysisService {
         Member passMember = memberRepository.findById(passMemberId)
                 .orElseThrow(() -> new CustomException(NO_SUCH_ELEMENTS));
         List<AnalysisData> passAnalysisData = analysisRepository.findByInterviewee(passMember);
+        calculateDataList(passAnalysisData);
+    }
 
+    private void calculateDataList(List<AnalysisData> passAnalysisData) {
         for (AnalysisData data : passAnalysisData) {
             double divisor = data.getTime() / CONSTANT;
 
@@ -81,13 +84,13 @@ public class AnalysisService {
         });
     }
 
-    private boolean isEmotionType(String typeName) {
-        for (EmotionType type : EmotionType.values()) {
-            if (type.name().equals(typeName)) {
-                return true;
-            }
+    public Map<String, AnalysisCacheDto> getpassDataCache() {
+        if (passDataCache.isEmpty()) {
+            //TODO: 합격자들 데이터 싹다 저장
+            List<AnalysisData> passIntervieweeData = analysisRepository.findAllPassInterviewee();
+            calculateDataList(passIntervieweeData);
         }
-        return false;
+        return passDataCache;
     }
 
     @Transactional
@@ -108,6 +111,15 @@ public class AnalysisService {
 
         analysisData.sumTime(aiData.getPoseDataList().size());
         saveAnalysisData(analysisData, aiData);
+    }
+
+    private boolean isEmotionType(String typeName) {
+        for (EmotionType type : EmotionType.values()) {
+            if (type.name().equals(typeName)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private void saveAnalysisData(AnalysisData analysisData, AnalysisDataDto aiData) {
