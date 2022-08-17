@@ -24,12 +24,22 @@ const Report = () => {
   const dispatch = useDispatch();
 
   // 협의 후 수정필요
-  const reports = useSelector((state) => state.reports);
   const { studyId } = useParams();
+
+  const reports = useSelector((state) => state.reports);
+
+  console.log(reports, 1);
   // const [question, setQuestion] = useState(" ");
   const memberName = useSelector((state) => state.member.memberName);
   const studyName = useSelector((state) => state.study.title);
   const meetingId = useSelector((state) => state.meeting);
+  console.log(meetingId);
+  // 차트변수
+  const emotionI = reports.aiData.interviewee.emotion;
+  const emotionP = reports.aiData.passUser.emotion;
+  const chartValueI = [emotionI.confidence, emotionI.calm, emotionI.nervious];
+  const chartValueP = [emotionP.confidence, emotionP.calm, emotionP.nervious];
+
   // PDF용 /////////////////
   const printDocument = () => {
     const input = document.getElementById("report");
@@ -73,7 +83,9 @@ const Report = () => {
   useEffect(() => {
     console.log("getRport working");
     dispatch(getReport({ page, navigate }));
-  }, [page]);
+    // 변수설정
+  });
+
   return (
     <div id="report">
       <CheckValidation />
@@ -104,9 +116,10 @@ const Report = () => {
                 label="meetingId"
                 onChange={pageChange}
               >
-                {meetingId.map((item) => (
-                  <MenuItem value={item}>Report {item}</MenuItem>
-                ))}
+                {meetingId &&
+                  meetingId.map((item) => (
+                    <MenuItem value={item}>Report {item}</MenuItem>
+                  ))}
               </Select>
             </FormControl>
           </Grid>
@@ -148,32 +161,34 @@ const Report = () => {
             <summary className="font-sm font-60 report-index-title">
               인성
             </summary>
-            {reports.feedback.personality.map((item) => (
-              <div className="report-index-content">
-                <a
-                  href={"#".concat(item.questionContent)}
-                  className="font-sm font-60"
-                >
-                  &nbsp;{item.questionContent}
-                </a>
-              </div>
-            ))}
+            {reports &&
+              reports.feedback.personality.map((item) => (
+                <div className="report-index-content">
+                  <a
+                    href={"#".concat(item.questionContent)}
+                    className="font-sm font-60"
+                  >
+                    &nbsp;{item.questionContent}
+                  </a>
+                </div>
+              ))}
           </details>
           {/* 적성 */}
           <details>
             <summary className="font-sm font-60 report-index-title">
               적성
             </summary>
-            {reports.feedback.tech.map((item) => (
-              <div className="report-index-content">
-                <a
-                  href={"#".concat(item.questionContent)}
-                  className="font-sm font-60"
-                >
-                  &nbsp;{item.questionContent}
-                </a>
-              </div>
-            ))}
+            {reports &&
+              reports.feedback.tech.map((item) => (
+                <div className="report-index-content">
+                  <a
+                    href={"#".concat(item.questionContent)}
+                    className="font-sm font-60"
+                  >
+                    &nbsp;{item.questionContent}
+                  </a>
+                </div>
+              ))}
           </details>
         </details>
         <div className="report-content">
@@ -202,8 +217,8 @@ const Report = () => {
               </div>
               <div>
                 <AnalysisChart
-                  interviewee={reports.aiData.interviewee.emotion}
-                  passUser={reports.aiData.passUser.emotion}
+                  interviewee={chartValueI}
+                  passUser={chartValueP}
                   className="report-content-paper-chart"
                 />
               </div>
@@ -232,7 +247,11 @@ const Report = () => {
                 인상을 심어줍니다.
               </div>
               <div>
-                <AnalysisChart className="report-content-paper-chart" />
+                <AnalysisChart
+                  interviewee={chartValueI}
+                  passUser={chartValueP}
+                  className="report-content-paper-chart"
+                />
               </div>
             </Paper>
           </Box>
@@ -259,58 +278,82 @@ const Report = () => {
 
               <Grid container className="report-content-move">
                 <Grid item container xs={6}>
-                  <Grid xs={2} className="report-content-move-title font-50">
-                    {reports.aiData.interviewee.poseDataList[0].name}
+                  <Grid
+                    xs={2}
+                    item
+                    className="report-content-move-title font-50"
+                  >
+                    {reports && reports.aiData.interviewee.poseDataList[0].name}
                   </Grid>
                   <Grid
                     xs={9}
                     item
                     className="report-content-move-content font-40"
                   >
-                    분당 {reports.aiData.interviewee.poseDataList[0].count}회
-                    움직임이 감지되었습니다. 합격자 대비 20% 적은 움직임이니
+                    분당{" "}
+                    {reports &&
+                      reports.aiData.interviewee.poseDataList[0].count}
+                    회 움직임이 감지되었습니다. 합격자 대비 20% 적은 움직임이니
                     움직임에 많은 신경을 쏟을 필요는 없겠네요!ddddddddddddddddd
                   </Grid>
                 </Grid>
                 <Grid item container xs={6}>
-                  <Grid xs={2} className="report-content-move-title font-50">
-                    {reports.aiData.interviewee.poseDataList[1].name}
+                  <Grid
+                    xs={2}
+                    item
+                    className="report-content-move-title font-50"
+                  >
+                    {reports && reports.aiData.interviewee.poseDataList[1].name}
                   </Grid>
                   <Grid
                     xs={9}
                     item
                     className="report-content-move-content font-40"
                   >
-                    분당 {reports.aiData.interviewee.poseDataList[1].count}회
-                    움직임이 감지되었습니다. 합격자 대비 20% 적은 움직임이니
+                    분당{" "}
+                    {reports &&
+                      reports.aiData.interviewee.poseDataList[1].count}
+                    회 움직임이 감지되었습니다. 합격자 대비 20% 적은 움직임이니
                     움직임에 많은 신경을 쏟을 필요는 없겠네요!
                   </Grid>
                 </Grid>
                 <Grid item container xs={6}>
-                  <Grid xs={2} className="report-content-move-title font-50">
-                    {reports.aiData.interviewee.poseDataList[2].name}
+                  <Grid
+                    xs={2}
+                    item
+                    className="report-content-move-title font-50"
+                  >
+                    {reports && reports.aiData.interviewee.poseDataList[2].name}
                   </Grid>
                   <Grid
                     xs={9}
                     item
                     className="report-content-move-content font-40"
                   >
-                    분당 {reports.aiData.interviewee.poseDataList[2].count}회
-                    움직임이 감지되었습니다. 합격자 대비 20% 적은 움직임이니
+                    분당{" "}
+                    {reports &&
+                      reports.aiData.interviewee.poseDataList[2].count}
+                    회 움직임이 감지되었습니다. 합격자 대비 20% 적은 움직임이니
                     움직임에 많은 신경을 쏟을 필요는 없겠네요! fffffffffff
                   </Grid>
                 </Grid>
                 <Grid item container xs={6}>
-                  <Grid xs={2} className="report-content-move-title font-50">
-                    {reports.aiData.interviewee.poseDataList[3].name}
+                  <Grid
+                    xs={2}
+                    item
+                    className="report-content-move-title font-50"
+                  >
+                    {reports && reports.aiData.interviewee.poseDataList[3].name}
                   </Grid>
                   <Grid
                     xs={9}
                     item
                     className="report-content-move-content font-40"
                   >
-                    분당 {reports.aiData.interviewee.poseDataList[3].count}회
-                    움직임이 감지되었습니다. 합격자 대비 20% 적은 움직임이니
+                    분당{" "}
+                    {reports &&
+                      reports.aiData.interviewee.poseDataList[3].count}
+                    회 움직임이 감지되었습니다. 합격자 대비 20% 적은 움직임이니
                     움직임에 많은 신경을 쏟을 필요는 없겠네요!
                   </Grid>
                 </Grid>
@@ -335,25 +378,26 @@ const Report = () => {
             }}
             className="report-content-feedback-box"
           >
-            {reports.feedback.personality.map((item) => (
-              <div className=" report-content-box" id={item.questionContent}>
-                <p className="font-md font-70 report-content-question">
-                  {item.questionContent}
-                </p>
-                <div>
-                  {item.answerContentList.map((comments) => (
-                    <Grid container className="report-content-comment">
-                      <Grid xs={1.2} item className="font-sm font-30">
-                        {comments.interviewer}
+            {reports &&
+              reports.feedback.personality.map((item) => (
+                <div className=" report-content-box" id={item.questionContent}>
+                  <p className="font-md font-70 report-content-question">
+                    {item.questionContent}
+                  </p>
+                  <div>
+                    {item.answerContentList.map((comments) => (
+                      <Grid container className="report-content-comment">
+                        <Grid xs={1.2} item className="font-sm font-30">
+                          {comments.interviewer}
+                        </Grid>
+                        <Grid xs={10.5} item className="font-sm font-50">
+                          {comments.content}
+                        </Grid>
                       </Grid>
-                      <Grid xs={10.5} item className="font-sm font-50">
-                        {comments.content}
-                      </Grid>
-                    </Grid>
-                  ))}
+                    ))}
+                  </div>
                 </div>
-              </div>
-            ))}
+              ))}
           </Box>
         </div>
         <div className="font-md font-50 content-title" id="feedback">
@@ -370,25 +414,26 @@ const Report = () => {
             }}
             className="report-content-feedback-box"
           >
-            {reports.feedback.tech.map((item) => (
-              <div className=" report-content-box" id={item.questionContent}>
-                <p className="font-md font-70 report-content-question">
-                  {item.questionContent}
-                </p>
-                <div>
-                  {item.answerContentList.map((comments) => (
-                    <Grid container className="report-content-comment">
-                      <Grid xs={1.2} item className="font-sm font-30">
-                        {comments.interviewer}
+            {reports &&
+              reports.feedback.tech.map((item) => (
+                <div className=" report-content-box" id={item.questionContent}>
+                  <p className="font-md font-70 report-content-question">
+                    {item.questionContent}
+                  </p>
+                  <div>
+                    {item.answerContentList.map((comments) => (
+                      <Grid container className="report-content-comment">
+                        <Grid xs={1.2} item className="font-sm font-30">
+                          {comments.interviewer}
+                        </Grid>
+                        <Grid xs={10.5} item className="font-sm font-50">
+                          {comments.content}
+                        </Grid>
                       </Grid>
-                      <Grid xs={10.5} item className="font-sm font-50">
-                        {comments.content}
-                      </Grid>
-                    </Grid>
-                  ))}
+                    ))}
+                  </div>
                 </div>
-              </div>
-            ))}
+              ))}
           </Box>
         </div>
       </div>
