@@ -8,8 +8,10 @@ import com.dongpop.urin.domain.meeting.repository.MeetingRepository;
 import com.dongpop.urin.domain.meetingParticipant.entity.MeetingParticipant;
 import com.dongpop.urin.domain.meetingParticipant.repository.MeetingParticipantRepository;
 import com.dongpop.urin.domain.member.entity.Member;
+import com.dongpop.urin.domain.participant.entity.Participant;
 import com.dongpop.urin.domain.study.entity.Study;
 import com.dongpop.urin.domain.study.repository.StudyRepository;
+import com.dongpop.urin.global.error.errorcode.ParticipantErrorCode;
 import com.dongpop.urin.global.error.exception.CustomException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -17,9 +19,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import javax.transaction.Transactional;
+import java.util.List;
 import java.util.UUID;
 
 import static com.dongpop.urin.global.error.errorcode.MeetingErrorCode.*;
+import static com.dongpop.urin.global.error.errorcode.ParticipantErrorCode.*;
 import static com.dongpop.urin.global.error.errorcode.StudyErrorCode.STUDY_DOES_NOT_EXIST;
 
 @Slf4j
@@ -54,9 +58,10 @@ public class MeetingService {
         }
 
         Study study = getStudy(studyId);
-        if (!isStudyLeader(member, study)) {
-            throw new CustomException(ONLY_POSSIBLE_STUDY_LEADER);
+        if (checkStudyParticipants(study, member)) {
+            throw new CustomException(PARTICIPANT_DOES_NOT_BELONG_STUDY);
         }
+
         if (!meetingCreateDto.getSessionId().equals(study.getSessionId())) {
             throw new CustomException(SESSIONID_IS_NOT_VALID);
         }
@@ -104,5 +109,17 @@ public class MeetingService {
         return study.getStudyLeader().getId() == member.getId();
     }
 
+    private boolean checkStudyParticipants(Study study, Member member) {
+        List<Participant> participants = study.getParticipants();
+        for (Participant participant : participants) {
+            if (participant.getMember().getId() == member.getId()) {
+                if (participant.getWithdrawal()) {
+                    throw new CustomException(ALREADY_WITHDRAW_PARTICIPANT);
+                }
+                return true;
+            }
+        }
+        return false;
+    }
 
 }
