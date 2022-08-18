@@ -45,13 +45,11 @@ export default class OvVideoComponent extends Component {
     }
   }
 
-  componentDidUpdate(props) {
-    if (props && !!this.videoRef) {
+  componentDidUpdate(prevProps) {
+    if (prevProps && !!this.videoRef) {
       this.props.user.getStreamManager().addVideoElement(this.videoRef.current);
     }
-  }
 
-  componentDidUpdate(prevProps) {
     if (this.props.isInterviewing !== prevProps.isInterviewing) {
       if (this.props.isInterviewing === true) {
         this.startDetection();
