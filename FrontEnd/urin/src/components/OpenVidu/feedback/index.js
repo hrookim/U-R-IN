@@ -70,7 +70,7 @@ const Feedback = ({
   const styleFeedback = { display: feedbackDisplay };
 
   useEffect(() => {
-    if (isInterviewing) {
+    if (!!intervieweeId) {
       getFeedback({ meetingId, intervieweeId }).then((res) => {
         const { personalityList } = res;
         if (personalityList.length >= 1) {

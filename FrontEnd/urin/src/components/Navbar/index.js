@@ -90,6 +90,7 @@ const NavComponent = () => {
   const modalClose = () => setOpenModal(false);
 
   const passClick = () => {
+    setDisabled(false);
     setOpenModal(true);
   };
 
@@ -97,6 +98,7 @@ const NavComponent = () => {
     if (valid && disabled) {
       dispatch(passValidation({ memberId, navigate }));
       alert("성공적으로 인증되었습니다.");
+      setOpenModal(false);
     } else if (!valid) {
       alert("올바른 이메일 주소를 적어주세요.");
     } else {
