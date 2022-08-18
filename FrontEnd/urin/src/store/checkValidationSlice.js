@@ -27,7 +27,7 @@ export const checkValidation = createAsyncThunk(
     } catch (err) {
       localStorage.clear();
       navigate("/intro");
-      window.location.reload();
+      // window.location.reload();
       return isRejectedWithValue(err.response.data);
     }
   }

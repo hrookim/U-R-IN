@@ -63,7 +63,6 @@ const DetailHeader = ({
     <div>
       <div className="dh-container">
         <div className="dh-chips">
-          {console.log(study.hashtagNameList)}
           {study.hashtagCodes != "string" ? (
             <div>
               {study.hashtagNameList.map((item, idx) => (

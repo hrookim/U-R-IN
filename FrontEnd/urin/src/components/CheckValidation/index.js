@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -10,19 +10,12 @@ const CheckValidation = () => {
   const dispatch = useDispatch();
 
   const memberId = useSelector((state) => state.member.id);
-  const mounted = useRef(false);
 
   useEffect(() => {
-    dispatch(getMemberId(navigate));
-  }, []);
-
-  useEffect(() => {
-    if (!mounted.current && !memberId) {
-      mounted.current = true;
-    } else {
+    dispatch(getMemberId(navigate)).then(() => {
       dispatch(checkValidation(memberId, navigate));
-    }
-  }, [memberId]);
+    });
+  }, []);
 
   return <div></div>;
 };
