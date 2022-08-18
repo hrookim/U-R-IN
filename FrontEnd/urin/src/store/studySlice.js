@@ -149,6 +149,32 @@ export const leaveStudy = createAsyncThunk(
   }
 );
 
+export const outStudy = createAsyncThunk("OUT_STUDY", async ({ studyId }) => {
+  try {
+    const res = await axios.get(
+      `${process.env.REACT_APP_BACK_BASE_URL}studies/${studyId}/participants/me`,
+      {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+        },
+      }
+    );
+    const { participantId } = res.data;
+    const response = await axios.delete(
+      `${process.env.REACT_APP_BACK_BASE_URL}studies/${studyId}/participants/${participantId}`,
+      {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+        },
+      }
+    );
+    return response.data;
+  } catch (err) {
+    console.log(err);
+    return isRejectedWithValue(err.response.data);
+  }
+});
+
 const studySlice = createSlice({
   // state에 들어가는 이름
   // 각 컴퍼넌트에서 state.study 이런 식으로 부를 때 사용

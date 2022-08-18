@@ -3,12 +3,8 @@ import React, { Component } from "react";
 import OvVideoComponent from "./OvVideo";
 import "./index.css";
 
-import { IconButton } from "@mui/material";
-
 import MicOffIcon from "@mui/icons-material/MicOff";
 import VideocamOffIcon from "@mui/icons-material/VideocamOff";
-import VolumeUpIcon from "@mui/icons-material/VolumeUp";
-import VolumeOffIcon from "@mui/icons-material/VolumeOff";
 
 export default class StreamComponent extends Component {
   constructor(props) {
@@ -117,19 +113,6 @@ export default class StreamComponent extends Component {
                 isInterviewing={isInterviewing}
                 mutedSound={mutedSound}
               />
-
-              {/* 비디오 내부 onoff표시 */}
-              {/* <div>
-                {!user.isLocal() && (
-                  <IconButton id="volumeButton" onClick={this.toggleSound}>
-                    {mutedSound ? (
-                      <VolumeOffIcon color="secondary" />
-                    ) : (
-                      <VolumeUpIcon />
-                    )}
-                  </IconButton>
-                )}
-              </div> */}
 
               <div id="statusIcons">
                 {!user.isVideoActive() ? (

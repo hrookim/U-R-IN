@@ -49,6 +49,7 @@ const MyPage = () => {
   const openReport = (id) => {
     const screenWidth = window.screen.width * 0.75;
     const screenHeight = window.screen.height * 0.75;
+    console.log("리포트 아이디", id);
     window.open(
       `${window.location.origin}/report/${id}/`,
       "Popup",
