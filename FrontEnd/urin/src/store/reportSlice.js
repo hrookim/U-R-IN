@@ -20,7 +20,7 @@ export const getReport = createAsyncThunk(
 
       return response.data;
     } catch (err) {
-      navigate("/notfound");
+      console.log("-------");
       console.log(err);
       return isRejectedWithValue(err.response.data);
     }

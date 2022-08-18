@@ -8,19 +8,9 @@ import IconButton from "@mui/material/IconButton";
 
 import { Container, Grid } from "@mui/material";
 
-import {
-  changeStudyStatus,
-  joinStudy,
-  leaveStudy,
-} from "../../store/studySlice";
+import { changeStudyStatus, joinStudy, outStudy } from "../../store/studySlice";
 
-const DetailHeader = ({
-  study,
-  isLeader,
-  isParticipant,
-  currentMemberId,
-  setIsChanged,
-}) => {
+const DetailHeader = ({ study, isLeader, isParticipant, setIsChanged }) => {
   const dispatch = useDispatch();
   const { studyId } = useParams();
 
@@ -39,21 +29,20 @@ const DetailHeader = ({
     if (confirmAnswer) {
       dispatch(changeStudyStatus({ studyId })).then(() => {
         setIsChanged(true);
-        setInterval(() => setIsChanged(false), 100);
+        setTimeout(() => setIsChanged(false), 100);
       });
     }
   };
   const onClickJoin = () => {
     dispatch(joinStudy(studyId)).then(() => {
       setIsChanged(true);
-      setInterval(() => setIsChanged(false), 100);
+      setTimeout(() => setIsChanged(false), 100);
     });
   };
   const onClickLeave = () => {
     const confirmAnswer = window.confirm("스터디를 탈퇴하시겠습니까?");
     if (confirmAnswer) {
-      const participantId = currentMemberId;
-      dispatch(leaveStudy({ studyId, participantId })).then(() => {
+      dispatch(outStudy({ studyId })).then(() => {
         setIsChanged(true);
         setInterval(() => setIsChanged(false), 100);
       });

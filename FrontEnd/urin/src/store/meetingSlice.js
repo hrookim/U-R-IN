@@ -19,10 +19,12 @@ export const getMeeting = createAsyncThunk(
           },
         }
       );
+      console.log(response.data, "----");
 
       return response.data;
     } catch (err) {
       console.log(err);
+
       navigate("/notfound");
       return isRejectedWithValue(err.reponse.data);
     }
