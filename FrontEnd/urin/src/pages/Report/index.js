@@ -116,7 +116,7 @@ const Report = () => {
             <FormControl sx={{ m: 1, minWidth: 120 }} size="small">
               <Select
                 id="demo-select-small"
-                defaultValue={meetingIdList[0]}
+                defaultValue={meetingIdList[0].meetingId}
                 label="meetingId"
                 onChange={(e) => {
                   pageChange(e);
