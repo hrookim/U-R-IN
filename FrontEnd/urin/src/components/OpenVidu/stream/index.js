@@ -97,7 +97,14 @@ export default class StreamComponent extends Component {
               >
                 {isInterviewing ? "면접종료" : "면접시작"}
               </button>
-              <span className="timer mx-2">{this.secondsToTime(timer)}</span>
+              <span className="timer">
+                {isInterviewing ? (
+                  <span style={{ color: "red" }}>&nbsp;⦁&nbsp;</span>
+                ) : (
+                  <span style={{ color: "black" }}>&nbsp;⦁&nbsp;</span>
+                )}
+                {this.secondsToTime(timer)}&nbsp;
+              </span>
             </div>
           )}
 
