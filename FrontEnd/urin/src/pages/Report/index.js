@@ -110,7 +110,6 @@ const Report = () => {
         {/* 스터디 명 가져오기 */}
         <div className="font-lg font-60 report-title">{studyName}</div>
         {/* 리포트 선택 */}
-        {console.log(meetingId, "미팅아이디")}
         <Grid container className="report-select">
           <Grid xs={10.5}>
             <FormControl sx={{ m: 1, minWidth: 120 }} size="small">

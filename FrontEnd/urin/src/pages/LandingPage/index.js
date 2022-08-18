@@ -96,7 +96,7 @@ const LandingPage = () => {
         },
       }
     );
-  });
+  }, []);
   return (
     <div ref={ref}>
       <div>

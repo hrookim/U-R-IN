@@ -20,7 +20,6 @@ const Feedback = ({
     const list = [...feedbackList];
     list[index][name] = value;
     setFeedbackList(list);
-    console.log(feedbackList);
   };
 
   const onSubmit = (e) => {
@@ -30,7 +29,6 @@ const Feedback = ({
       type,
       feedbackList,
     };
-    console.log(form);
     updateFeedback({ meetingId, intervieweeId, form }).then(() => {
       setTimeout(() => {
         setIsLoading(false);
