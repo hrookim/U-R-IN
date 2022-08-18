@@ -62,7 +62,7 @@ public class ReportService {
         return ReportDataDto.builder()
                 .aiData(ComparisonDataDto.builder()
                         .interviewee(getAIReportData(analysisData))
-                        .passUser(getpassedAIData())
+                        .passUser(getPassedAIData())
                         .build())
                 .feedback(getFeedbackData(feedbackRepository.findByMeetingAndInterviewee(meeting, interviewee))).build();
     }
@@ -108,7 +108,7 @@ public class ReportService {
         return list;
     }
 
-    private AIDataDto getpassedAIData() {
+    private AIDataDto getPassedAIData() {
         Map<String, AnalysisCacheDto> passedData = analysisService.getPassDataCache();
 
         List<PoseDataDto> poseDataDtoList = new ArrayList<>();
