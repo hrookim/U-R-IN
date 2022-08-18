@@ -27,11 +27,4 @@ public class AnalysisController {
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping("/{meetingId}/analysis")
-    public ResponseEntity<?> getAIReport(@PathVariable int meetingId,
-                                         @AuthenticationPrincipal MemberPrincipal memberPrincipal) {
-
-        return ResponseEntity.ok().build();
-    }
-
 }
