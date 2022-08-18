@@ -8,8 +8,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
-import java.net.URI;
-
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/v1/meeting")
@@ -18,7 +16,7 @@ public class AnalysisController {
     private final AnalysisService analysisService;
 
     @PutMapping("/{meetingId}/analysis")
-    public ResponseEntity<?> updateAIData(@PathVariable int meetingId,
+    public ResponseEntity<Void> updateAIData(@PathVariable int meetingId,
                                           @RequestBody AnalysisDataDto aiData,
                                           @AuthenticationPrincipal MemberPrincipal memberPrincipal) {
 

@@ -139,7 +139,7 @@ public class AnalysisService {
     private void savePoseData(AnalysisData analysisData, Map<PostureType, Integer> poseMap) {
         for(PostureType poseType : poseMap.keySet()) {
             Posture posture = postureRepository.findByAnalysisDataAndType(analysisData, poseType)
-                    .orElseGet(() -> new Posture());
+                    .orElseGet(Posture::new);
 
             posture.setAnalysisData(analysisData);
             posture.setPostureData(poseType, posture.getCount() + poseMap.get(poseType));
@@ -150,7 +150,7 @@ public class AnalysisService {
     private void saveEmotionData(AnalysisData analysisData, Map<EmotionType, Integer> emotionMap, int realAnalyzedTime) {
         for(EmotionType emotionType : emotionMap.keySet()) {
             Emotion emotion = emotionRepository.findByAnalysisDataAndType(analysisData, emotionType)
-                    .orElseGet(() -> new Emotion());
+                    .orElseGet(Emotion::new);
 
             emotion.setAnalysisData(analysisData);
             emotion.setEmotionData(emotionType, emotion.getCount() + emotionMap.get(emotionType)
