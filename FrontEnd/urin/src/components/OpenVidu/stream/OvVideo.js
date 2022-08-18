@@ -5,7 +5,7 @@ import face from "./face";
 import teachable from "./teachable";
 import * as tmPose from "@teachablemachine/pose";
 
-const URL = "https://teachablemachine.withgoogle.com/models/J2X70C2So/";
+const URL = "https://teachablemachine.withgoogle.com/models/a6ThbnKu8/";
 
 export default class OvVideoComponent extends Component {
   constructor(props) {

@@ -37,19 +37,6 @@ const InquiryCommentInput = ({ parentId, setIsInputSubmitted }) => {
           className="inquiry-parent-input"
           style={{ padding: "20px" }}
         />
-        {/* <Button
-          onClick={onSubmit}
-          sx={{
-            backgroundColor: "#0037FA",
-            height: "60px",
-            marginLeft: "20px",
-            borderRadius: "10px",
-            "&:hover": { backgroundColor: "#0037FA" },
-          }}
-          variant="contained"
-        >
-          제출
-        </Button> */}
       </div>
     </div>
   );
