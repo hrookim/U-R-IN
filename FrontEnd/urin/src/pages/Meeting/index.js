@@ -247,10 +247,10 @@ class Meeting extends Component {
   // 일반모드: {intervieweeId: 0}
   interviewModeChanged(intervieweeId, intervieweeNickname) {
     console.log("interviewee: ", intervieweeNickname);
-    if (intervieweeId === 0) {
-      this.toggleFeedback("none");
-    } else {
+    if (intervieweeId !== 0 && intervieweeId !== localUser.id) {
       this.toggleFeedback("block");
+    } else {
+      this.toggleFeedback("none");
     }
     this.setState({
       intervieweeId: intervieweeId,
@@ -337,10 +337,10 @@ class Meeting extends Component {
           const data = JSON.parse(event.data);
           console.log("EVENTO REMOTE: ", data);
           this.setState(data);
-          if (data.intervieweeId === 0) {
-            this.toggleFeedback("none");
-          } else {
+          if (data.intervieweeId !== 0 && data.intervieweeId !== localUser.id) {
             this.toggleFeedback("block");
+          } else {
+            this.toggleFeedback("none");
           }
         }
       });
