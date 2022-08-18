@@ -13,7 +13,6 @@
 .nav > .nav-header {
   display: flex;
   align-items: center;
-  
 }
 
 .nav > .nav-header > .nav-title {
@@ -48,10 +47,8 @@
   display: inline-block;
 }
 
-
 .nav-links > a:hover {
   color: #0037FA;
-  
 }
 
 .nav > #nav-check {
@@ -60,11 +57,9 @@
 
 @media (min-width:900px) {
  .nav-title {
-  
   transition: margin 1s ease-in-out;
 }
 .nav-links {
-  
   transition: margin 1s ease-in-out;
   }}
 
@@ -73,6 +68,7 @@
   margin-left:1em;
   transition: margin 1s ease-in-out;
 }
+
 .nav-links {
   margin-right:1em;
   transition: margin 1s ease-in-out;
@@ -86,23 +82,26 @@
     top: 3px;
     z-index:99999;
   }
+
   .nav > .nav-btn > label {
     display: inline-block;
     width: 50px;
     height: 50px;
     padding: 13px;
     border-radius: 10px;
-
   }
+
   .nav > .nav-btn > label:hover {
     background-color: rgba(0, 55, 250, 0.1);
   }
+
   .nav > .nav-btn > label > span {
     display: block;
     width: 25px;
     height: 10px;
     border-top: 2px solid black;
   }
+
   .nav-links {
     position: absolute;
     display: block;
@@ -115,17 +114,21 @@
     left: 0px;
     z-index: 9999;
   }
+
   .nav-links > a {
     display: block;
     width: 100%;
   }
+
   .nav > #nav-check:not(:checked) ~ div > .nav-links {
     height: 0px;
   }
+
   .nav > #nav-check:checked ~ div > .nav-links {
     height: calc(100vh - 50px);
     overflow-y: auto;
   }
+
   .avatar {
     margin: 0 40px 0 0;
   }

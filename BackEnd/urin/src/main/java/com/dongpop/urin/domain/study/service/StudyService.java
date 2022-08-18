@@ -3,6 +3,9 @@ package com.dongpop.urin.domain.study.service;
 import com.dongpop.urin.domain.hashtag.dto.HashtagDataDto;
 import com.dongpop.urin.domain.hashtag.entity.Hashtag;
 import com.dongpop.urin.domain.hashtag.repository.HashtagRepository;
+import com.dongpop.urin.domain.meeting.dto.response.MeetingIdDto;
+import com.dongpop.urin.domain.meetingParticipant.entity.MeetingParticipant;
+import com.dongpop.urin.domain.meetingParticipant.repository.MeetingParticipantRepository;
 import com.dongpop.urin.domain.member.entity.Member;
 import com.dongpop.urin.domain.participant.dto.response.ParticipantDto;
 import com.dongpop.urin.domain.participant.entity.Participant;
@@ -46,6 +49,7 @@ public class StudyService {
     private final StudyRepository studyRepository;
     private final ParticipantRepository participantRepository;
     private final HashtagRepository hashtagRepository;
+    private final MeetingParticipantRepository meetingParticipantRepository;
 
     @Transactional
     @Scheduled(cron = "0 0 0 * * *")
@@ -57,9 +61,9 @@ public class StudyService {
                         study.getId(), study.getExpirationDate(), LocalDate.now());
                 study.updateStatus(TERMINATED);
             }
+
         });
     }
-
     /**
      * 스터디 summary 리스트 (검색, 페이징)
      */
@@ -72,7 +76,7 @@ public class StudyService {
 
         Page<Study> pages = studyRepository.findStudyList(studySearchDto, pageable);
         if (pages.isEmpty()) {
-            return new StudyListDto(0, new ArrayList<StudySummaryDto>());
+            return new StudyListDto(0, new ArrayList<>());
         }
 
         List<StudySummaryDto> studyList = pages.toList().stream()
@@ -151,6 +155,33 @@ public class StudyService {
                 .pastStudyList(pastStudyList).build();
     }
 
+    @Transactional
+    public MeetingIdResponseDto getMeetingId(int studyId, Member member) {
+        Study study = getStudy(studyId);
+
+        if (!checkEnrolledMember(study, member)) {
+            throw new CustomException(NOT_ENROLLED_MEMBER);
+        }
+
+        List<MeetingParticipant> meetingParticipantList = meetingParticipantRepository.findAllMeetingParticipantList(study, member);
+
+        List<MeetingIdDto> idList = new ArrayList<>();
+        meetingParticipantList.forEach(mt -> {
+            idList.add(new MeetingIdDto(mt.getMeeting().getId()));
+        });
+
+        return new MeetingIdResponseDto(idList);
+    }
+
+    private boolean checkEnrolledMember(Study study, Member member) {
+        for (Participant participant : study.getParticipants()) {
+            if (participant.getMember().getId() == member.getId()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     /**
      * 스터디 생성
      */
@@ -218,9 +249,8 @@ public class StudyService {
     }
 
     private Study getStudy(int studyId) {
-        Study study = studyRepository.findById(studyId)
+        return studyRepository.findById(studyId)
                 .orElseThrow(() -> new CustomException(STUDY_DOES_NOT_EXIST));
-        return study;
     }
 
     private List<HashtagDataDto> getHashtagDatas(Study study) {
@@ -236,7 +266,7 @@ public class StudyService {
         List<HashtagDataDto> hashtagDatas = getHashtagDatas(study);
 
         StringBuilder sb = new StringBuilder();
-        hashtagDatas.stream().forEach((dataDto) -> {
+        hashtagDatas.forEach((dataDto) -> {
             sb.append(dataDto.getCode());
             hashtagNameList.add(dataDto.getName());
         });
@@ -295,4 +325,6 @@ public class StudyService {
             }
         }
     }
+
+
 }

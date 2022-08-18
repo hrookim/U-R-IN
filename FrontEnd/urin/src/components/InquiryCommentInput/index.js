@@ -35,6 +35,7 @@ const InquiryCommentInput = ({ parentId, setIsInputSubmitted }) => {
           onKeyPress={onKeyPress}
           value={form}
           className="inquiry-parent-input"
+          style={{ padding: "20px" }}
         />
         {/* <Button
           onClick={onSubmit}

@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState } from "react";
 import { css } from "@emotion/react";
 import { Button } from "@mui/material";
 
@@ -46,8 +46,6 @@ const SearchButton = ({ id, contents, getHashtagCode, hashtags }) => {
   };
 
   const handleClick = (e) => {
-    const value = e.target.id;
-
     if (selected) {
       setSelected(false);
     } else if (hashtags.length < 3) {

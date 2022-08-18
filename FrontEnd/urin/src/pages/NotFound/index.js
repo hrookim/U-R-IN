@@ -27,7 +27,6 @@ const NotFound = () => {
           {second}초 뒤에 메인페이지로 전환됩니다.
         </p>
       </div>
-
       <img src="/img/not_found_img.png" alt="Not Found" className="img-404" />
     </div>
   );

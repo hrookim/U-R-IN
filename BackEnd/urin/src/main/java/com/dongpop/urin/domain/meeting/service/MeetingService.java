@@ -5,12 +5,15 @@ import com.dongpop.urin.domain.meeting.dto.response.MeetingIdDto;
 import com.dongpop.urin.domain.meeting.dto.response.MeetingSessionDto;
 import com.dongpop.urin.domain.meeting.entity.Meeting;
 import com.dongpop.urin.domain.meeting.repository.MeetingRepository;
+import com.dongpop.urin.domain.meetingParticipant.entity.MeetingParticipant;
+import com.dongpop.urin.domain.meetingParticipant.repository.MeetingParticipantRepository;
 import com.dongpop.urin.domain.member.entity.Member;
 import com.dongpop.urin.domain.study.entity.Study;
 import com.dongpop.urin.domain.study.repository.StudyRepository;
 import com.dongpop.urin.global.error.exception.CustomException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -18,6 +21,7 @@ import javax.transaction.Transactional;
 import java.util.UUID;
 
 import static com.dongpop.urin.global.error.errorcode.MeetingErrorCode.*;
+import static com.dongpop.urin.global.error.errorcode.ParticipantErrorCode.PARTICIPANT_DOES_NOT_BELONG_STUDY;
 import static com.dongpop.urin.global.error.errorcode.StudyErrorCode.STUDY_DOES_NOT_EXIST;
 
 @Slf4j
@@ -27,6 +31,8 @@ public class MeetingService {
 
     private final StudyRepository studyRepository;
     private final MeetingRepository meetingRepository;
+    private final MeetingParticipantRepository meetingParticipantRepository;
+    private final ApplicationEventPublisher publisher;
 
     @Transactional
     public MeetingSessionDto issueSessionId(Member member, int studyId) {
@@ -51,8 +57,8 @@ public class MeetingService {
         }
 
         Study study = getStudy(studyId);
-        if (!isStudyLeader(member, study)) {
-            throw new CustomException(ONLY_POSSIBLE_STUDY_LEADER);
+        if (!study.isRegistedMember(member)) {
+            throw new CustomException(PARTICIPANT_DOES_NOT_BELONG_STUDY);
         }
         if (!meetingCreateDto.getSessionId().equals(study.getSessionId())) {
             throw new CustomException(SESSIONID_IS_NOT_VALID);
@@ -61,10 +67,20 @@ public class MeetingService {
 //        if (study.getIsOnair()) {
 //            throw new CustomException(MEETING_IS_ALREADY_ONAIR);
 //        }
-        study.changeOnairStatus(meetingCreateDto.getIsConnected());
 
-        int meetingId = meetingRepository.save(new Meeting(study)).getId();
-        return new MeetingIdDto(meetingId);
+        Meeting meeting = new Meeting(study);
+        if (study.getStudyLeader().getId() == member.getId()) {
+            study.changeOnairStatus(meetingCreateDto.getIsConnected());
+            meeting = meetingRepository.save(meeting);
+            log.info("Create Meeting, Send Notification to Participants");
+            sendNotificationToParticipants(study);
+        } else {
+            meeting = meetingRepository.findFirstByStudyOrderByIdDesc(study)
+                    .orElseThrow(() -> new CustomException(MEETING_IS_NOT_EXIST));
+        }
+        meetingParticipantRepository.save(new MeetingParticipant(meeting, member));
+
+        return new MeetingIdDto(meeting.getId());
     }
 
     @Transactional
@@ -82,6 +98,13 @@ public class MeetingService {
 
         study.closeMeeting();
         meeting.closeMeeting();
+    }
+
+    private void sendNotificationToParticipants(Study study) {
+        String content = "[" + study.getTitle() + "] 스터디의 미팅이 시작되었습니다.";
+        String url = "https://i7a504.p.ssafy.io/study/" + study.getId();
+        log.info("Make participants event.");
+        study.sendEvent(publisher, content, url);
     }
 
     private Study getStudy(int studyId) {
