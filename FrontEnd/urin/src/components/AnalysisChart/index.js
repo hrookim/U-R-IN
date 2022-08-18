@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import Chart from "react-apexcharts";
 
 const AnalysisChart = ({ category, interviewee, passUser, height }) => {
-  const [chart, setChart] = useState({
+  const chart = {
     options: {
       colors: ["#0244FC", "#868686"],
       chart: {
@@ -55,7 +55,7 @@ const AnalysisChart = ({ category, interviewee, passUser, height }) => {
         data: passUser,
       },
     ],
-  });
+  };
 
   return (
     <Chart
