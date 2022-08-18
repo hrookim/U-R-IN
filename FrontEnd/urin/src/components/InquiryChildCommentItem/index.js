@@ -85,19 +85,44 @@ const InquiryChildCommentItem = ({
         )}
       </div>
       {isEditing && (
-        <div>
-          <input type="text" onChange={onChange} value={form} />
-          <button type="submit" onClick={onClickUpdate}>
-            수정
-          </button>
-          <button
-            type="button"
-            onClick={() => {
-              setIsEditing(false);
-            }}
-          >
-            취소
-          </button>
+        <div className="inquiry-parent">
+          <input
+            onChange={onChange}
+            value={form}
+            className="inquiry-parent-input"
+            style={{ marginLeft: "5%", width: "95%" }}
+          />
+          <div className="inquiry-input-btn">
+            <Button
+              variant="outlined"
+              onClick={onClickUpdate}
+              sx={{
+                borderColor: "#0037FA",
+                color: "#0037FA",
+                marginRight: "5px",
+                "&:hover": { backgroundColor: "#0037FA", color: "white" },
+              }}
+            >
+              수정
+            </Button>
+            <Button
+              variant="outlined"
+              sx={{
+                borderColor: "rgba(0,0,0,0.7)",
+                color: "rgba(0,0,0,0.7)",
+                "&:hover": {
+                  backgroundColor: "rgba(0,0,0,0.4)",
+                  color: "white",
+                  border: "none",
+                },
+              }}
+              onClick={() => {
+                setIsEditing(false);
+              }}
+            >
+              취소
+            </Button>
+          </div>
         </div>
       )}
       <hr />
