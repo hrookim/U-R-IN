@@ -57,6 +57,12 @@ video {
 }
 
 .timer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 80px;
+    height: 30px;
     color: black;
-    background-color: transparent;
+    background-color: rgba(255, 255, 255, 0.6);
+    border-radius: 15px;
 }
