@@ -83,7 +83,6 @@ const Report = () => {
     dispatch(getMeeting({ studyId, navigate }));
   }, []);
   useEffect(() => {
-    console.log("meetingid", meetingId);
     dispatch(getReport({ page, navigate }));
     // 변수설정
   }, [page]);

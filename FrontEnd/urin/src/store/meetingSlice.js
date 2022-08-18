@@ -12,6 +12,7 @@ export const getMeeting = createAsyncThunk(
   async ({ studyId, navigate }) => {
     try {
       const response = await axios.get(
+        // 나중에 수정
         `${process.env.REACT_APP_BACK_BASE_URL}studies/${studyId}/meeting/Id`,
         {
           headers: {
