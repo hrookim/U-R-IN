@@ -9,6 +9,10 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -27,6 +31,12 @@ public class AnalysisData extends BaseTimeEntity {
     private Member interviewee;
 
     private int time;
+
+    @OneToMany(mappedBy = "analysisData")
+    private Set<Emotion> emotionList = new HashSet<>();
+
+    @OneToMany(mappedBy = "analysisData")
+    private Set<Posture> postureList = new HashSet<>();
 
     @Builder
     public AnalysisData(Meeting meeting, Member interviewee, int time) {

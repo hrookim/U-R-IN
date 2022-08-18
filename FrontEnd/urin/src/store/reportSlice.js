@@ -1,3 +1,4 @@
+import { Alert } from "@mui/material";
 import {
   createAsyncThunk,
   createSlice,
@@ -10,6 +11,7 @@ export const getReport = createAsyncThunk(
   async ({ page, navigate }) => {
     try {
       const response = await axios.get(
+        // 나중에 수정
         `${process.env.REACT_APP_BACK_BASE_URL}meeting/${page}/report`,
         {
           headers: {
@@ -20,8 +22,8 @@ export const getReport = createAsyncThunk(
 
       return response.data;
     } catch (err) {
-      console.log("-------");
-      console.log(err);
+      alert("리포트가 없습니다.");
+      window.close();
       return isRejectedWithValue(err.response.data);
     }
   }

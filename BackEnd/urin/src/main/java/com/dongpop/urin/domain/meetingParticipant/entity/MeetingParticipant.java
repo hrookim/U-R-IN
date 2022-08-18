@@ -14,16 +14,16 @@ import javax.persistence.*;
 @Table(name = "meeting_participants")
 @Entity
 public class MeetingParticipant extends BaseTimeEntity {
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+        @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+        private Integer id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "meeting_id")
-    private Meeting meeting;
+        @ManyToOne(fetch = FetchType.LAZY)
+        @JoinColumn(name = "meeting_id")
+        private Meeting meeting;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_id")
-    private Member member;
+        @ManyToOne(fetch = FetchType.LAZY)
+        @JoinColumn(name = "member_id")
+        private Member member;
 
     public MeetingParticipant(Meeting meeting, Member member) {
         this.meeting = meeting;

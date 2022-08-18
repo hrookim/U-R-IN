@@ -27,7 +27,7 @@ public class Member extends BaseTimeEntity {
 
     private Boolean isPassed;
     @Builder
-    public Member(String identifier, String memberName, String nickname, String password, String role, String email, String profileImage) {
+    public Member(String identifier, String memberName, String nickname, String password, String role) {
         this.identifier = identifier;
         this.memberName = memberName;
         this.nickname = nickname;

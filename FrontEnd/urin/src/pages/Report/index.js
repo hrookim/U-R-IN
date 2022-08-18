@@ -47,6 +47,7 @@ const Report = () => {
   // const [question, setQuestion] = useState(" ");
   const memberName = useSelector((state) => state.member.memberName);
   const studyName = useSelector((state) => state.study.title);
+
   const meetingId = useSelector((state) => state.meeting.meetingIdList);
 
   // PDF용 /////////////////
@@ -83,7 +84,6 @@ const Report = () => {
     dispatch(getMeeting({ studyId, navigate }));
   }, []);
   useEffect(() => {
-    console.log("meetingid", meetingId);
     dispatch(getReport({ page, navigate }));
     // 변수설정
   }, [page]);

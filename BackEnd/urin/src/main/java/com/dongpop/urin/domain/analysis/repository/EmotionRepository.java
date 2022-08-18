@@ -5,8 +5,10 @@ import com.dongpop.urin.domain.analysis.entity.Emotion;
 import com.dongpop.urin.domain.analysis.entity.EmotionType;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface EmotionRepository extends JpaRepository<Emotion, Integer> {
     Optional<Emotion> findByAnalysisDataAndType(AnalysisData analysisData, EmotionType type);
+    List<Emotion> findByAnalysisData(AnalysisData analysisData);
 }

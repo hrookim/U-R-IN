@@ -19,7 +19,10 @@ public class CustomOAuth2AuthorizedClientService implements OAuth2AuthorizedClie
         String clientRegistrationId = oAuth2AuthorizedClient.getClientRegistration().getRegistrationId();
         String principalName = oAuth2AuthorizedClient.getPrincipalName();
         String accessToken = oAuth2AuthorizedClient.getAccessToken().getTokenValue();
-        String refreshToken = oAuth2AuthorizedClient.getRefreshToken().getTokenValue();
+        String refreshToken = "";
+        if (oAuth2AuthorizedClient.getRefreshToken() != null) {
+            refreshToken = oAuth2AuthorizedClient.getRefreshToken().getTokenValue();
+        }
 
         OAuth2Client oAuth2Client = OAuth2Client.builder()
                 .clientRegistrationId(clientRegistrationId)
