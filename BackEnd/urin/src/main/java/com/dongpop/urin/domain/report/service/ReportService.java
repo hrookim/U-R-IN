@@ -9,7 +9,6 @@ import com.dongpop.urin.domain.analysis.service.AnalysisService;
 import com.dongpop.urin.domain.feedback.entity.Feedback;
 import com.dongpop.urin.domain.feedback.repository.FeedbackRepository;
 import com.dongpop.urin.domain.feedbackcontent.entity.FeedbackContent;
-import com.dongpop.urin.domain.feedbackcontent.entity.FeedbackContentType;
 import com.dongpop.urin.domain.meeting.entity.Meeting;
 import com.dongpop.urin.domain.meeting.repository.MeetingRepository;
 import com.dongpop.urin.domain.meetingParticipant.repository.MeetingParticipantRepository;
@@ -26,12 +25,14 @@ import com.dongpop.urin.domain.report.dto.response.feedback.QuestionContentDto;
 import com.dongpop.urin.global.error.exception.CustomException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import static com.dongpop.urin.domain.feedbackcontent.entity.FeedbackContentType.*;
 import static com.dongpop.urin.global.error.errorcode.CommonErrorCode.DO_NOT_HAVE_AUTHORIZATION;
 import static com.dongpop.urin.global.error.errorcode.CommonErrorCode.NO_SUCH_ELEMENTS;
 import static com.dongpop.urin.global.error.errorcode.MeetingErrorCode.MEETING_IS_NOT_EXIST;
@@ -39,7 +40,6 @@ import static com.dongpop.urin.global.error.errorcode.MeetingErrorCode.MEETING_I
 @RequiredArgsConstructor
 @Service
 public class ReportService {
-
     private final AnalysisRepository analysisRepository;
     private final EmotionRepository emotionRepository;
     private final PostureRepository postureRepository;
@@ -48,6 +48,8 @@ public class ReportService {
     private final MeetingParticipantRepository meetingParticipantRepository;
     private final FeedbackRepository feedbackRepository;
     private final AnalysisService analysisService;
+
+    private static final int QUESTION_COUNT = 3;
 
     public ReportDataDto setReportData(int meetingId, int intervieweeId) {
         Meeting meeting = getMeeting(meetingId);
@@ -66,48 +68,44 @@ public class ReportService {
     }
 
     private FeedbackDataDto getFeedbackData(List<Feedback> feedbackList) {
+        List<QuestionContentDto> tech = initQuestionContentList();
+        List<QuestionContentDto> personality = initQuestionContentList();
 
-        List<QuestionContentDto> tech = new ArrayList<>();
-        List<QuestionContentDto> personality = new ArrayList<>();
-
-        for(Feedback feedback : feedbackList) {
-            //여기서 피드백의 Question 넣어주기
-
-
-            //feedback content iter
-
-
-            //answer리스트 만들기
-
-
-            //answer 넣어주기
-
+        for (Feedback feedback : feedbackList) {
             List<FeedbackContent> feedbackContents = feedback.getFeedbackContents();
 
-            List<AnswerContentDto> techAnswer = new ArrayList<>();
-            List<AnswerContentDto> perAnswer = new ArrayList<>();
-
             for (FeedbackContent feedbackContent : feedbackContents) {
-                AnswerContentDto answerContentDto = AnswerContentDto.builder()
-                        .content(feedbackContent.getAnswer())
-                        .interviewer(feedback.getInterviewer().getMemberName()).build();
+                int questionIndex = feedbackContent.getNumber() - 1;
+                QuestionContentDto questionContentDto = TECH.name().equals(feedbackContent.getType().name())
+                        ? tech.get(questionIndex) : personality.get(questionIndex);
 
-                if (FeedbackContentType.TECH.equals(feedbackContent.getType())) {
-                    techAnswer.add(answerContentDto);
-                } else {
-                    perAnswer.add(answerContentDto);
-                }
+                fillInQuestionContentData(feedback.getInterviewer().getMemberName(), feedbackContent, questionContentDto);
             }
-
-            tech.add(QuestionContentDto.builder()
-                    .questionContent(feedbackContents.get(0).getQuestion())
-                    .answerContentList(techAnswer)
-                    .build());
         }
 
         return FeedbackDataDto.builder()
                 .tech(tech)
                 .personality(personality).build();
+    }
+
+    private void fillInQuestionContentData(String interviewerName, FeedbackContent feedbackContent, QuestionContentDto questionContentDto) {
+        if (!StringUtils.hasText(questionContentDto.getQuestionContent())) {
+            questionContentDto.setQuestionContent(feedbackContent.getQuestion());
+        }
+        questionContentDto.getAnswerContentList().add(AnswerContentDto.builder()
+                .content(feedbackContent.getAnswer())
+                .interviewer(interviewerName)
+                .build());
+    }
+
+    private List<QuestionContentDto> initQuestionContentList() {
+        List<QuestionContentDto> list = new ArrayList<>();
+        for (int i = 0; i < QUESTION_COUNT; i++) {
+            list.add(QuestionContentDto.builder()
+                    .questionContent("")
+                    .answerContentList(new ArrayList<>()).build());
+        }
+        return list;
     }
 
     private AIDataDto getpassedAIData() {
