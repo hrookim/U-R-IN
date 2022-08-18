@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import Chart from "react-apexcharts";
 
 const AnalysisChart = ({ category, interviewee, passUser, height }) => {
-  console.log(interviewee, "차트 내부");
   const chart = {
     options: {
       colors: ["#0244FC", "#868686"],

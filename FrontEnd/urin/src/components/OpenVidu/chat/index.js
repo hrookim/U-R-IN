@@ -2,8 +2,7 @@
 import React, { Component } from "react";
 import "./index.css";
 
-import { IconButton, Fab, Tooltip } from "@mui/material";
-import HighlightOffIcon from "@mui/icons-material/HighlightOff";
+import { IconButton } from "@mui/material";
 import SendIcon from "@mui/icons-material/Send";
 
 export default class ChatComponent extends Component {
@@ -32,16 +31,7 @@ export default class ChatComponent extends Component {
           message: data.message,
           createdAt: data.createdAt,
         });
-        // const document = window.document;
-        // setTimeout(() => {
-        //   const userImg = document.getElementById(
-        //     "userImg-" + (this.state.messageList.length - 1)
-        //   );
-        //   const video = document.getElementById("video-" + data.streamId);
-        //   const avatar = userImg.getContext("2d");
-        //   avatar.drawImage(video, 200, 120, 285, 285, 0, 0, 60, 60);
-        //   this.props.messageReceived();
-        // }, 50);
+
         this.setState({ messageList: messageList });
         this.scrollToBottom();
       });

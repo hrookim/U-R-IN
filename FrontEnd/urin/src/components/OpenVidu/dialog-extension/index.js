@@ -24,12 +24,9 @@ export default class DialogExtensionComponent extends Component {
     this.refreshBrowser = this.refreshBrowser.bind(this);
   }
 
-  // componentWillReceiveProps(props) {}
-
   componentDidMount() {}
 
   onNoClick() {
-    // this.cancel.emit();
     this.props.cancelClicked();
   }
 

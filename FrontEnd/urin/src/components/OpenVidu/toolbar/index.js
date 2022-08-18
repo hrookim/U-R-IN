@@ -2,7 +2,7 @@
 import React, { Component } from "react";
 import "./index.css";
 
-import { Grid, Tooltip, IconButton, Button } from "@mui/material";
+import { IconButton, Button } from "@mui/material";
 import MicIcon from "@mui/icons-material/Mic";
 import MicOffIcon from "@mui/icons-material/MicOff";
 import VideocamIcon from "@mui/icons-material/Videocam";
@@ -226,20 +226,6 @@ export default class ToolbarComponent extends Component {
         <IconButton onClick={this.leaveSession} sx={{ color: "red" }}>
           <CancelIcon fontSize="large" />
         </IconButton>
-
-        {/* <IconButton color="inherit" id="navChatButton">
-            {this.props.showNotification && <div id="point" className="" />}
-            <Tooltip title="Feedback">
-              <RateReviewIcon />
-            </Tooltip>
-          </IconButton>
-
-          <IconButton color="inherit" id="navChatButton">
-            {this.props.showNotification && <div id="point" className="" />}
-            <Tooltip title="Chat">
-              <QuestionAnswerIcon />
-            </Tooltip>
-          </IconButton> */}
       </div>
     );
   }

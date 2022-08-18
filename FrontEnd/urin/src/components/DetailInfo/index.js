@@ -57,31 +57,6 @@ const DetailInfo = ({ study, isLeader, isParticipant, setIsChanged }) => {
             )}
           </div>
         ))}
-        {/* {study.participants.map((participant) => (
-          <div
-            key={participant.id}
-            className="member-info"
-            style={{ margin: "0 0 15px 0" }}
-          >
-            <Avatar sx={{ width: "30px", height: "30px" }}>
-              {participant.nickname[0]}
-            </Avatar>
-            <span>{participant.nickname}</span>
-            {participant.isLeader && (
-              <FontAwesomeIcon icon={faCrown} style={{ margin: "0 0 0 8px" }} />
-            )}
-            {console.log(isLeader, study.status)}
-            {isLeader &&
-            !participant.isLeader &&
-            study.status != "TERMINATED" ? (
-              <IconButton onClick={() => onClickLeave(participant.id)}>
-                <RemoveCircleOutlineIcon
-                  sx={{ fontSize: "small", color: "#f44336" }}
-                />
-              </IconButton>
-            ) : null}
-          </div>
-        ))} */}
       </div>
     </div>
   );
