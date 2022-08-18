@@ -36,14 +36,6 @@
   box-sizing: border-box;
   border-radius: 25px;
   overflow: scroll;
-/*   
-  background-color: white;
-  z-index: 99999;
-  margin: auto;
-  height: 95%;
-  width: 100%;
-  border-radius: 20px; */
-  
 }
 
 .message-wrap {
@@ -56,13 +48,6 @@
   position: relative;
   padding: 7px 0;
 }
-/* .user-img {
-  position: absolute;
-  border-radius: 45px;
-  width: 60px;
-  height: 60px;
-  top: 15px;
-} */
 
 .msg-detail {
   width: 100%;

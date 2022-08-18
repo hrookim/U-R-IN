@@ -188,9 +188,6 @@ class Meeting extends Component {
     localUser.setConnectionId(this.state.session.connection.connectionId);
     localUser.setScreenShareActive(false);
     localUser.setStreamManager(publisher);
-    // this.sendSignalUserChanged({
-    //   isScreenShareActive: localUser.isScreenShareActive(),
-    // });
 
     this.setState({
       currentVideoDevice: videoDevices[0],
@@ -221,7 +218,7 @@ class Meeting extends Component {
   leaveSession() {
     const mySession = this.state.session;
     if (this.state.isLeader) {
-      this.state.subscribers.map((sub) => {
+      this.state.subscribers.forEach((sub) => {
         mySession.forceDisconnect(sub.streamManager.stream.connection);
       });
     }
@@ -474,19 +471,6 @@ class Meeting extends Component {
       this.state.subscribers.some((user) => user.isScreenShareActive()) ||
       localUser.isScreenShareActive();
     this.setState({ isSomeoneShareScreen: isScreenShared });
-    // const openviduLayoutOptions = {
-    //   maxRatio: 3 / 2,
-    //   minRatio: 9 / 16,
-    //   fixedRatio: isScreenShared,
-    //   bigClass: "OV_big",
-    //   bigPercentage: 0.8,
-    //   bigFixedRatio: false,
-    //   bigMaxRatio: 3 / 2,
-    //   bigMinRatio: 9 / 16,
-    //   bigFirst: true,
-    //   animate: true,
-    // };
-    // this.layout.setLayoutOptions(openviduLayoutOptions);
   }
 
   toggleFeedback(property) {
@@ -722,7 +706,7 @@ class Meeting extends Component {
                     localUser.getStreamManager() !== undefined && (
                       <div
                         style={
-                          !!intervieweeId
+                          !!intervieweeId && intervieweeId !== localUser.id
                             ? { height: "50%", marginBottom: "5%" }
                             : {}
                         }
@@ -744,7 +728,7 @@ class Meeting extends Component {
                       <div
                         // className="OT_root OT_publisher"
                         style={
-                          !!intervieweeId
+                          !!intervieweeId && intervieweeId !== localUser.id
                             ? { height: "45%" }
                             : { height: "100%" }
                         }
