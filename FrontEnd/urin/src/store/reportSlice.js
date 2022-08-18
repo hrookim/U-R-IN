@@ -8,22 +8,21 @@ import axios from "axios";
 
 export const getReport = createAsyncThunk(
   "GET_REPORT",
-  async ({ page, navigate }) => {
+  async ({ meetingId, navigate }) => {
+    console.log(meetingId);
     try {
+      console.log("GET_REPORT");
       const response = await axios.get(
-        // 나중에 수정
-        `${process.env.REACT_APP_BACK_BASE_URL}meeting/${page}/report`,
+        `${process.env.REACT_APP_BACK_BASE_URL}meeting/${meetingId}/report`,
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
           },
         }
       );
-
+      console.log(response.data);
       return response.data;
     } catch (err) {
-      alert("리포트가 없습니다.");
-      window.close();
       return isRejectedWithValue(err.response.data);
     }
   }
