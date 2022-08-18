@@ -33,7 +33,6 @@ const Report = () => {
 
   const reports = useSelector((state) => state.reports);
   // 차트변수
-
   const chartValueI = [reports.aiData.interviewee.emotion.confidence];
   const chartValueP = [reports.aiData.passUser.emotion.confidence];
   const chartValueIN = [
@@ -44,9 +43,6 @@ const Report = () => {
     reports.aiData.passUser.emotion.calm,
     reports.aiData.passUser.emotion.nervous,
   ];
-  console.log(chartValueI, "차트값");
-  console.log(chartValueIN, "차트값2");
-  // reports.aiData.interviewee.emotion.calm
 
   // const [question, setQuestion] = useState(" ");
   const memberName = useSelector((state) => state.member.memberName);
@@ -88,7 +84,6 @@ const Report = () => {
   }, []);
   useEffect(() => {
     dispatch(getReport({ page, navigate }));
-
     // 변수설정
   }, [page]);
 
@@ -113,7 +108,6 @@ const Report = () => {
         {/* 스터디 명 가져오기 */}
         <div className="font-lg font-60 report-title">{studyName}</div>
         {/* 리포트 선택 */}
-        {console.log(meetingId, "미팅아이디")}
         <Grid container className="report-select">
           <Grid xs={10.5}>
             <FormControl sx={{ m: 1, minWidth: 120 }} size="small">

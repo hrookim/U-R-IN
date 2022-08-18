@@ -59,7 +59,6 @@ const StudyUpdateForm = () => {
   const [open, setOpen] = React.useState(false);
 
   useEffect(() => {
-    console.log("check disable", disable);
     if (disable) {
       setForm({
         ...form,
@@ -85,8 +84,6 @@ const StudyUpdateForm = () => {
       } = study;
 
       if (dday === -1) {
-        console.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!====");
-
         const formatDate = new Date();
         setForm({
           title,
@@ -99,7 +96,6 @@ const StudyUpdateForm = () => {
         setDisable(true);
         setDefaultChecked(true);
       } else {
-        console.log("======================================");
         const formatDate = new Date(expirationDate);
         setForm({
           title,
@@ -175,8 +171,6 @@ const StudyUpdateForm = () => {
     //   setInterval(() => setIsChanged(false), 100);
     // });
   };
-
-  console.log("form", form);
 
   return (
     <div>

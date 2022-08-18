@@ -70,7 +70,7 @@ const MainPage = () => {
     }
   };
 
-  const [open, setOpen] = React.useState(false);
+  const [open, setOpen] = useState(false);
 
   const handleClick = () => {
     setOpen((prev) => !prev);
@@ -82,7 +82,6 @@ const MainPage = () => {
 
   useEffect(() => {
     const pageIdx = page - 1;
-    console.log({ pageIdx, checked, keyword, hashtags });
     dispatch(getStudyList([pageIdx, checked, keyword, hashtags]));
   }, [page, checked, keyword, hashtags]);
 

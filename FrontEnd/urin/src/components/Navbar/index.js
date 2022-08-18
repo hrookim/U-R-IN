@@ -26,6 +26,8 @@ import AccountBalanceIcon from "@mui/icons-material/AccountBalance";
 import { passValidation } from "../../store/passValidationSlice";
 
 import logoImg from "../../assets/images/logo_img.png";
+import { getMemberId } from "../../store/memberSlice";
+import CheckValidation from "../CheckValidation";
 
 const NavComponent = () => {
   const style = {
@@ -50,7 +52,7 @@ const NavComponent = () => {
   const [valid, setValid] = useState(false);
   const [disabled, setDisabled] = useState(false);
 
-  const memberName = useSelector((state) => state.member.nickname);
+  const memberName = useSelector((state) => state.member.memberName);
   const memberId = useSelector((state) => state.member.id);
 
   const [form, setForm] = useState({
@@ -112,6 +114,8 @@ const NavComponent = () => {
       !location.pathname.includes("/meeting") &&
       !location.pathname.includes("/report") ? (
         <div className="nav">
+          {/* <CheckValidation /> */}
+
           <input type="checkbox" id="nav-check" />
           <div className="nav-header">
             <a href={`${window.location.protocol}//${window.location.host}`}>
@@ -158,7 +162,9 @@ const NavComponent = () => {
                     aria-haspopup="true"
                     aria-expanded={open ? "true" : undefined}
                   >
-                    <Avatar sx={{ bgcolor: "#0037FA" }}>{memberName[0]}</Avatar>
+                    <Avatar sx={{ bgcolor: "#0037FA" }}>
+                      {memberName ? memberName[0] : "U"}
+                    </Avatar>
                   </IconButton>
                 </Tooltip>
               </Box>
@@ -198,7 +204,9 @@ const NavComponent = () => {
                 anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
               >
                 <MenuItem>
-                  <b className="font-50 font-md">{memberName}&nbsp;</b>
+                  <b className="font-50 font-md">
+                    {!memberName ? "Unknown" : memberName}&nbsp;
+                  </b>
                   <span className="font-30">님 안녕하세요!</span>
                 </MenuItem>
                 <Divider />
