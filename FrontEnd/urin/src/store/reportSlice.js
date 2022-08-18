@@ -9,8 +9,6 @@ export const getReport = createAsyncThunk(
   "GET_REPORT",
   async ({ page, navigate }) => {
     try {
-      console.log(page);
-      console.log("리포트 생성 중");
       const response = await axios.get(
         // 나중에 수정
         `${process.env.REACT_APP_BACK_BASE_URL}meeting/${page}/report`,
@@ -20,11 +18,7 @@ export const getReport = createAsyncThunk(
           },
         }
       );
-      console.log(response.data);
-      // if (response.data === []) {
-      //   console.log("비었는디?");
-      //   navigate("/notfound");
-      // }
+
       return response.data;
     } catch (err) {
       navigate("/notfound");

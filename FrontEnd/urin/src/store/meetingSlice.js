@@ -11,7 +11,6 @@ export const getMeeting = createAsyncThunk(
   "GET_MEETING",
   async ({ studyId, navigate }) => {
     try {
-      console.log("미팅 가져오는 중");
       const response = await axios.get(
         // 나중에 수정
         `${process.env.REACT_APP_BACK_BASE_URL}studies/${studyId}/meeting/Id`,
@@ -21,10 +20,7 @@ export const getMeeting = createAsyncThunk(
           },
         }
       );
-      console.log(response, "ssssss");
-      // if (response.data === []) {
-      //   navigate("/notfound");
-      // }
+
       return response.data;
     } catch (err) {
       console.log(err);
