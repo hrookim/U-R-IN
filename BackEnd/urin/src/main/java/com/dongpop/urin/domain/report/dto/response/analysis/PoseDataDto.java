@@ -1,9 +1,11 @@
 package com.dongpop.urin.domain.report.dto.response.analysis;
 
-import lombok.Getter;
+import lombok.Builder;
+import lombok.Data;
 
-@Getter
+@Data
+@Builder
 public class PoseDataDto {
     private String name;
-    private String count;
+    private double count;
 }
