@@ -10,6 +10,7 @@ const Feedback = ({
   intervieweeNickname,
   localUser,
   feedbackDisplay,
+  isInterviewing,
 }) => {
   const [type, setType] = useState("PERSONALITY");
   const [isLoading, setIsLoading] = useState(false);
@@ -71,12 +72,27 @@ const Feedback = ({
   const styleFeedback = { display: feedbackDisplay };
 
   useEffect(() => {
-    setFeedbackList([
-      { question: "지원자의 면접태도는 어떠한가요?", answer: "" },
-      { question: "지원자의 전달력은 어떠한가요?", answer: "" },
-      { question: "기타", answer: "" },
-    ]);
-  }, []);
+    if (isInterviewing) {
+      getFeedback({ meetingId, intervieweeId }).then((res) => {
+        const { personalityList } = res;
+        if (personalityList.length >= 1) {
+          setFeedbackList(personalityList);
+        } else {
+          setFeedbackList([
+            { question: "지원자의 면접태도는 어떠한가요?", answer: "" },
+            { question: "지원자의 전달력은 어떠한가요?", answer: "" },
+            { question: "기타", answer: "" },
+          ]);
+        }
+      });
+    } else {
+      setFeedbackList([
+        { question: "지원자의 면접태도는 어떠한가요?", answer: "" },
+        { question: "지원자의 전달력은 어떠한가요?", answer: "" },
+        { question: "기타", answer: "" },
+      ]);
+    }
+  }, [intervieweeId]);
 
   return (
     <div style={styleFeedback} className="fb-container">
