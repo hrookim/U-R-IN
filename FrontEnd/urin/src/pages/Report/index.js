@@ -48,7 +48,7 @@ const Report = () => {
   const memberName = useSelector((state) => state.member.memberName);
   const studyName = useSelector((state) => state.study.title);
 
-  const meetingId = useSelector((state) => state.meeting.meetingIdList);
+  const meetingIdList = useSelector((state) => state.meeting.meetingIdList);
 
   // PDF용 /////////////////
   const printDocument = () => {
@@ -81,12 +81,14 @@ const Report = () => {
   };
   // ////////////////////////
   useEffect(() => {
-    dispatch(getMeeting({ studyId, navigate }));
-  }, []);
-  useEffect(() => {
-    dispatch(getReport({ page, navigate }));
-    // 변수설정
+    dispatch(getMeeting({ studyId, navigate })).then((res) => {
+      const { meetingId } = res.payload.meetingIdList[page];
+      dispatch(getReport({ meetingId, navigate }));
+    });
   }, [page]);
+  // useEffect(() => {
+  //   // 변수설정
+  // }, [page]);
 
   return (
     <div>
@@ -114,14 +116,14 @@ const Report = () => {
             <FormControl sx={{ m: 1, minWidth: 120 }} size="small">
               <Select
                 id="demo-select-small"
-                defaultValue={1}
+                defaultValue={meetingIdList[0].meetingId}
                 label="meetingId"
                 onChange={(e) => {
                   pageChange(e);
                 }}
               >
-                {meetingId.map((item, index) => (
-                  <MenuItem value={item.meetingId}>Report {index + 1}</MenuItem>
+                {meetingIdList.map((item, index) => (
+                  <MenuItem value={index}>Report {index + 1}</MenuItem>
                 ))}
               </Select>
             </FormControl>
@@ -296,10 +298,15 @@ const Report = () => {
                       item
                       className="report-content-move-content font-40"
                     >
-                      분당 {reports.aiData.interviewee.poseDataList[0].count}회
-                      움직임이 감지되었습니다. 합격자는 평균{" "}
-                      {reports.aiData.passUser.poseDataList[0].count}회의
-                      움직임을 보였어요.
+                      분당{" "}
+                      {Math.floor(
+                        reports.aiData.interviewee.poseDataList[0].count
+                      )}
+                      회 움직임이 감지되었습니다. 합격자는 평균{" "}
+                      {Math.floor(
+                        reports.aiData.passUser.poseDataList[0].count
+                      )}
+                      회의 움직임을 보였어요.
                     </Grid>
                   </Grid>
                   <Grid item container xs={6}>
@@ -316,10 +323,15 @@ const Report = () => {
                       item
                       className="report-content-move-content font-40"
                     >
-                      분당 {reports.aiData.interviewee.poseDataList[1].count}회
-                      움직임이 감지되었습니다. 합격자는 평균{" "}
-                      {reports.aiData.passUser.poseDataList[1].count}회의
-                      움직임을 보였어요.
+                      분당{" "}
+                      {Math.floor(
+                        reports.aiData.interviewee.poseDataList[1].count
+                      )}
+                      회 움직임이 감지되었습니다. 합격자는 평균{" "}
+                      {Math.floor(
+                        reports.aiData.passUser.poseDataList[1].count
+                      )}
+                      회의 움직임을 보였어요.
                     </Grid>
                   </Grid>
                   <Grid item container xs={6}>
@@ -336,10 +348,15 @@ const Report = () => {
                       item
                       className="report-content-move-content font-40"
                     >
-                      분당 {reports.aiData.interviewee.poseDataList[2].count}회
-                      움직임이 감지되었습니다. 합격자는 평균{" "}
-                      {reports.aiData.passUser.poseDataList[2].count}회의
-                      움직임을 보였어요.
+                      분당{" "}
+                      {Math.floor(
+                        reports.aiData.interviewee.poseDataList[2].count
+                      )}
+                      회 움직임이 감지되었습니다. 합격자는 평균{" "}
+                      {Math.floor(
+                        reports.aiData.passUser.poseDataList[2].count
+                      )}
+                      회의 움직임을 보였어요.
                     </Grid>
                   </Grid>
                   <Grid item container xs={6}>
@@ -356,10 +373,15 @@ const Report = () => {
                       item
                       className="report-content-move-content font-40"
                     >
-                      분당 {reports.aiData.interviewee.poseDataList[3].count}회
-                      움직임이 감지되었습니다. 합격자는 평균{" "}
-                      {reports.aiData.passUser.poseDataList[3].count}회의
-                      움직임을 보였어요.
+                      분당{" "}
+                      {Math.floor(
+                        reports.aiData.interviewee.poseDataList[3].count
+                      )}
+                      회 움직임이 감지되었습니다. 합격자는 평균{" "}
+                      {Math.floor(
+                        reports.aiData.passUser.poseDataList[3].count
+                      )}
+                      회의 움직임을 보였어요.
                     </Grid>
                   </Grid>
                 </Grid>
