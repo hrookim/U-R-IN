@@ -12,6 +12,7 @@ export const getReport = createAsyncThunk(
       console.log(page);
       console.log("리포트 생성 중");
       const response = await axios.get(
+        // 나중에 수정
         `${process.env.REACT_APP_BACK_BASE_URL}meeting/${page}/report`,
         {
           headers: {

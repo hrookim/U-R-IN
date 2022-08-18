@@ -33,12 +33,20 @@ const Report = () => {
 
   const reports = useSelector((state) => state.reports);
   // 차트변수
-  let emotionI = reports.aiData.interviewee.emotion;
-  let emotionP = reports.aiData.passUser.emotion;
-  let chartValueI = [emotionI.confidence];
-  let chartValueP = [emotionP.confidence];
-  let chartValueIN = [emotionI.calm, emotionI.nervous];
-  let chartValuePN = [emotionP.calm, emotionP.nervous];
+
+  const chartValueI = [reports.aiData.interviewee.emotion.confidence];
+  const chartValueP = [reports.aiData.passUser.emotion.confidence];
+  const chartValueIN = [
+    reports.aiData.interviewee.emotion.calm,
+    reports.aiData.interviewee.emotion.nervous,
+  ];
+  const chartValuePN = [
+    reports.aiData.passUser.emotion.calm,
+    reports.aiData.passUser.emotion.nervous,
+  ];
+  console.log(chartValueI, "차트값");
+  console.log(chartValueIN, "차트값2");
+  // reports.aiData.interviewee.emotion.calm
 
   // const [question, setQuestion] = useState(" ");
   const memberName = useSelector((state) => state.member.memberName);
@@ -80,12 +88,7 @@ const Report = () => {
   }, []);
   useEffect(() => {
     dispatch(getReport({ page, navigate }));
-    emotionI = reports.aiData.interviewee.emotion;
-    emotionP = reports.aiData.passUser.emotion;
-    chartValueI = [emotionI.confidence];
-    chartValueP = [emotionP.confidence];
-    chartValueIN = [emotionI.calm, emotionI.nervous];
-    chartValuePN = [emotionP.calm, emotionP.nervous];
+
     // 변수설정
   }, [page]);
 
@@ -116,9 +119,11 @@ const Report = () => {
             <FormControl sx={{ m: 1, minWidth: 120 }} size="small">
               <Select
                 id="demo-select-small"
-                defaultValue={page}
+                defaultValue={1}
                 label="meetingId"
-                onChange={pageChange}
+                onChange={(e) => {
+                  pageChange(e);
+                }}
               >
                 {meetingId.map((item, index) => (
                   <MenuItem value={item.meetingId}>Report {index + 1}</MenuItem>
@@ -214,8 +219,8 @@ const Report = () => {
                   자신감
                 </div>
                 <div className="font-sm font-40 report-content-detail">
-                  안정적인 눈동자의 움직임과 적절한 미소는 면접관에게 자신감
-                  있는 인상을 전달 할 수 있어요!
+                  안정적인 표정처리와 적절한 미소는 면접관에게 자신감 있는
+                  인상을 전달 할 수 있어요!
                 </div>
                 <div>
                   <AnalysisChart
@@ -289,7 +294,7 @@ const Report = () => {
                       item
                       className="report-content-move-title font-50"
                     >
-                      정자세
+                      {reports.aiData.interviewee.poseDataList[0].name}
                     </Grid>
                     <Grid
                       xs={9}
@@ -308,7 +313,7 @@ const Report = () => {
                       item
                       className="report-content-move-title font-50"
                     >
-                      손들기
+                      {reports.aiData.interviewee.poseDataList[1].name}
                       {/* /{reports.aiData.interviewee.poseDataList[1].name} */}
                     </Grid>
                     <Grid
@@ -328,7 +333,7 @@ const Report = () => {
                       item
                       className="report-content-move-title font-50"
                     >
-                      기울임
+                      {reports.aiData.interviewee.poseDataList[2].name}
                       {/* {reports.aiData.interviewee.poseDataList[2].name} */}
                     </Grid>
                     <Grid
@@ -348,7 +353,7 @@ const Report = () => {
                       item
                       className="report-content-move-title font-50"
                     >
-                      시선분산
+                      {reports.aiData.interviewee.poseDataList[3].name}
                       {/* {reports.aiData.interviewee.poseDataList[3].name} */}
                     </Grid>
                     <Grid
