@@ -1,13 +1,14 @@
 package com.dongpop.urin.domain.analysis.entity;
 
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
 @Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor
 @Table(name = "postures")
 @Entity
 public class Posture {
@@ -18,8 +19,17 @@ public class Posture {
     @JoinColumn(name = "data_id")
     private AnalysisData analysisData;
 
-    @Column(nullable = false)
-    private String name;
+    @Enumerated(EnumType.STRING)
+    private PostureType type;
 
     private int count;
+
+    public void setAnalysisData(AnalysisData analysisData) {
+        this.analysisData = analysisData;
+    }
+
+    public void setPostureData(PostureType type, int count) {
+        this.type = type;
+        this.count = count;
+    }
 }

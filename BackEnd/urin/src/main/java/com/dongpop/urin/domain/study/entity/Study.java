@@ -2,12 +2,15 @@ package com.dongpop.urin.domain.study.entity;
 
 import com.dongpop.urin.domain.common.entity.BaseTimeEntity;
 import com.dongpop.urin.domain.member.entity.Member;
+import com.dongpop.urin.domain.notification.dto.NotificationEventDto;
+import com.dongpop.urin.domain.notification.entity.Notification;
 import com.dongpop.urin.domain.participant.entity.Participant;
 import com.dongpop.urin.global.error.exception.CustomException;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 
 import javax.persistence.*;
 import java.time.LocalDate;
@@ -123,5 +126,19 @@ public class Study extends BaseTimeEntity {
         char[] array = hashtagCodes.toCharArray();
         Arrays.sort(array);
         this.hashtagCodes = new String(array);
+    }
+
+    public void sendEvent(ApplicationEventPublisher eventPublisher, String content, String url) {
+        for (Participant participant : participants) {
+            if (participant.isLeader() || participant.getWithdrawal())
+                continue;
+
+            Member receiver = participant.getMember();
+            NotificationEventDto eventDto = NotificationEventDto.builder()
+                    .receiver(receiver)
+                    .contents(content)
+                    .url(url).build();
+            eventPublisher.publishEvent(eventDto);
+        }
     }
 }

@@ -19,7 +19,6 @@ const getFeedback = async ({ meetingId, intervieweeId }) => {
 };
 
 const updateFeedback = async ({ meetingId, intervieweeId, form }) => {
-  console.log("===axios 피드백 저장(C,U)===", meetingId, intervieweeId);
   try {
     const response = await axios.put(
       `${process.env.REACT_APP_BACK_BASE_URL}meeting/${meetingId}/feedback/${intervieweeId}`,

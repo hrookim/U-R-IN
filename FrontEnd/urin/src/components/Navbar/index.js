@@ -1,16 +1,14 @@
 import React, { useState, useEffect } from "react";
-import "./index.css";
-import "../../assets/DesignSystem.css";
 import { useLocation, Link, useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
+import "./index.css";
+import "../../assets/DesignSystem.css";
 
 import {
   Avatar,
-  Badge,
   Box,
   Button,
   Checkbox,
-  Container,
   Divider,
   FormControl,
   FormControlLabel,
@@ -23,11 +21,13 @@ import {
   Tooltip,
 } from "@mui/material";
 
-import { NotificationsNone, Logout } from "@mui/icons-material/";
+import { Logout } from "@mui/icons-material/";
 import AccountBalanceIcon from "@mui/icons-material/AccountBalance";
 import { passValidation } from "../../store/passValidationSlice";
 
 import logoImg from "../../assets/images/logo_img.png";
+import { getMemberId } from "../../store/memberSlice";
+import CheckValidation from "../CheckValidation";
 
 const NavComponent = () => {
   const style = {
@@ -52,12 +52,8 @@ const NavComponent = () => {
   const [valid, setValid] = useState(false);
   const [disabled, setDisabled] = useState(false);
 
-  const memberName = useSelector((state) => state.member.nickname);
+  const memberName = useSelector((state) => state.member.memberName);
   const memberId = useSelector((state) => state.member.id);
-
-  useEffect(() => {
-    setToken(localStorage.getItem("access_token"));
-  }, [token]);
 
   const [form, setForm] = useState({
     company: "",
@@ -66,7 +62,6 @@ const NavComponent = () => {
 
   const onChange = (e) => {
     const { name, value } = e.target;
-    console.log(name, value, "===");
 
     if (name == "email") {
       const reg =
@@ -80,15 +75,18 @@ const NavComponent = () => {
   };
 
   const [anchorEl, setAnchorEl] = useState(null);
+  const [openModal, setOpenModal] = useState(false);
+
   const open = Boolean(anchorEl);
+
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
+
   const handleClose = () => {
     setAnchorEl(null);
   };
 
-  const [openModal, setOpenModal] = useState(false);
   const modalClose = () => setOpenModal(false);
 
   const passClick = () => {
@@ -98,6 +96,7 @@ const NavComponent = () => {
   const sendValidation = () => {
     if (valid && disabled) {
       dispatch(passValidation({ memberId, navigate }));
+      alert("성공적으로 인증되었습니다.");
     } else if (!valid) {
       alert("올바른 이메일 주소를 적어주세요.");
     } else {
@@ -105,12 +104,18 @@ const NavComponent = () => {
     }
   };
 
+  useEffect(() => {
+    setToken(localStorage.getItem("access_token"));
+  }, [token]);
+
   return (
     <div>
       {!location.pathname.includes("/intro") &&
       !location.pathname.includes("/meeting") &&
       !location.pathname.includes("/report") ? (
         <div className="nav">
+          {/* <CheckValidation /> */}
+
           <input type="checkbox" id="nav-check" />
           <div className="nav-header">
             <a href={`${window.location.protocol}//${window.location.host}`}>
@@ -139,9 +144,7 @@ const NavComponent = () => {
                 내 스터디 보기
               </a>
             </div>
-            <Badge badgeContent={4} color="secondary">
-              <NotificationsNone />
-            </Badge>
+
             <div className="avatar">
               <Box
                 sx={{
@@ -150,7 +153,7 @@ const NavComponent = () => {
                   textAlign: "center",
                 }}
               >
-                <Tooltip title="Account settings">
+                <Tooltip title="계정 관리">
                   <IconButton
                     onClick={handleClick}
                     size="small"
@@ -159,7 +162,9 @@ const NavComponent = () => {
                     aria-haspopup="true"
                     aria-expanded={open ? "true" : undefined}
                   >
-                    <Avatar sx={{ bgcolor: "#0037FA" }}>{memberName[0]}</Avatar>
+                    <Avatar sx={{ bgcolor: "#0037FA" }}>
+                      {memberName ? memberName[0] : "U"}
+                    </Avatar>
                   </IconButton>
                 </Tooltip>
               </Box>
@@ -199,7 +204,9 @@ const NavComponent = () => {
                 anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
               >
                 <MenuItem>
-                  <b className="font-50 font-md">{memberName}&nbsp;</b>
+                  <b className="font-50 font-md">
+                    {!memberName ? "Unknown" : memberName}&nbsp;
+                  </b>
                   <span className="font-30">님 안녕하세요!</span>
                 </MenuItem>
                 <Divider />

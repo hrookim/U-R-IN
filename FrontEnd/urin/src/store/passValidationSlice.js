@@ -9,7 +9,6 @@ export const passValidation = createAsyncThunk(
   "PASS_VALIDATION",
   async ({ memberId, navigate }) => {
     try {
-      console.log(memberId, `Bearer ${localStorage.getItem("accessToken")}`);
       const response = await axios.patch(
         `${process.env.REACT_APP_BACK_BASE_URL}member/${memberId}/pass`,
         { isPassed: true },
@@ -19,13 +18,10 @@ export const passValidation = createAsyncThunk(
           },
         }
       );
-      console.log("합격자 인증 후 리스폰스", response);
       return response.data;
     } catch (err) {
       console.log(err);
-      // localStorage.clear();
-      // navigate("/intro");
-      // window.location.reload();
+
       return isRejectedWithValue(err.response.data);
     }
   }

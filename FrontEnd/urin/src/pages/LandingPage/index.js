@@ -5,6 +5,11 @@ import "../../assets/DesignSystem.css";
 import "./index.css";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import landingpageImg1 from "../../assets/images/landingpage-img1.png";
+import landingpageImg2 from "../../assets/images/landingpage-img2.png";
+import landingpageImg3 from "../../assets/images/landingpage-img3.png";
+import landingpageImg4 from "../../assets/images/landingpage-img4.png";
+import landingpageImg5 from "../../assets/images/landingpage-img5.png";
 
 const LandingPage = () => {
   gsap.registerPlugin(ScrollTrigger);
@@ -91,7 +96,7 @@ const LandingPage = () => {
         },
       }
     );
-  });
+  }, []);
   return (
     <div ref={ref}>
       <div>
@@ -119,22 +124,22 @@ const LandingPage = () => {
               시작하기
             </Button>
           </div>
-          <img src="img/landingpage-img4.png" alt="img4" className="img4" />
+          <img src={landingpageImg4} alt="img4" className="img4" />
 
           <div className="img-group">
             <img
               className="img1 test"
-              src={`${process.env.PUBLIC_URL}img/landingpage-img1.png`}
+              src={landingpageImg1}
               alt="landingpage-img1"
             />
             <img
               className="img2"
-              src="%PUBLIC_URL%/img/landingpage-img2.png"
+              src={landingpageImg2}
               alt="landingpage-img2"
             />
             <img
               className="img3"
-              src={`${process.env.PUBLIC_URL}/img/landingpage-img3.png`}
+              src={landingpageImg3}
               alt="landingpage-img3"
             />
             <div className="img-text">
@@ -155,7 +160,7 @@ const LandingPage = () => {
           <div className="img-group2">
             <img
               className="img5"
-              src="/img/landingpage-img5.png"
+              src={landingpageImg5}
               alt="landingpage-img5"
             />
             <div className="img-text">

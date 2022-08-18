@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import Chart from "react-apexcharts";
 
-const AnalysisChart = (props) => {
-  const [chart, setChart] = useState({
+const AnalysisChart = ({ category, interviewee, passUser, height }) => {
+  const chart = {
     options: {
       colors: ["#0244FC", "#868686"],
       chart: {
@@ -33,7 +33,7 @@ const AnalysisChart = (props) => {
         axisTicks: {
           show: false,
         },
-        categories: ["category1", "category2"],
+        categories: category,
         max: 100,
       },
       dataLabels: {
@@ -48,14 +48,14 @@ const AnalysisChart = (props) => {
     series: [
       {
         name: "나의 평균(%)",
-        data: [56, 95],
+        data: interviewee,
       },
       {
         name: "합격자 평균(%)",
-        data: [73, 42],
+        data: passUser,
       },
     ],
-  });
+  };
 
   return (
     <Chart
@@ -63,7 +63,7 @@ const AnalysisChart = (props) => {
       series={chart.series}
       type="bar"
       width="1110"
-      height="300"
+      height={height}
     />
   );
 };

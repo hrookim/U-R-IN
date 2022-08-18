@@ -70,7 +70,7 @@ const MainPage = () => {
     }
   };
 
-  const [open, setOpen] = React.useState(false);
+  const [open, setOpen] = useState(false);
 
   const handleClick = () => {
     setOpen((prev) => !prev);
@@ -81,7 +81,8 @@ const MainPage = () => {
   };
 
   useEffect(() => {
-    dispatch(getStudyList([page - 1, checked, keyword, hashtags]));
+    const pageIdx = page - 1;
+    dispatch(getStudyList([pageIdx, checked, keyword, hashtags]));
   }, [page, checked, keyword, hashtags]);
 
   return (
@@ -99,7 +100,6 @@ const MainPage = () => {
               title="Search"
               onChange={inputwordChange}
             />
-
             <div className="search-condition">
               <ClickAwayListener onClickAway={handleClickAway}>
                 <Box sx={{ position: "relative" }}>
@@ -148,7 +148,6 @@ const MainPage = () => {
                   </Box>
                 </Box>
               </ClickAwayListener>
-
               <IconButton
                 type="submit"
                 className="search-btn"
@@ -198,7 +197,6 @@ const MainPage = () => {
           </Grid>
         </Grid>
       </div>
-
       <Grid container spacing={2} className="card-grid">
         {studies.studyList.map((item) => (
           <Grid

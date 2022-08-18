@@ -18,6 +18,8 @@ import memberReducer from "./memberSlice";
 import checkValidationReducer from "./checkValidationSlice";
 import myPageReducer from "./myPageSlice";
 import passValidationReduecer from "./passValidationSlice";
+import meetingReduecer from "./meetingSlice";
+import reportsReduecer from "./reportSlice";
 
 const rootReducer = combineReducers({
   validation: checkValidationReducer,
@@ -28,6 +30,8 @@ const rootReducer = combineReducers({
   feed: feedReducer,
   mypage: myPageReducer,
   passValidation: passValidationReduecer,
+  meeting: meetingReduecer,
+  reports: reportsReduecer,
 });
 
 const persistConfig = {

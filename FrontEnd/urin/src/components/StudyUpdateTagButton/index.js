@@ -60,8 +60,6 @@ const StudyUpdateTagButton = ({
   };
 
   const handleClick = (e) => {
-    const value = e.target.id;
-
     if (selected) {
       setSelected(false);
     } else if (hashtags.length < 3) {
