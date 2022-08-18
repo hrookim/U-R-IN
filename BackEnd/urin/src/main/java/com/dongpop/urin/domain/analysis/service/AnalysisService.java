@@ -18,6 +18,7 @@ import javax.transaction.Transactional;
 
 import java.lang.reflect.Field;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -48,7 +49,10 @@ public class AnalysisService {
         Member passMember = memberRepository.findById(passMemberId)
                 .orElseThrow(() -> new CustomException(NO_SUCH_ELEMENTS));
         List<AnalysisData> passAnalysisData = analysisRepository.findByInterviewee(passMember);
+        calculateDataList(passAnalysisData);
+    }
 
+    private void calculateDataList(List<AnalysisData> passAnalysisData) {
         for (AnalysisData data : passAnalysisData) {
             double divisor = data.getTime() / CONSTANT;
 
@@ -81,13 +85,19 @@ public class AnalysisService {
         });
     }
 
-    private boolean isEmotionType(String typeName) {
-        for (EmotionType type : EmotionType.values()) {
-            if (type.name().equals(typeName)) {
-                return true;
-            }
+    @Transactional
+    public Map<String, AnalysisCacheDto> getPassDataCache() {
+        if (passDataCache.isEmpty()) {
+            //TODO: 쿼리 확인
+            List<AnalysisData> passIntervieweeData = analysisRepository.findAllPassedInterviewee();
+            calculateDataList(passIntervieweeData);
         }
-        return false;
+
+        Map<String, AnalysisCacheDto> copyMap = new HashMap<>();
+        for (Map.Entry<String, AnalysisCacheDto> entry : passDataCache.entrySet()) {
+            copyMap.put(entry.getKey(), entry.getValue());
+        }
+        return copyMap;
     }
 
     @Transactional
@@ -108,6 +118,15 @@ public class AnalysisService {
 
         analysisData.sumTime(aiData.getPoseDataList().size());
         saveAnalysisData(analysisData, aiData);
+    }
+
+    private boolean isEmotionType(String typeName) {
+        for (EmotionType type : EmotionType.values()) {
+            if (type.name().equals(typeName)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private void saveAnalysisData(AnalysisData analysisData, AnalysisDataDto aiData) {

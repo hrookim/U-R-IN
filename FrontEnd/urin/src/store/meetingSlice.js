@@ -13,6 +13,7 @@ export const getMeeting = createAsyncThunk(
     try {
       console.log("미팅 가져오는 중");
       const response = await axios.get(
+        // 나중에 수정
         `${process.env.REACT_APP_BACK_BASE_URL}studies/${studyId}/meeting/Id`,
         {
           headers: {
