@@ -183,7 +183,7 @@ const studySlice = createSlice({
   // 빈 객체 보다는 적당히 형태를 잡아두는게 좋음
   initialState: {
     id: 0,
-    title: "string",
+    title: "멋진스터디",
     notice: "string",
     memberCapacity: 0,
     currentMember: 0,

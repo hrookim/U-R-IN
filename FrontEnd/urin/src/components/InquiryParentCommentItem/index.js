@@ -6,6 +6,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSquareXmark } from "@fortawesome/free-solid-svg-icons";
 import { Avatar, Button } from "@mui/material";
 import { deleteInquiry, updateInquiry } from "../../store/inquirySlice";
+import "./index.css";
 
 const StyledXbutton = styled.span`
   color: red;
@@ -46,12 +47,6 @@ const InquiryParentCommentItem = ({
     });
   };
 
-  const onKeyPress = (event) => {
-    if (event.key == "Enter") {
-      onClickUpdate();
-    }
-  };
-
   return (
     <div>
       <div className="writer-info">
@@ -89,41 +84,43 @@ const InquiryParentCommentItem = ({
           </div>
         )}
         {isEditing && (
-          <div>
-            <div>
-              <div>
-                <input
-                  onChange={onChange}
-                  onKeyPress={onKeyPress}
-                  value={form}
-                  className="inquiry-parent-input"
-                />
-                {/* <Button
-          onClick={onSubmit}
-          sx={{
-            backgroundColor: "#0037FA",
-            height: "60px",
-            marginLeft: "20px",
-            borderRadius: "10px",
-            "&:hover": { backgroundColor: "#0037FA" },
-          }}
-          variant="contained"
-        >
-          제출
-        </Button> */}
-              </div>
-            </div>{" "}
-            <button type="submit" onClick={onClickUpdate}>
-              수정
-            </button>
-            <button
-              type="button"
-              onClick={() => {
-                setIsEditing(false);
-              }}
-            >
-              취소
-            </button>
+          <div className="inquiry-parent">
+            <input
+              onChange={onChange}
+              value={form}
+              className="inquiry-parent-input"
+            />
+            <div className="inquiry-input-btn">
+              <Button
+                variant="outlined"
+                onClick={onClickUpdate}
+                sx={{
+                  borderColor: "#0037FA",
+                  color: "#0037FA",
+                  marginRight: "5px",
+                  "&:hover": { backgroundColor: "#0037FA", color: "white" },
+                }}
+              >
+                수정
+              </Button>
+              <Button
+                variant="outlined"
+                sx={{
+                  borderColor: "rgba(0,0,0,0.7)",
+                  color: "rgba(0,0,0,0.7)",
+                  "&:hover": {
+                    backgroundColor: "rgba(0,0,0,0.4)",
+                    color: "white",
+                    border: "none",
+                  },
+                }}
+                onClick={() => {
+                  setIsEditing(false);
+                }}
+              >
+                취소
+              </Button>
+            </div>
           </div>
         )}
       </div>

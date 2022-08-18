@@ -22,14 +22,7 @@ public class AnalysisController {
                                           @RequestBody AnalysisDataDto aiData,
                                           @AuthenticationPrincipal MemberPrincipal memberPrincipal) {
 
-        analysisService.setAnalysisData(meetingId, memberPrincipal.getMember(), aiData);
-
-        return ResponseEntity.ok().build();
-    }
-
-    @GetMapping("/{meetingId}/analysis")
-    public ResponseEntity<?> getAIReport(@PathVariable int meetingId,
-                                         @AuthenticationPrincipal MemberPrincipal memberPrincipal) {
+        analysisService.setAnalysisData(meetingId, memberPrincipal.getMember().getId(), aiData);
 
         return ResponseEntity.ok().build();
     }

@@ -10,3 +10,23 @@
 .comment-content{
   margin: 5px 0 0 45px;
 }
+
+.inquiry-parent {
+  width: 100%;
+}
+
+.inquiry-parent-input{
+  height: 100px;
+  width: 100%;
+  padding: 15px;
+  border-radius: 10px;
+  border-width: 1px;
+  border-color: rgb(200, 200, 200);
+}
+
+.inquiry-input-btn {
+  display: flex;
+  flex: row;
+  justify-content: end;
+  margin-top: 10px;
+}
