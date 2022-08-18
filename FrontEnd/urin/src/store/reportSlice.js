@@ -1,3 +1,4 @@
+import { Alert } from "@mui/material";
 import {
   createAsyncThunk,
   createSlice,
@@ -21,8 +22,8 @@ export const getReport = createAsyncThunk(
 
       return response.data;
     } catch (err) {
-      console.log("-------");
-      console.log(err);
+      alert("리포트가 없습니다.");
+      window.close();
       return isRejectedWithValue(err.response.data);
     }
   }
