@@ -1,0 +1,2 @@
+# application-xxx location
+/src/main/resources
