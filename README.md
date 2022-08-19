@@ -72,27 +72,27 @@
 `prettier`와 `eslint`로 코드 스타일 통일(Airbnb style)
 `redux`, `reduxjs/toolkit`, `react-router-dom v6`  사용
 
-- OpenVidu </br>
-> OpenVidu is a platform to facilitate the addition of video calls in your web or mobile application.
+- OpenVidu  
+OpenVidu is a platform to facilitate the addition of video calls in your web or mobile application.  
     
-    `WebRTC`를 보다 간단하게 적용할 수 있고, 다양한 프레임워크와 호환성이 높은 `openvidu`를 사용하여 프로젝트를 진행했습니다. `openvidu tutorial`의 `openvidu-call-react`의 소스 코드를 기반으로 화상회의를 구현하였습니다
+`WebRTC`를 보다 간단하게 적용할 수 있고, 다양한 프레임워크와 호환성이 높은 `openvidu`를 사용하여 프로젝트를 진행했습니다. `openvidu tutorial`의 `openvidu-call-react`의 소스 코드를 기반으로 화상회의를 구현하였습니다
     
 
-- face-api
-> JavaScript face recognition API for the browser and nodejs implemented on top of tensorflow.js core
+- face-api  
+JavaScript face recognition API for the browser and nodejs implemented on top of tensorflow.js core  
 
 <img src="./img/face.png">
     
     
-    `urin` 에서는 `face api`의 다양한 기능 중 `Face Detection` 을 통해 얼굴을 감지하고 `Face Expression Recognition`을 이용해 면접자의 감정을 분석합니다. 
+`urin` 에서는 `face api`의 다양한 기능 중 `Face Detection` 을 통해 얼굴을 감지하고 `Face Expression Recognition`을 이용해 면접자의 감정을 분석합니다. 
     
-- Teachablemachine/pose
-> Teachable Machine은 누구나 머신러닝 모델을 쉽고 빠르고 간단하게 만들 수 있도록 제작된 웹 기반 도구입니다.
+- Teachablemachine/pose  
+Teachable Machine은 누구나 머신러닝 모델을 쉽고 빠르고 간단하게 만들 수 있도록 제작된 웹 기반 도구입니다.  
 
 <img src="./img/teacheable.png">
 
         
-    `urin`에서는 `Teachablemachine`의 `pose`라이브러리를 이용해 면접자의 자세를 인식합니다.
+`urin`에서는 `Teachablemachine`의 `pose` 라이브러리를 이용해 면접자의 자세를 인식합니다.
     
 
 ## Backend
