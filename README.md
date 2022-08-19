@@ -42,12 +42,12 @@
 
 - 면접 모드에서 면접자의 표정 & 자세를 AI가 분석한 결과와 평가자들이 작성한 피드백들을 Report에서 한 눈에 볼 수 있다.
 
-<img src="./img/untitled 3.png">
+<img src="./img/Untitled3.png">
 
 # 3. 기획
 
 ## ERD
-<img src="./img/Untitled 1.png">
+<img src="./img/Untitled1.png">
 
 ## Figma
 <img src="./img/wireFrame1.png">
@@ -56,7 +56,7 @@
 
 ## API 명세
 
-<img src="./img/Untitled 2.png">
+<img src="./img/Untitled2.png">
 
 
 
@@ -67,39 +67,41 @@
 
 ## Frontend
 
-<img src="./img/html_css_js_react_redux.png">
+<img src="./img/front.png">
 
 `prettier`와 `eslint`로 코드 스타일 통일(Airbnb style)
 `redux`, `reduxjs/toolkit`, `react-router-dom v6`  사용
 
-- OpenVidu
-OpenVidu is a platform to facilitate the addition of video calls in your web or mobile application.
+- OpenVidu </br>
+> OpenVidu is a platform to facilitate the addition of video calls in your web or mobile application.
     
     `WebRTC`를 보다 간단하게 적용할 수 있고, 다양한 프레임워크와 호환성이 높은 `openvidu`를 사용하여 프로젝트를 진행했습니다. `openvidu tutorial`의 `openvidu-call-react`의 소스 코드를 기반으로 화상회의를 구현하였습니다
     
 
 - face-api
-JavaScript face recognition API for the browser and nodejs implemented on top of tensorflow.js core
+> JavaScript face recognition API for the browser and nodejs implemented on top of tensorflow.js core
+
+<img src="./img/face.png">
     
-    <img src="./img/untitled 4.png">
     
     `urin` 에서는 `face api`의 다양한 기능 중 `Face Detection` 을 통해 얼굴을 감지하고 `Face Expression Recognition`을 이용해 면접자의 감정을 분석합니다. 
     
 - Teachablemachine/pose
-Teachable Machine은 누구나 머신러닝 모델을 쉽고 빠르고 간단하게 만들 수 있도록 제작된 웹 기반 도구입니다.
-    
-    <img src="./img/teachablemachine.gif">
-    
+> Teachable Machine은 누구나 머신러닝 모델을 쉽고 빠르고 간단하게 만들 수 있도록 제작된 웹 기반 도구입니다.
+
+<img src="./img/teacheable.png">
+
+        
     `urin`에서는 `Teachablemachine`의 `pose`라이브러리를 이용해 면접자의 자세를 인식합니다.
     
 
 ## Backend
 
-<img src="./img/untitled 5.png">
+<img src="./img/Untitled5.png">
 
 ## CI & CD
 
-<img src="./img/untitled 6.png">
+<img src="./img/Untitled6.png">
 
 ## Version
 
@@ -130,7 +132,7 @@ Teachable Machine은 누구나 머신러닝 모델을 쉽고 빠르고 간단하
 
 ## Git Flow
 
-<img src="./img/untitled 7.png">
+<img src="./img/Untitled7.png">
 
 git flow 전략과 github flow 전략 중 git flow 전략을 채택했습니다. `feature`브랜치에서 작업 후`fronend` or `backend`브랜치로 Merge Request를 생성했습니다.
 
@@ -170,7 +172,7 @@ commit message는 `(gitmoji) <타입> : <제목> <#이슈번호>` 형태로 통�
 - 초반에는 일정에 맞춰 Epic 생성
 - JIRA 피드백 이후 핵심 기능 별 Epic생성
 
-<img src="./img/untitled 8.png">
+<img src="./img/Untitled8.png">
 
 <img src="./img/Jira.png">
 
@@ -181,13 +183,13 @@ commit message는 `(gitmoji) <타입> : <제목> <#이슈번호>` 형태로 통�
 - 매일 아침마다 어제 했던 일, 오늘의 계획을 공유하는 Daily Scrum을 진행
 - 각 회의 내용을 Tag로 분류한 회의록에 상세히 기록
 
-<img src="./img/untitled 9.png">
+<img src="./img/Untitled9.png">
 
 ### 2) 자료 공유 (Wiki)
 
 - 중요한 자료를 한 곳에서 관리
 
-<img src="./img/untitled 10.png">
+<img src="./img/Untitled10.png">
 
 # 6. 타임라인
 
