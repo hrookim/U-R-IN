@@ -174,7 +174,7 @@ commit message는 `(gitmoji) <타입> : <제목> <#이슈번호>` 형태로 통�
 
 <img src="./img/Untitled8.png">
 
-<img src="./img/Jira.png">
+<img src="./img/jira.png">
 
 ## Notion
 
