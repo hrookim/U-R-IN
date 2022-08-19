@@ -1,10 +1,10 @@
 # [Final] How to Build CI/CD
 
-# 사용 기술
-
 - Written By @minahshin
 
-- Nginx + React 배포 도우미 feat ☆윤성도☆
+- Nginx + React 배포 도우미 ☆윤성도☆ @sdyoon94
+
+# 사용 기술
 
 ## Server
 
@@ -38,6 +38,7 @@
 ### Deploy
 
 - Jenkins 2.346.2
+    ![img.png](%5BFinal%5D%20How%20to%20Build%20CI%20CD/img.png)
 
 ### WebRTC
 
