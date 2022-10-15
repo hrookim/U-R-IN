@@ -296,9 +296,9 @@
 1. jenkins의 키를 받고, 업데이트 시켜준 후 jenkins를 설치해준다
     
     ```bash
-    wget -q -O - [https://pkg.jenkins.io/debian/jenkins.io.key](https://pkg.jenkins.io/debian/jenkins.io.key) | sudo apt-key add -
+    wget -q -O - https://pkg.jenkins.io/debian/jenkins.io.key | sudo apt-key add -
     
-    sudo sh -c 'echo deb [https://pkg.jenkins.io/debian-stable](https://pkg.jenkins.io/debian-stable) binary/ > \
+    sudo sh -c 'echo deb https://pkg.jenkins.io/debian-stable binary/ > \
     	
     			/etc/apt/sources.list.d/jenkins.list
     
